@@ -124,11 +124,17 @@ class TTBParser:
 
         return _service_id, _service_dict
 
-    def get_start_time(self):
+    @property
+    def start_time(self):
         return self._ttb_data[self._current_file]['start_time']
 
-    def get_comments(self):
-        return [key for key in self._ttb_data[self._current_file]['services'] if key != 'Unclassified']
+    @property
+    def comments(self):
+        return self._ttb_data[self._current_file]['comments']
+
+    @property
+    def data(self):
+        return self._ttb_data
 
     def parse(self, ttb_file: str) -> None:
         self._logger.info(f"Parsing TTB file '{ttb_file}'")
@@ -148,7 +154,8 @@ class TTBParser:
                 if _properties:
                     self._ttb_data[ttb_file]['services'][service]['properties'] = _properties
 
-    def write(self, output_file) -> None:
+    def json(self, output_file) -> None:
+        """Dump metadata to a JSON file"""
         _beautifier_opts = jsbeautifier.default_options()
         _beautifier_opts.indent_size = 2
 
@@ -160,3 +167,4 @@ class TTBParser:
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")
+

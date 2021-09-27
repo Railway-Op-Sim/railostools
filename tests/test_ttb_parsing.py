@@ -1,5 +1,4 @@
 import pytest
-import datetime
 import json
 import os
 import tempfile
@@ -18,16 +17,17 @@ def ttb_parser():
 
 @pytest.mark.ttbparser
 def test_parse_time(ttb_parser: TTBParser):
-    assert ttb_parser.get_start_time() == '05:07'
+    assert ttb_parser.start_time == '05:07'
 
 
 @pytest.mark.ttbparser
 def test_comments(ttb_parser: TTBParser):
-    assert ttb_parser.get_comments() == ['Empty Stock', 'Towards Kamakura', 'Towards Fujisawa']
+    _expect = ['Empty Stock', 'Towards Kamakura', 'Towards Fujisawa']
+    assert list(ttb_parser.comments.values()) == _expect
 
 
 @pytest.mark.ttbparser
 def test_write(ttb_parser: TTBParser):
     with tempfile.NamedTemporaryFile(suffix='.json', mode='w', delete=False) as out_f:
-        ttb_parser.write(out_f)
+        ttb_parser.json(out_f)
         assert json.load(open(out_f.name))
