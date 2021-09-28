@@ -128,7 +128,7 @@ class TTBParser:
         return self._ttb_data[self._current_file]['start_time']
 
     def get_comments(self):
-        return [key for key in self._ttb_data[self._current_file]['services'] if key != 'Unclassified']
+        return self._ttb_data[self._current_file]['comments']
 
     def parse(self, ttb_file: str) -> None:
         self._logger.info(f"Parsing TTB file '{ttb_file}'")
@@ -148,7 +148,8 @@ class TTBParser:
                 if _properties:
                     self._ttb_data[ttb_file]['services'][service]['properties'] = _properties
 
-    def write(self, output_file) -> None:
+    def json(self, output_file) -> None:
+        """Dump metadata to a JSON file"""
         _beautifier_opts = jsbeautifier.default_options()
         _beautifier_opts.indent_size = 2
 
@@ -160,3 +161,4 @@ class TTBParser:
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")
+
