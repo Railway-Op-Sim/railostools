@@ -16,7 +16,7 @@ TEST_LOG_DIR = os.path.join(
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-async def add_file(monitor: Monitor, temporary_dir: str):
+async def add_file(temporary_dir: str, **kwargs):
     await asyncio.sleep(1)
     shutil.copy(
         os.path.join(
@@ -28,6 +28,7 @@ async def add_file(monitor: Monitor, temporary_dir: str):
             'Log_Antwerpen_Centraal.txt'
         )
     )
+
 
 async def checker(monitor: Monitor):
     while monitor.running and not monitor.data:

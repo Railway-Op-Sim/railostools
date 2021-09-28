@@ -1,10 +1,9 @@
 import click
 import os
 import logging
+from rostools.ttb import TTBParser
 
 logging.basicConfig()
-
-from rostools.ttb import TTBParser
 
 
 @click.group()
@@ -29,4 +28,4 @@ def ttb2json(ttb_file: str, output: str = '') -> None:
 
     _parser = TTBParser()
     _parser.parse(ttb_file)
-    _parser.write(output)
+    _parser.json(output)

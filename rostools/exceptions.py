@@ -1,8 +1,10 @@
 from typing import Callable
 
+
 class TimetableParsingError(Exception):
     def __init__(self, msg: str) -> None:
         super().__init__(msg)
+
 
 class InvalidListenerError(Exception):
     def __init__(self, function: Callable):

@@ -13,7 +13,7 @@ class TTBParser:
     def __init__(self) -> None:
         self._logger.debug('Creating new TTBParser')
         self._ttb_data = {}
-        self._start_time: datetime.datetime = None
+        self._start_time: datetime.datetime = datetime.datetime()
         self._current_file = ''
 
     def _get_ttb_components(self, timetable_file_data: str) -> Dict[str, Any]:
@@ -22,7 +22,7 @@ class TTBParser:
 
         _services: Dict[str, Any] = {}
 
-        _comments: List[str] = {}
+        _comments: Dict[int, str] = {}
 
         for i, line in enumerate(_ttb_components[1:]):
             self._logger.debug(f'Parsing line [{i+1:^4}] : {line}')
@@ -99,7 +99,6 @@ class TTBParser:
                 'n_repeats': _number
             }
 
-            _service_definitions = _service_definitions[2:-1]
         else:
             _end_components = _service_definitions[-1].split(';')
 
@@ -118,8 +117,7 @@ class TTBParser:
             elif _service_dict['end']['type'] == 'Fns':
                 _service_dict['end']['form_service'] = _end_components[2]
 
-            _service_definitions = _service_definitions[2:-1]
-
+        _service_definitions = _service_definitions[2:-1]
         _service_dict['schedule'] = tuple(i.split(';') for i in _service_definitions[2:-1])
 
         return _service_id, _service_dict

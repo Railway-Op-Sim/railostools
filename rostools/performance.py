@@ -27,21 +27,20 @@ class Monitor:
         self._wait_interval: int = 5                         # Wait period
 
     async def _process_lines(self, file_lines: List[str]) -> None:
-        _data_dict = {}
         _is_ttb_perf = re.compile(
-            r'\d{2}\:\d{2}\:\d{2}\:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]',
+            r'\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]',
             re.IGNORECASE
         )
-        _service_lines = [l for l in file_lines if _is_ttb_perf.findall(l)]
+        _service_lines = [line for line in file_lines if _is_ttb_perf.findall(l)]
 
         # If the last service line is incomplete remove it
         if '\n' not in _service_lines[-1]:
             _service_lines = _service_lines[:-1]
 
         for line in _service_lines:
-            _time = re.findall(r'(\d{2}\:\d{2}\:\d{2})', line)[0]
+            _time = re.findall(r'(\d{2}:\d{2}:\d{2})', line)[0]
             try:
-                _head_code = re.findall(r'\d{2}\:\d{2}\:\d{2}\:\s([A-Z0-9]+)\s', line)[0]
+                _head_code = re.findall(r'\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s', line)[0]
             except IndexError:
                 continue
             _msg = line.replace(_time, '').replace(_head_code, '')[1:].strip().rstrip()
@@ -64,7 +63,7 @@ class Monitor:
         _timer: int = 0
 
         # Used to store log file to be processed
-        _log: str = None
+        _log: str = ''
 
         # Used to store number of log files in directory
         _n_logs: int = 0
@@ -89,7 +88,7 @@ class Monitor:
                     if _timer % 60 == 0:
                         self._logger.warning(
                             "No log files currently found in directory '%s'",
-                            self._log_dirl
+                            self._log_dir
                         )
                     await asyncio.sleep(self._wait_interval)
                     _timer += 5
@@ -103,8 +102,9 @@ class Monitor:
                         _time_sorted_logs[-1]
                     )
                     _mod_time = 0
+                    _log = _time_sorted_logs[-1]
 
-                _candidate_mod_time = os.path.getmtime(_time_sorted_logs[-1])
+                _candidate_mod_time = os.path.getmtime(_log)
 
                 # Check if the modification time has changed, if not the file has
                 # no new lines so skip.
@@ -115,7 +115,6 @@ class Monitor:
 
                 # Clear the data ready to be re-read then process file
                 self._data = {}
-                _log = _time_sorted_logs[-1]
 
                 with open(_log) as log_f:
                     _lines = log_f.readlines()
@@ -136,7 +135,10 @@ class Monitor:
         """Force stop the monitor from running"""
         self._is_running = False
 
-    def exec_in_parallel(self, function: Callable, args: Dict = {}) -> None:
+    def exec_in_parallel(self, function: Callable, args: Dict = None) -> None:
+        if not args:
+            args = {}
+
         if 'monitor' not in inspect.signature(function).parameters:
             raise rexc.InvalidListenerError(function)
         self._async_funcs.append((function, args))

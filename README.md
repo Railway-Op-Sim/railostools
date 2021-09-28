@@ -89,7 +89,7 @@ async def listener(monitor: rostools.performance.Monitor, user_name: str) -> Non
     while monitor.running:
         print(f"Running for user '{user_name}'")
         print(monitor.data)
-        asyncio.sleep(10)
+        await asyncio.sleep(10)
     
 # Attach listener function to the async loop of the monitor
 # arguments are given as a dictionary
