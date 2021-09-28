@@ -4,7 +4,6 @@ import os
 import re
 import logging
 import glob
-import sys
 
 import rostools.exceptions as rexc
 

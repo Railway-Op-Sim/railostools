@@ -1,4 +1,6 @@
 # ROSTools
+[![ROSTools](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+
 *Railway Operation Simulator Toolkit*
 
 ROSTools provides a set of tools for working with Railway Operation Simulator program files.
