@@ -17,13 +17,13 @@ def ttb_parser():
 
 @pytest.mark.ttbparser
 def test_parse_time(ttb_parser: TTBParser):
-    assert ttb_parser.get_start_time() == '05:07'
+    assert ttb_parser.start_time == '05:07'
 
 
 @pytest.mark.ttbparser
 def test_comments(ttb_parser: TTBParser):
     _expect = ['Empty Stock', 'Towards Kamakura', 'Towards Fujisawa']
-    assert list(ttb_parser.get_comments().values()) == _expect
+    assert list(ttb_parser.comments.values()) == _expect
 
 
 @pytest.mark.ttbparser

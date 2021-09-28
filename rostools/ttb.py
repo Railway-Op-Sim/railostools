@@ -124,11 +124,17 @@ class TTBParser:
 
         return _service_id, _service_dict
 
-    def get_start_time(self):
+    @property
+    def start_time(self):
         return self._ttb_data[self._current_file]['start_time']
 
-    def get_comments(self):
+    @property
+    def comments(self):
         return self._ttb_data[self._current_file]['comments']
+
+    @property
+    def data(self):
+        return self._ttb_data
 
     def parse(self, ttb_file: str) -> None:
         self._logger.info(f"Parsing TTB file '{ttb_file}'")

@@ -1,24 +1,30 @@
 import asyncio
+import inspect
 import os
 import re
 import logging
 import glob
 import sys
-import random
 
-from typing import List
+import rostools.exceptions as rexc
+
+from typing import List, Callable, Tuple, Dict
+
 
 class Monitor:
     _logger = logging.getLogger('ROSTools.PerformanceMonitor')
+
     def __init__(self, ros_log_dir: str, time_out: int = 120) -> None:
         if not os.path.exists(ros_log_dir):
             raise FileNotFoundError(
                 f"Cannot monitor performance output, "
                 f"directory '{ros_log_dir}' does not exist"
             )
-        self._log_dir = ros_log_dir
-        self._time_out = time_out
-        self._data = {}
+        self._log_dir = ros_log_dir                          # ROS Performance Log directory
+        self._async_funcs: List[Tuple[Callable, Dict]] = []  # Methods with args to run in sync with monitor
+        self._time_out = time_out                            # Time limit for listening
+        self._data = {}                                      # Parsed log data
+        self._is_running = False                             # Status of monitor
 
     async def _process_lines(self, file_lines: List[str]) -> None:
         _data_dict = {}
@@ -28,8 +34,11 @@ class Monitor:
         )
         _service_lines = [l for l in file_lines if _is_ttb_perf.findall(l)]
 
+        # If the last service line is incomplete remove it
+        if '\n' not in _service_lines[-1]:
+            _service_lines = _service_lines[:-1]
+
         for line in _service_lines:
-            print(line)
             _time = re.findall(r'(\d{2}\:\d{2}\:\d{2})', line)[0]
             try:
                 _head_code = re.findall(r'\d{2}\:\d{2}\:\d{2}\:\s([A-Z0-9]+)\s', line)[0]
@@ -40,34 +49,99 @@ class Monitor:
                 self._data[_head_code] = []
             self._data[_head_code].append((_time, _msg))
 
-    async def _read_latest_log(self) -> None:
-        _log = None
-        _n_lines = 0
-        _timer = 0
+    @property
+    def running(self) -> bool:
+        """Returns true if the monitor is currently running"""
+        return self._is_running
+
+    async def _examine_log_dir(self) -> None:
+        self._is_running = True
+
+        # Get the latest modification time for the log directory
+        _dir_mod_time: float = os.path.getmtime(self._log_dir)
+
+        # Used to count time duration
+        _timer: int = 0
+
+        # Used to store log file to be processed
+        _log: str = None
+
+        # Used to store number of log files in directory
+        _n_logs: int = 0
+
+        # Store modification time of latest log
+        _mod_time: int = 0
+
         try:
             while _timer < self._time_out:
-                _logs = glob.glob(os.path.join(self._log_dir, 'Log*.txt'))
-                _logs = sorted(_logs, key=os.path.getmtime)
-                if not _logs:
-                    raise FileNotFoundError(f"No log files found in '{self._log_dir}'")
-                elif _logs[-1] != _log:
-                    self._logger.info(f"Reading performance from '{_logs[-1]}'")
-                    self._data = {}
-                    _log = _logs[-1]
-                _lines = open(_log).readlines()
-                if len(_lines) > _n_lines:
-                    _timer = 0
-                _n_lines = len(_lines)
+                # If the log directory has not been modified this means that
+                # no changes have been made to any logs
+                if os.path.getmtime(self._log_dir) == _dir_mod_time:
+                    await asyncio.sleep(5)
+                    _timer += 5
+                    continue
+
+                _log_files = glob.glob(os.path.join(self._log_dir, 'Log*.txt'))
+
+                # If there are no log files in the given directory
+                # then continue timer. Print warning every minute.
+                if not _log_files:
+                    if _timer % 60 == 0:
+                        self._logger.warning(
+                            "No log files currently found in directory '%s'",
+                            self._log_dirl
+                        )
+                    await asyncio.sleep(5)
+                    _timer += 5
+                    continue
+
+                # Check if a new log file has been created since monitor start
+                if len(_log_files) > _n_logs:
+                    _time_sorted_logs = sorted(_log_files, key=os.path.getmtime)
+                    self._logger.info(
+                        "New log file found, switching to '%s'",
+                        _time_sorted_logs[-1]
+                    )
+                    _mod_time = 0
+
+                _candidate_mod_time = os.path.getmtime(_time_sorted_logs[-1])
+
+                # Check if the modification time has changed, if not the file has
+                # no new lines so skip.
+                if _candidate_mod_time == _mod_time:
+                    await asyncio.sleep(5)
+                    _timer += 5
+                    continue
+
+                # Clear the data ready to be re-read then process file
+                self._data = {}
+                _log = _time_sorted_logs[-1]
+
+                with open(_log) as log_f:
+                    _lines = log_f.readlines()
+
                 await self._process_lines(_lines)
                 await asyncio.sleep(5)
                 _timer += 5
         except KeyboardInterrupt:
-            self._logger.info("Closing session")
-            sys.exit(0)
+            self._is_running = False
+            self._logger.info("Aborting session")
+        self._is_running = False
+
+    @property
+    def data(self) -> Dict:
+        return self._data
+
+    def exec_in_parallel(self, function: Callable, args: Dict = {}) -> None:
+        if 'monitor' not in inspect.signature(function).parameters:
+            raise rexc.InvalidListenerError(function)
+        self._async_funcs.append((function, args))
 
     async def _async_main(self) -> None:
-        await asyncio.gather(self._read_latest_log())
+        await asyncio.gather(
+            self._examine_log_dir(),
+            *[i[0](**i[1], monitor=self) for i in self._async_funcs]
+        )
 
     def run(self) -> None:
         asyncio.run(self._async_main())
-
