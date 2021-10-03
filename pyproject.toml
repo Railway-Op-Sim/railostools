@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rostools"
-version = "0.2.0"
+version = "0.2.1"
 description = "Toolkit for Railway Operation Simulator"
 authors = [" Kristian Zarębski <krizar312@gmail.com>"]
 license = "GPL-v3"
