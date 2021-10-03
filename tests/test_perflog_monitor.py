@@ -16,7 +16,7 @@ TEST_LOG_DIR = os.path.join(
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-async def add_file(temporary_dir: str, **kwargs):
+async def add_file(temporary_dir: str, monitor):
     await asyncio.sleep(1)
     shutil.copy(
         os.path.join(

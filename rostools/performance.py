@@ -25,13 +25,17 @@ class Monitor:
         self._data = {}                                      # Parsed log data
         self._is_running = False                             # Status of monitor
         self._wait_interval: int = 5                         # Wait period
+        self._latest = ''                                    # Raw data of latest full log line
 
     async def _process_lines(self, file_lines: List[str]) -> None:
         _is_ttb_perf = re.compile(
             r'\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]',
             re.IGNORECASE
         )
-        _service_lines = [line for line in file_lines if _is_ttb_perf.findall(l)]
+        _service_lines = [line for line in file_lines if _is_ttb_perf.findall(line)]
+
+        if not _service_lines:
+            return
 
         # If the last service line is incomplete remove it
         if '\n' not in _service_lines[-1]:
@@ -47,6 +51,7 @@ class Monitor:
             if _head_code not in self._data:
                 self._data[_head_code] = []
             self._data[_head_code].append((_time, _msg))
+        self._latest = _service_lines[-1]
 
     @property
     def running(self) -> bool:
@@ -121,11 +126,16 @@ class Monitor:
 
                 await self._process_lines(_lines)
                 await asyncio.sleep(self._wait_interval)
+                print(self._data)
                 _timer += 5
         except KeyboardInterrupt:
             self._is_running = False
             self._logger.info("Aborting session")
         self._is_running = False
+
+    @property
+    def latest(self) -> str:
+        return self._latest
 
     @property
     def data(self) -> Dict:

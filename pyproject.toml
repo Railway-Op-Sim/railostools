@@ -10,6 +10,9 @@ python = "^3.9"
 jsbeautifier = "^1.14.0"
 click = "^8.0.1"
 aiofiles = "^0.7.0"
+discordsdk = "^0.2.5"
+toml = "^0.10.2"
+pycountry = "^20.7.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
