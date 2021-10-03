@@ -130,3 +130,6 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# Discord ID file
+rostools/discord_app_id.txt
