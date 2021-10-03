@@ -13,7 +13,7 @@ class TTBParser:
     def __init__(self) -> None:
         self._logger.debug('Creating new TTBParser')
         self._ttb_data = {}
-        self._start_time: datetime.datetime = datetime.datetime()
+        self._start_time: datetime.datetime = None
         self._current_file = ''
 
     def _get_ttb_components(self, timetable_file_data: str) -> Dict[str, Any]:
