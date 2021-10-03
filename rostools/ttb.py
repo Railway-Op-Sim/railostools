@@ -102,12 +102,18 @@ class TTBParser:
         else:
             _end_components = _service_definitions[-1].split(';')
 
-            _service_dict['end'] = {
-                'time': _end_components[0],
-                'type': _end_components[1],
-                'form_service': None,
-                'shuttle_partner': None
-            }
+            if len(_end_components) == 1:
+                _service_dict['end'] = {
+                    'type': _end_components[0],
+                    'time': None
+                }
+            else:
+                _service_dict['end'] = {
+                    'time': _end_components[0],
+                    'type': _end_components[1]
+                }
+
+            _service_dict['end'].update({'form_service': None, 'shuttle_partner': None})
 
             if _service_dict['end']['type'] in ['Frh-sh', 'Fns-sh', 'F-nshs']:
                 _service_dict['end']['shuttle_partner'] = _end_components[2]
@@ -117,7 +123,6 @@ class TTBParser:
             elif _service_dict['end']['type'] == 'Fns':
                 _service_dict['end']['form_service'] = _end_components[2]
 
-        _service_definitions = _service_definitions[2:-1]
         _service_dict['schedule'] = tuple(i.split(';') for i in _service_definitions[2:-1])
 
         return _service_id, _service_dict
