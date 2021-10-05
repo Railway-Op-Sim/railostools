@@ -138,7 +138,7 @@ class DiscordBroadcaster:
             self._activity.timestamps.start = datetime.datetime.timestamp(datetime.datetime.now())
         else:
             if _top_mode == Level1Mode.TrackMode:
-                _activity = 'Editting'
+                _activity = 'Editing'
             else:
                 _activity = ''
                 _new_status = ''
