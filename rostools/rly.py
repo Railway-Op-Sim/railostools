@@ -1,6 +1,8 @@
 import datetime
 import logging
 import os.path
+import jsbeautifier
+import json
 
 from typing import Any, Dict, List
 
@@ -43,6 +45,12 @@ class RlyParser:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data[self._current_file]['program_version']
+
+    @property
+    def data(self):
+        if not self._current_file:
+            raise RailwayParsingError("No file has been parsed yet")
+        return self._rly_data
 
     def _parse_map(self, component_data: List[str]):
         _map_dict = {'active_elements': [], 'inactive_elements': []}
@@ -92,7 +100,7 @@ class RlyParser:
                 'location_name': component_data[i + 1][0] if component_data[i + 1][0] else None,
             })
 
-        return {'elements': _map_dict, 'n_inactive_elements': _n_inactive}
+        return {'n_inactive_elements': int(_n_inactive), 'elements': _map_dict}
 
     def _get_rly_components(self, railway_file_data: str) -> Dict[str, Any]:
         self._logger.debug('Retrieving components from extracted railway file data')
@@ -105,8 +113,22 @@ class RlyParser:
         _data_dict = {
             'program_version': _program_version,
             'home_position': _home_position,
-            'n_active_elements': _n_elements,
+            'n_active_elements': int(_n_elements),
             'user_graphics': _rly_components[1][4][-1] == '1'
         }
         _data_dict.update(self._parse_map(_rly_components[2:]))
         return _data_dict
+
+    def json(self, output_file) -> None:
+        """Dump metadata to a JSON file"""
+        _beautifier_opts = jsbeautifier.default_options()
+        _beautifier_opts.indent_size = 2
+
+        if isinstance(output_file, str):
+            with open(output_file, 'w') as out_f:
+                out_f.write(jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts))
+        else:
+            _out_str = jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts)
+            output_file.write(_out_str)
+
+        self._logger.info(f"SUCCESS: Output written to '{output_file}")

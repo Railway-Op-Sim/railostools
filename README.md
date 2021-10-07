@@ -40,6 +40,22 @@ Options:
   --help         Show this message and exit.
 ```
 
+### Parsing `.rly` Files
+
+The command `rly2json` converts a `.rly` file to a JSON file containing the metadata for route elements.
+This allows for easier data interpretation within other projects.
+
+```sh
+$ rostools rly2json --help
+Usage: rostools rly2json [OPTIONS] RLY_FILE
+
+  Extract ROS railway file to json
+
+Options:
+  --output TEXT  JSON output file
+  --help         Show this message and exit.
+```
+
 ## API
 
 Features within `rostools` can also be accessed via the dedicated Python API.
@@ -64,6 +80,27 @@ print(my_parser.data)
 
 # Save data as JSON file
 my_parser.json('Enoshima_Week_2021.json')
+```
+
+### The `RlyParser` Class
+
+```python3
+from rostools.rly import RlyParser
+
+# Create a parser instance for parsing files
+my_parser = RlyParser()
+
+# Parse a timetable file
+my_parser.parse('Antwerpen_Centraal.rly')
+
+# Can access various information
+print(f'Number of elements are {my_parser.n_active_elements+my_parser.n_inactive_elements}')
+
+# Print out all data
+print(my_parser.data)
+
+# Save data as JSON file
+my_parser.json('Antwerpen_Centraal.json')
 ```
 
 ### Performance Log Monitoring

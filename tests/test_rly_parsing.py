@@ -28,3 +28,11 @@ def test_parse_time(rly_parser: RlyParser):
 @pytest.mark.rlyparser
 def test_parse_time(rly_parser: RlyParser):
     assert rly_parser.n_inactive_elements == 200
+
+
+@pytest.mark.ttbparser
+def test_write(rly_parser: RlyParser):
+    with tempfile.NamedTemporaryFile(suffix='.json', mode='w', delete=False) as out_f:
+        rly_parser.json(out_f)
+        assert json.load(open(out_f.name))
+

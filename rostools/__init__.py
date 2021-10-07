@@ -3,6 +3,7 @@ import os
 import logging
 import toml
 from rostools.ttb import TTBParser
+from rostools.rly import RlyParser
 
 from rostools.metadata import Route
 
@@ -14,7 +15,7 @@ logging.basicConfig()
 def rostools(debug: bool = False) -> None:
     """Python based utilities for Railway Operation Simulator"""
     logging.getLogger('ROSTools').setLevel(logging.DEBUG if debug else logging.INFO)
-\
+
 
 @rostools.command()
 @click.argument('ttb_file')
@@ -54,3 +55,21 @@ def validate(input_file: str):
         raise TypeError(
             f"Validation of files of type '{os.path.splitext(input_file)[1]}' is not supported"
         )
+
+
+@rostools.command()
+@click.argument('rly_file')
+@click.option('--output', help='JSON output file', default=None)
+def rly2json(rly_file: str, output: str):
+    """Extract ROS railway file to json"""
+    if not os.path.exists(rly_file):
+        raise FileNotFoundError(
+            f"Cannot extract rly file to json, file '{rly_file}' does not exist"
+        )
+
+    if not output:
+        output = f'{os.path.splitext(rly_file)[0]}.json'
+
+    _parser = RlyParser()
+    _parser.parse(rly_file)
+    _parser.json(output)
