@@ -16,3 +16,8 @@ def async listener_function(monitor: rostools.performance.Monitor, arg1, arg2, .
 where 'monitor' is a mandatory argument label.
 """
         super().__init__(_msg)
+
+
+class RailwayParsingError(Exception):
+    def __init__(self, msg: str) -> None:
+        super().__init__(msg)

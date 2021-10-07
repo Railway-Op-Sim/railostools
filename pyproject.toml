@@ -13,6 +13,7 @@ aiofiles = "^0.7.0"
 discordsdk = "^0.2.5"
 toml = "^0.10.2"
 pycountry = "^20.7.3"
+pydantic = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

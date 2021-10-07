@@ -3,7 +3,6 @@ import os.path
 import asyncio
 import logging
 import datetime
-import typing
 
 import toml
 import pycountry
@@ -97,7 +96,8 @@ class DiscordBroadcaster:
         if not os.path.splitext(os.path.basename(route))[0] in _meta_list:
             return {}
 
-        _data = toml.load(os.path.join(self._ros_loc, 'Metadata', f'{ os.path.splitext(os.path.basename(route))[0]}.toml'))
+        _data = toml.load(
+            os.path.join(self._ros_loc, 'Metadata', f'{os.path.splitext(os.path.basename(route))[0]}.toml'))
 
         if not ('rly_file' in _data and os.path.splitext(_data['rly_file'])[0] == os.path.basename(route)):
             return {}
@@ -158,7 +158,6 @@ class DiscordBroadcaster:
                 _new_status = f"{_activity} {_current_rly}"
             except configparser.NoOptionError:
                 self._logger.error(f"Failed to find key 'railway' in INI file")
-
 
         if self._activity.details != _new_status and _new_status:
             self._activity.details = _new_status
