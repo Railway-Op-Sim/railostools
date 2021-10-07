@@ -168,14 +168,12 @@ class TTBParser:
                 _dict['location'] = _components[1]
                 _dict['event'] = 'terminates'
             else:
-                _service_dict['finish'] = {
+                _service_dict['end'] = {
                     'time': _components[0],
                     'type': self._exit_dict[_components[1]]
                 }
                 continue
             _service_dict['schedule'].append(_dict)
-
-
 
         return _service_id, _service_dict
 
@@ -200,14 +198,15 @@ class TTBParser:
             )
 
         self._current_file = ttb_file
-        self._ttb_data[ttb_file] = self._get_ttb_components(open(ttb_file).read())
+        _key = os.path.splitext(os.path.basename(ttb_file))[0]
+        self._ttb_data[_key] = self._get_ttb_components(open(ttb_file).read())
 
         self._logger.debug("Filling in remaining service properties from existing entries")
-        for service, value in self._ttb_data[ttb_file]['services'].items():
+        for service, value in self._ttb_data[_key]['services'].items():
             if not value['properties'] and value['start']['from_service']:
-                _properties = self._ttb_data[ttb_file]['services'][value['start']['from_service']]['properties']
+                _properties = self._ttb_data[_key]['services'][value['start']['from_service']]['properties']
                 if _properties:
-                    self._ttb_data[ttb_file]['services'][service]['properties'] = _properties
+                    self._ttb_data[_key]['services'][service]['properties'] = _properties
 
     def json(self, output_file) -> None:
         """Dump metadata to a JSON file"""

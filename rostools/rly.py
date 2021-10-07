@@ -25,7 +25,8 @@ class RlyParser:
                 f"Cannot parse railway file '{rly_file}', "
                 "file does not exist."
             )
-        self._rly_data[rly_file] = self._get_rly_components(open(rly_file).read())
+        _key = os.path.splitext(os.path.basename(rly_file))[0]
+        self._rly_data[_key] = self._get_rly_components(open(rly_file).read())
         self._current_file = rly_file
 
     @property
