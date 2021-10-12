@@ -96,10 +96,16 @@ def avg_service_density(services: List[Dict], bin_size: int = 5 * 60) -> float:
     return 60 * len(_intervals) / _interv_sum
 
 
-def junction_element_fraction(active_element_element_ids: List[Tuple[int]]):
+def junction_element_fraction(active_element_element_ids: List[Tuple[int]]) -> float:
     _junction_speedtags = list(range(1, 17)) + list(range(28, 48)) + list(range(132, 140))
     _junction_tags = [i for i in active_element_element_ids if i in _junction_speedtags]
     return len(_junction_tags) / len(active_element_element_ids)
+
+
+def level_crossing_element_fraction(active_element_element_ids: List[Tuple[int]],
+                                    inactive_element_element_ids: List[Tuple[int]]) -> float:
+    _lc_tags = [i for i in inactive_element_element_ids if i == 144]
+    return len(_lc_tags) / len(active_element_element_ids)
 
 
 def map_start_fraction(services: List[Dict], coord_type_map_data: Dict) -> float:
@@ -140,17 +146,22 @@ def difficulty_components(timetable_file: str, railway_file: str) -> typing.Dict
 
     _rly_active_element_coords = [
         i['position'] for i in
-        _rly_parser.data[_rly_key]['elements']['active_elements']
+        _rly_parser.data[_rly_key]['active_elements']
     ]
 
     _speed_button_tags = [
         i['element_id'] for i in
-        _rly_parser.data[_rly_key]['elements']['active_elements']
+        _rly_parser.data[_rly_key]['active_elements']
+    ]
+
+    _speed_button_tags_in = [
+        i['element_id'] for i in
+        _rly_parser.data[_rly_key]['inactive_elements']
     ]
 
     avg_density_component = avg_point_density(_rly_active_element_coords)
 
-    _coord_type_map_data = _get_coord_type_data(_rly_parser.data[_rly_key]['elements']['active_elements'])
+    _coord_type_map_data = _get_coord_type_data(_rly_parser.data[_rly_key]['active_elements'])
 
     service_rate_component = avg_service_density(list(_ttb_parser.data[_ttb_key]['services'].values()))
 
@@ -160,12 +171,15 @@ def difficulty_components(timetable_file: str, railway_file: str) -> typing.Dict
 
     fm_frac = map_end_fraction(list(_ttb_parser.data[_ttb_key]['services'].values()), _coord_type_map_data)
 
+    lc_frac = level_crossing_element_fraction(_speed_button_tags, _speed_button_tags_in)
+
     return {
         'service_rate': service_rate_component,
         'average_density': avg_density_component,
         'junctions': j_frac,
         'start_on_map_fraction': sm_frac,
         'finish_on_map_fraction': fm_frac,
-        'difficulty': int(avg_density_component*(1+j_frac) + (service_rate_component+0.01)*(1+sm_frac+fm_frac)*3.8+1)
+        'level_crossing_fraction': lc_frac,
+        'difficulty': int(avg_density_component*(1+j_frac+lc_frac) + (service_rate_component+0.01)*(1+sm_frac+fm_frac)*3.8+1)
     }
 

@@ -79,5 +79,14 @@ def rly2json(rly_file: str, output: str):
 @rostools.command(name='difficulty')
 @click.argument('rly_file')
 @click.argument('ttb_file')
-def get_difficulty(rly_file: click.Path(exists=True, readable=True, resolve_path=True), ttb_file: click.Path(exists=True, readable=True, resolve_path=True)):
-    print(f'Calculated Difficulty: {difficulty_components(ttb_file, rly_file)["difficulty"]}')
+@click.option('--verbose/--normal', help='Show components of difficulty', default=False)
+def get_difficulty(
+        rly_file: click.Path(exists=True, readable=True, resolve_path=True),
+        ttb_file: click.Path(exists=True, readable=True, resolve_path=True),
+        verbose: bool
+):
+    _components = difficulty_components(ttb_file, rly_file)
+    if verbose:
+        print(_components)
+    else:
+        print(f'Calculated Difficulty: {_components["difficulty"]}')

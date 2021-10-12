@@ -26,7 +26,7 @@ class RlyParser:
                 "file does not exist."
             )
         _key = os.path.splitext(os.path.basename(rly_file))[0]
-        self._rly_data[_key] = self._get_rly_components(open(rly_file).read())
+        self._rly_data[_key] = self._get_rly_components(open(rly_file).readlines())
         self._current_file = rly_file
 
     @property
@@ -53,75 +53,101 @@ class RlyParser:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data
 
-    def _parse_map(self, component_data: List[str]):
-        _map_dict = {'active_elements': [], 'inactive_elements': []}
+    def _parse_active_element(self, active_elem: List[str]) -> Dict:
+        active_elem = [i.strip() for i in active_elem]
+        return {
+            'element_id': int(active_elem[1]),
+            'position': (int(active_elem[2]), int(active_elem[3])),
+            'length': (
+                int(active_elem[4]),
+                int(active_elem[5])
+                if active_elem[5] != '-1' else None
+            ),
+            'speed_limit': (
+                int(active_elem[6]),
+                int(active_elem[7])
+                if active_elem[7] != '-1' else None
+            ),
+            'location_name': active_elem[8] or None,
+            'active_element_name': active_elem[9] or None,
+        }
 
-        _n_inactive = 0
-        _end = 0
+    def _parse_text(self, text_elem: List[str]) -> Dict:
+        text_elem = [i.strip() for i in text_elem]
+        return {
+            'n_items': int(text_elem[0]),
+            'position': (int(text_elem[2]), int(text_elem[3])),
+            'text_string': text_elem[4],
+            'font': {
+                'name': text_elem[5],
+                'size': int(text_elem[6]),
+                'color': int(text_elem[7]),
+                'charset': int(text_elem[8]),
+                'style': int(text_elem[9])
+            }
+        }
 
-        for i in range(0, len(component_data), 3):
-            if 'Inactive elements' in component_data[i][2]:
-                _n_inactive = int(component_data[i][1])
-                _end = i
-                break
-            _element_id = int(component_data[i][2])
+    def _parse_inactive_element(self, inactive_elem: List[str]) -> Dict:
+        inactive_elem = [i.strip() for i in inactive_elem]
+        return {
+            'element_id': int(inactive_elem[1]),
+            'position': (int(inactive_elem[2]), int(inactive_elem[3])),
+            'location_name': inactive_elem[4] or None,
+        }
 
-            _position = (int(component_data[i][3]), int(component_data[i][4]))
-
-            _length = (
-                int(component_data[i][5]),
-                int(component_data[i][6])
-                if component_data[i][6] != '-1' else None
-            )
-
-            _speed_limits = (
-                int(component_data[i][7]),
-                int(component_data[i][8])
-                if component_data[i][8] != '-1' else None
-            )
-
-            _map_dict['active_elements'].append(
-                {
-                    'element_id': _element_id,
-                    'position': _position,
-                    'length': _length,
-                    'speed_limit': _speed_limits,
-                    'location_name': component_data[i + 1][1] or None,
-                    'active_element_name': component_data[i + 2][0] or None,
-                }
-            )
-
-        for i in range(_end + 1, len(component_data), 3):
-            if '****' in component_data[i][1]:
-                break
-            _element_id = int(component_data[i][1])
-            _position = (int(component_data[i][2]), int(component_data[i][3]))
-
-            _map_dict['inactive_elements'].append(
-                {
-                    'element_id': _element_id,
-                    'position': _position,
-                    'location_name': component_data[i + 1][0] or None,
-                }
-            )
-
-        return {'n_inactive_elements': int(_n_inactive), 'elements': _map_dict}
+    def _parse_metadata(self, metadata: List[str]) -> Dict:
+        metadata = [i.strip() for i in metadata]
+        return {
+            'program_version': metadata[0],
+            'home_position': (int(metadata[1]), int(metadata[2])),
+            'n_active_elements': int(metadata[3])
+        }
 
     def _get_rly_components(self, railway_file_data: str) -> Dict[str, Any]:
         self._logger.debug('Retrieving components from extracted railway file data')
-        _rly_components: List[str] = railway_file_data.split('\0')
-        _rly_components = [i.split('\n') for i in _rly_components]
-
-        _program_version = _rly_components[0][0]
-        _home_position = (int(_rly_components[1][1]), int(_rly_components[1][2]))
-        _n_elements = _rly_components[1][3]
-        _data_dict = {
-            'program_version': _program_version,
-            'home_position': _home_position,
-            'n_active_elements': int(_n_elements),
-            'user_graphics': _rly_components[1][4][-1] == '1'
+        _functions = {
+            'metadata': lambda x: self._parse_metadata(x),
+            'inactive_elements': lambda x: self._parse_inactive_element(x),
+            'active_elements': lambda x: self._parse_active_element(x),
+            'text': lambda x: self._parse_text(x)
         }
-        _data_dict.update(self._parse_map(_rly_components[2:]))
+        _data_dict = {}
+        _key = 'metadata'
+        _part = []
+        _counter = 0
+        for i, line in enumerate(railway_file_data):
+            _counter += 1
+            if '**Active elements**' in line:
+                _data_dict[_key] = _functions[_key](_part)
+                _key = 'active_elements'
+                _data_dict[_key] = []
+                _part = []
+                continue
+            elif '**Inactive elements**' in line:
+                _data_dict['metadata']['n_inactive_elements'] = int(railway_file_data[i-1])
+                _key = 'inactive_elements'
+                _part = []
+                _data_dict[_key] = []
+                continue
+            elif '***' in line:
+                try:
+                    _data_dict[_key].append(_functions[_key](_part))
+                except ValueError as e:
+                    if _key != 'inactive_elements':
+                        raise e
+                    _key = 'text'
+                    _part = []
+                    _data_dict[_key] = []
+                    continue
+                _part = []
+                continue
+            _part.append(line.strip().replace('\0', ''))
+
+        if _counter != len(railway_file_data):
+            raise RailwayParsingError(
+                f"Expected {len(railway_file_data)} statements from rly file but only {_counter} were recovered."
+            )
+
         return _data_dict
 
     def json(self, output_file) -> None:
