@@ -33,19 +33,19 @@ class RlyParser:
     def n_active_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[self._current_file]['n_active_elements']
+        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['n_active_elements']
 
     @property
     def n_inactive_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[self._current_file]['n_inactive_elements']
+        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['n_inactive_elements']
 
     @property
     def program_version(self) -> str:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[self._current_file]['program_version']
+        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['program_version']
 
     @property
     def data(self):
@@ -64,42 +64,46 @@ class RlyParser:
                 _n_inactive = int(component_data[i][1])
                 _end = i
                 break
-            _speed_tag = int(component_data[i][1])
+            _element_id = int(component_data[i][2])
 
-            _position = (int(component_data[i][2]), int(component_data[i][3]))
+            _position = (int(component_data[i][3]), int(component_data[i][4]))
 
             _length = (
-                int(component_data[i][4]),
-                int(component_data[i][5])
-                if component_data[i][5] != '-1' else None
+                int(component_data[i][5]),
+                int(component_data[i][6])
+                if component_data[i][6] != '-1' else None
             )
 
             _speed_limits = (
-                int(component_data[i][6]),
-                int(component_data[i][7])
-                if component_data[i][7] != '-1' else None
+                int(component_data[i][7]),
+                int(component_data[i][8])
+                if component_data[i][8] != '-1' else None
             )
 
-            _map_dict['active_elements'].append({
-                'speed_tag': _speed_tag,
-                'position': _position,
-                'length': _length,
-                'speed_limit': _speed_limits,
-                'location_name': component_data[i+1][1] if component_data[i+1][1] else None,
-                'active_element_name': component_data[i+2][0] if component_data[i+2][0] else None
-            })
+            _map_dict['active_elements'].append(
+                {
+                    'element_id': _element_id,
+                    'position': _position,
+                    'length': _length,
+                    'speed_limit': _speed_limits,
+                    'location_name': component_data[i + 1][1] or None,
+                    'active_element_name': component_data[i + 2][0] or None,
+                }
+            )
 
         for i in range(_end + 1, len(component_data), 3):
             if '****' in component_data[i][1]:
                 break
-            _speed_tag = int(component_data[i][1])
+            _element_id = int(component_data[i][1])
             _position = (int(component_data[i][2]), int(component_data[i][3]))
 
-            _map_dict['inactive_elements'].append({
-                'speed_tag': _speed_tag,
-                'position': _position,
-                'location_name': component_data[i + 1][0] if component_data[i + 1][0] else None,
-            })
+            _map_dict['inactive_elements'].append(
+                {
+                    'element_id': _element_id,
+                    'position': _position,
+                    'location_name': component_data[i + 1][0] or None,
+                }
+            )
 
         return {'n_inactive_elements': int(_n_inactive), 'elements': _map_dict}
 

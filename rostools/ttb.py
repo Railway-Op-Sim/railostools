@@ -60,7 +60,7 @@ class TTBParser:
         self._logger.debug('Parsing service.')
         _service_definitions = service.split(',')
 
-        _service_dict = {'properties': {}}
+        _service_dict = {'properties': {}, 'repeats': None}
 
         if len(_service_definitions[0].split(';')) > 2:
             (
@@ -108,9 +108,9 @@ class TTBParser:
             _, _interval, _digits, _number = _service_definitions[-1].split(';')
 
             _service_dict['repeats'] = {
-                'interval': _interval,
-                'digits': _digits,
-                'n_repeats': _number
+                'interval': int(_interval),
+                'digits': int(_digits),
+                'n_repeats': int(_number)
             }
 
         else:
@@ -179,11 +179,11 @@ class TTBParser:
 
     @property
     def start_time(self):
-        return self._ttb_data[self._current_file]['start_time']
+        return self._ttb_data[os.path.splitext(os.path.basename(self._current_file))[0]]['start_time']
 
     @property
     def comments(self):
-        return self._ttb_data[self._current_file]['comments']
+        return self._ttb_data[os.path.splitext(os.path.basename(self._current_file))[0]]['comments']
 
     @property
     def data(self):

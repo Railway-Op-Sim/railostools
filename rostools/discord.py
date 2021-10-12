@@ -14,10 +14,10 @@ from rostools.common import Level1Mode, Level2OperMode
 
 
 def alpha2_country_codes():
-    _country_codes = {}
-    for country in pycountry.countries:
-        _country_codes[country.alpha_2] = country.name.lower().replace(' ', '-')
-    return _country_codes
+    return {
+        country.alpha_2: country.name.lower().replace(' ', '-')
+        for country in pycountry.countries
+    }
 
 
 class DiscordBroadcaster:
@@ -93,13 +93,15 @@ class DiscordBroadcaster:
             for i in glob.glob(os.path.join(self._ros_loc, 'Metadata', '*.toml'))
         ]
 
-        if not os.path.splitext(os.path.basename(route))[0] in _meta_list:
+        if os.path.splitext(os.path.basename(route))[0] not in _meta_list:
             return {}
 
         _data = toml.load(
             os.path.join(self._ros_loc, 'Metadata', f'{os.path.splitext(os.path.basename(route))[0]}.toml'))
 
-        if not ('rly_file' in _data and os.path.splitext(_data['rly_file'])[0] == os.path.basename(route)):
+        if 'rly_file' not in _data or os.path.splitext(_data['rly_file'])[
+            0
+        ] != os.path.basename(route):
             return {}
 
         return _data
@@ -157,7 +159,7 @@ class DiscordBroadcaster:
                         self._logger.debug("No country found for simulation, no sub-icon will be used")
                 _new_status = f"{_activity} {_current_rly}"
             except configparser.NoOptionError:
-                self._logger.error(f"Failed to find key 'railway' in INI file")
+                self._logger.error("Failed to find key 'railway' in INI file")
 
         if self._activity.details != _new_status and _new_status:
             self._activity.details = _new_status
