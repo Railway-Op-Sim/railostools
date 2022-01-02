@@ -191,7 +191,7 @@ namespace ROSTools {
         {"RO", "Romania"},
         {"RU", "Russian Federation"},
         {"RW", "Rwanda"},
-        {"BL", "Saint BarthÃ©lemy"},
+        {"BL", "Saint Bartholemy"},
         {"SH", "Saint Helena, Ascension and Tristan da Cunha"},
         {"KN", "Saint Kitts and Nevis"},
         {"LC", "Saint Lucia"},

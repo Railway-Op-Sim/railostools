@@ -1,4 +1,4 @@
-#include "metadata.hxx"
+#include "rostools/metadata.hxx"
 
 std::string ROSTools::Metadata::retrieve_string_(const std::string& key) const {
     return meta_data_[key].value<std::string>().value_or("");
