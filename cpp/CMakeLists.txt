@@ -5,7 +5,7 @@ set( CMAKE_CXX_STANDARD_REQUIRED True )
 option( BUILD_TESTS "Build Unit Tests" OFF )
 option( CODE_COVERAGE "Enable Coverage" OFF )
 
-project( rostools VERSION 0.3.0 LANGUAGES CXX )
+project( rostools VERSION 0.4.0 LANGUAGES CXX )
 
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
