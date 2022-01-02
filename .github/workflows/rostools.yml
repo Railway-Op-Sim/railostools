@@ -44,5 +44,7 @@ jobs:
         run: |
           cmake -Bbuild -DBUILD_TESTS=ON
           cmake --build build
+        working-directory: cpp
       - name: Run Unit Tests
         run: ./build/Testrostools
+        working-directory: cpp
