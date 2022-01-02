@@ -46,5 +46,5 @@ jobs:
           cmake --build build
         working-directory: cpp
       - name: Run Unit Tests
-        run: ./build/Testrostools
+        run: ./build/tests/Testrostools
         working-directory: cpp

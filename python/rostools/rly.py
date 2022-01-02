@@ -33,13 +33,13 @@ class RlyParser:
     def n_active_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['n_active_elements']
+        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['metadata']['n_active_elements']
 
     @property
     def n_inactive_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['n_inactive_elements']
+        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['metadata']['n_inactive_elements']
 
     @property
     def program_version(self) -> str:
