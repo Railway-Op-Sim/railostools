@@ -1,0 +1,14 @@
+name = "Simulation of Antwerp south"
+description = "Simulation covering the lines from Antwerpen Centraal to St. Katelijne-Waver/Lier"
+display_name = "Antwerpen Centraal"
+country_code = "BE"
+rly_file = "Antwerpen_Centraal.rly"
+ttb_files = ["Antwerpen_Centraal_2021.ttb"]
+ssn_files = ["Antwerpen_Centraal_2021.ssn"]
+doc_files = ["README.md"]
+year = 2021
+factual = true
+difficulty = 3
+author = "Krizar"
+version = "1.0.0"
+contributors = ["Albert Ball"]
