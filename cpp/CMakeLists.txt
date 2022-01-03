@@ -20,12 +20,10 @@ target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include 
 
 # ------------------------- Installation on System --------------------------------- #
 
-set( ROSTOOLS_LIBRARY_DEST ${CMAKE_INSTALL_LIBDIR}/rostools )
-
 install(
     TARGETS ${PROJECT_NAME}
     LIBRARY
-        DESTINATION ${ROSTOOLS_LIBRARY_DEST}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
 )
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/rostools
@@ -42,7 +40,7 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
-install( FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake DESTINATION ${ROSTOOLS_LIBRARY_DEST} )
+install( FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake DESTINATION lib/rostools )
 
 install( TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
 
@@ -57,9 +55,9 @@ write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-co
   COMPATIBILITY AnyNewerVersion
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake DESTINATION ${ROSTOOLS_LIBRARY_DEST} )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake DESTINATION lib/rostools )
 
-install( EXPORT ${PROJECT_NAME} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
+install( EXPORT ${PROJECT_NAME} DESTINATION "lib/rostools" )
 
 # ---------------------------------- Test Setup ------------------------------------ #
 
