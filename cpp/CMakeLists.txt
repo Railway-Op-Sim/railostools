@@ -15,13 +15,17 @@ file( GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cxx )
 set( EXTERNAL_SOURCES ${CMAKE_SOURCE_DIR}/external )
 
 add_library( ${PROJECT_NAME} ${SRC_FILES} )
-target_include_directories( ${PROJECT_NAME} PUBLIC ${EXTERNAL_SOURCES} )
+target_include_directories( ${PROJECT_NAME} PRIVATE ${EXTERNAL_SOURCES} )
 target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include )
+
+# ------------------------- Installation on System --------------------------------- #
+
+set( ROSTOOLS_LIBRARY_DEST ${CMAKE_INSTALL_LIBDIR}/rostools )
 
 install(
     TARGETS ${PROJECT_NAME}
     LIBRARY
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
+        DESTINATION ${ROSTOOLS_LIBRARY_DEST}
 )
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/rostools
@@ -38,6 +42,26 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
+install( FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake DESTINATION ${ROSTOOLS_LIBRARY_DEST} )
+
+install( TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
+
+target_include_directories( ${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${EXTERNAL_SOURCES}>
+    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:include>
+)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+  COMPATIBILITY AnyNewerVersion
+)
+
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake DESTINATION ${ROSTOOLS_LIBRARY_DEST} )
+
+install( EXPORT ${PROJECT_NAME} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
+
+# ---------------------------------- Test Setup ------------------------------------ #
 
 if( BUILD_TESTS )
     add_subdirectory( tests EXCLUDE_FROM_ALL )
