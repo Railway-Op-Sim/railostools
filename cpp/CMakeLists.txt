@@ -12,26 +12,33 @@ set( SEMVER semver )
 
 file( GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cxx )
 
-include( FetchContent )
-FetchContent_Declare(
-    ${TOMLPP}
-    GIT_REPOSITORY https://github.com/marzer/tomlplusplus.git
-    GIT_TAG        v2.5.0
-)
-FetchContent_MakeAvailable( ${TOMLPP} )
-
-include( FetchContent )
-FetchContent_Declare(
-    ${SEMVER}
-    GIT_REPOSITORY https://github.com/Neargye/semver.git
-    GIT_TAG         v0.3.0
-)
-FetchContent_MakeAvailable( ${SEMVER} )
+set( EXTERNAL_SOURCES ${CMAKE_SOURCE_DIR}/external )
 
 add_library( ${PROJECT_NAME} ${SRC_FILES} )
-target_include_directories( ${PROJECT_NAME} PUBLIC ${tomlplusplus_SOURCE_DIR} ${semver_SOURCE_DIR}/include )
+target_include_directories( ${PROJECT_NAME} PUBLIC ${EXTERNAL_SOURCES} )
 target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include )
 
+install(
+    TARGETS ${PROJECT_NAME}
+    LIBRARY
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
+)
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/include/rostools
+    DESTINATION include
+    PATTERN "*.hxx"
+)
+install(
+    DIRECTORY ${EXTERNAL_SOURCES}/tomlplusplus
+    DESTINATION include
+    PATTERN "*.hpp"
+)
+install(
+    DIRECTORY ${EXTERNAL_SOURCES}/semver
+    DESTINATION include
+    PATTERN "*.hpp"
+)
+
 if( BUILD_TESTS )
-    add_subdirectory( tests )
+    add_subdirectory( tests EXCLUDE_FROM_ALL )
 endif()

@@ -48,7 +48,7 @@ std::filesystem::path ROSTools::Metadata::rly_file() const {
 
 std::vector<std::string> ROSTools::Metadata::retrieve_list_(const std::string& key) const {
     std::vector<std::string> items_;
-    if(!meta_data_.contains("ssn_files")) {
+    if(!meta_data_.contains(key)) {
         return items_;
     }
     toml::array file_arr_ = *meta_data_.get_as<toml::array>(key);
@@ -62,16 +62,17 @@ std::vector<std::string> ROSTools::Metadata::retrieve_list_(const std::string& k
 }
 
 ROSTools::Metadata::Metadata(const std::filesystem::path& file_name) {
+    toml_file_ = file_name;
     meta_data_ = toml::parse_file(file_name.string());
 
-    for(const std::string& required : mandatory_keys_) {
+    for(const std::string& required : MANDATORY_KEYS) {
         if(!meta_data_.contains(required)) {
-            throw std::runtime_error("Expected key '"+required+"' in Metadata file '"+file_name.string()+"'");
+            throw std::runtime_error("Expected missing key '"+required+"'");
         }
     }
 
     if(COUNTRY_CODES.count(country_code()) == 0) {
-        throw std::runtime_error("Country code '"+country_code()+"' is not recognised");
+        throw std::runtime_error("Invalid country code '"+country_code()+"'");
     }
 
 }

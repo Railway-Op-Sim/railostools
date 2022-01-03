@@ -244,6 +244,7 @@ namespace ROSTools {
         {"GB", "United Kingdom"},
         {"US", "United States"},
         {"UM", "United States Minor Outlying Islands"},
+        {"UN", "Undefined"},
         {"UY", "Uruguay"},
         {"UZ", "Uzbekistan"},
         {"VU", "Vanuatu"},

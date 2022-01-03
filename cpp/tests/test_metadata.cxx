@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "metadata.hxx"
+#include "rostools/metadata.hxx"
 
 #include <filesystem>
 #include <iostream>
