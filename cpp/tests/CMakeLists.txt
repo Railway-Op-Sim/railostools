@@ -10,13 +10,14 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
-set( TESTS Test${PROJECT_NAME} )
+set( TESTS tests )
 
 file( GLOB TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cxx )
 
 enable_testing()
 
 add_executable( ${TESTS} ${TEST_SRCS} )
+set_target_properties( ${TESTS} PROPERTIES OUTPUT_NAME run-tests )
 target_link_libraries( ${TESTS} PUBLIC gtest_main )
 target_link_libraries( ${TESTS} PUBLIC ${PROJECT_NAME} )
 target_include_directories( ${TESTS} PUBLIC ${CMAKE_SOURCE_DIR}/include )

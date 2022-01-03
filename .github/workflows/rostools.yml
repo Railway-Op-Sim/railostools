@@ -43,8 +43,8 @@ jobs:
       - name: Build Library and Tests
         run: |
           cmake -Bbuild -DBUILD_TESTS=ON
-          cmake --build build
+          cmake --build build --target tests
         working-directory: cpp
       - name: Run Unit Tests
-        run: ./build/tests/Testrostools
+        run: ./build/tests/run-tests
         working-directory: cpp
