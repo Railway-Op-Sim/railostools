@@ -22,6 +22,15 @@ Commands:
   ttb2json  Extract ROS timetable file to json
 ```
 
+## Installation Instructions (Windows)
+
+- Start by cloning the repository `git clone  https://github.com/Railway-Op-Sim/rostools.git`
+- Go in to `ROSTools/cpp` with `cd ROSTools/cpp`
+- Run `cmake -Bbuild`
+- Run `cmake --build build --target install --config Release`
+
+The tool should now be install at ` C:/Program Files (x86)/rostools/`
+
 ## Command Line Interface
 
 ### Parsing `.ttb` Files
