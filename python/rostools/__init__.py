@@ -6,7 +6,6 @@ from rostools.ttb import TTBParser
 from rostools.rly import RlyParser
 
 from rostools.metadata import Route
-from rostools.metrics import difficulty_components
 
 logging.basicConfig()
 
@@ -74,19 +73,3 @@ def rly2json(rly_file: str, output: str):
     _parser = RlyParser()
     _parser.parse(rly_file)
     _parser.json(output)
-
-
-@rostools.command(name='difficulty')
-@click.argument('rly_file')
-@click.argument('ttb_file')
-@click.option('--verbose/--normal', help='Show components of difficulty', default=False)
-def get_difficulty(
-        rly_file: click.Path(exists=True, readable=True, resolve_path=True),
-        ttb_file: click.Path(exists=True, readable=True, resolve_path=True),
-        verbose: bool
-):
-    _components = difficulty_components(ttb_file, rly_file)
-    if verbose:
-        print(_components)
-    else:
-        print(f'Calculated Difficulty: {_components["difficulty"]}')
