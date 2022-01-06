@@ -7,16 +7,17 @@ option( CODE_COVERAGE "Enable Coverage" OFF )
 
 project( rostools VERSION 0.4.0 LANGUAGES CXX )
 
+set( ROSTOOLS rostools )
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
 
-file( GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cxx )
+file( GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
 
-set( EXTERNAL_SOURCES ${CMAKE_SOURCE_DIR}/external )
+set( EXTERNAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
 add_library( ${ROSTOOLS} ${SRC_FILES} )
 target_include_directories( ${ROSTOOLS} PRIVATE ${EXTERNAL_SOURCES} )
-target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_SOURCE_DIR}/include )
+target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include )
 
 # ------------------------- Installation on System --------------------------------- #
 
@@ -26,7 +27,7 @@ install(
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
 )
 install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/rostools
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/rostools
     DESTINATION include
     PATTERN "*.hxx"
 )
@@ -40,12 +41,12 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
-install( FILES ${CMAKE_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/rostools )
+install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/rostools )
 
 install( TARGETS ${ROSTOOLS} EXPORT ${ROSTOOLS} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
 
 target_include_directories( ${ROSTOOLS} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${EXTERNAL_SOURCES}>
     $<INSTALL_INTERFACE:include>
     $<INSTALL_INTERFACE:include>
@@ -59,8 +60,4 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DEST
 
 install( EXPORT ${ROSTOOLS} DESTINATION "lib/rostools" )
 
-# ---------------------------------- Test Setup ------------------------------------ #
-
-if( BUILD_TESTS )
-    add_subdirectory( tests EXCLUDE_FROM_ALL )
-endif()
+add_subdirectory( tests EXCLUDE_FROM_ALL )
