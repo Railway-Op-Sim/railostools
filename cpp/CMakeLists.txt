@@ -14,14 +14,14 @@ file( GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cxx )
 
 set( EXTERNAL_SOURCES ${CMAKE_SOURCE_DIR}/external )
 
-add_library( ${PROJECT_NAME} ${SRC_FILES} )
-target_include_directories( ${PROJECT_NAME} PRIVATE ${EXTERNAL_SOURCES} )
-target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include )
+add_library( ${ROSTOOLS} ${SRC_FILES} )
+target_include_directories( ${ROSTOOLS} PRIVATE ${EXTERNAL_SOURCES} )
+target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_SOURCE_DIR}/include )
 
 # ------------------------- Installation on System --------------------------------- #
 
 install(
-    TARGETS ${PROJECT_NAME}
+    TARGETS ${ROSTOOLS}
     LIBRARY
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
 )
@@ -40,24 +40,24 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
-install( FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake DESTINATION lib/rostools )
+install( FILES ${CMAKE_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/rostools )
 
-install( TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
+install( TARGETS ${ROSTOOLS} EXPORT ${ROSTOOLS} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC
+target_include_directories( ${ROSTOOLS} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${EXTERNAL_SOURCES}>
     $<INSTALL_INTERFACE:include>
     $<INSTALL_INTERFACE:include>
 )
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake
   COMPATIBILITY AnyNewerVersion
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake DESTINATION lib/rostools )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DESTINATION lib/rostools )
 
-install( EXPORT ${PROJECT_NAME} DESTINATION "lib/rostools" )
+install( EXPORT ${ROSTOOLS} DESTINATION "lib/rostools" )
 
 # ---------------------------------- Test Setup ------------------------------------ #
 
