@@ -5,18 +5,66 @@ import pycountry
 
 
 class Route(pydantic.BaseModel):
-    name: str
-    display_name: str
-    description: str
-    rly_file: str
-    ttb_files: typing.List[str]
-    ssn_files: typing.List[str]
-    country_code: str
-    year: int
-    factual: bool
-    difficulty: int
-    author: str
-    contributors: typing.List[str]
+    name: str = pydantic.Field(
+        ...,
+        title="Project Name",
+        description="Name of project for file system"
+    )
+    display_name: str = pydantic.Field(
+        None,
+        title="Display Name",
+        description="Name of project as it would appear in listing"
+    )
+    description: str = pydantic.Field(
+        None,
+        title="Description",
+        description="Single line summary of project"
+    )
+    rly_file: str = pydantic.Field(
+        ...,
+        title="Railway File",
+        description="Railway map definition file name, .rly"
+    )
+    ttb_files: typing.List[str] = pydantic.Field(
+        ...,
+        title="Timetable Files",
+        description="List of timetable files, .ttb"
+    )
+    ssn_files: typing.List[str] = pydantic.Field(
+        None,
+        title="Session Files",
+        description="List of session files, .ssn"
+    )
+    country_code: str = pydantic.Field(
+        ...,
+        title="Country Code",
+        description="Two character country ISO code"
+    )
+    year: int = pydantic.Field(
+        None,
+        title="Year",
+        description="Year simulation takes place"
+    )
+    factual: bool = pydantic.Field(
+        ...,
+        title="isFactual",
+        description="Whether simulation is a factual representation"
+    )
+    difficulty: int = pydantic.Field(
+        None,
+        title="Difficulty Rating",
+        description="Rating out of 5 for simulation difficulty"
+    )
+    author: str = pydantic.Field(
+        ...,
+        title="Author",
+        description="Main author of the project"
+    )
+    contributors: typing.List[str] = typing.Field(
+        None,
+        title="Contributor List",
+        description="Additional contributors to the project"
+    )
 
     @pydantic.validator('country_code')
     def check_country_code(cls, value):
