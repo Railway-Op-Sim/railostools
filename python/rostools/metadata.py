@@ -1,7 +1,10 @@
 import typing
+import os.path
 
 import pydantic
 import pycountry
+import semver
+import datetime
 
 
 class Route(pydantic.BaseModel):
@@ -35,6 +38,16 @@ class Route(pydantic.BaseModel):
         title="Session Files",
         description="List of session files, .ssn"
     )
+    img_files: typing.List[str] = pydantic.Field(
+        None,
+        title="Image Files",
+        description="List of image files, .png"
+    )
+    doc_files: typing.List[str] = pydantic.Field(
+        ...,
+        title="Documentation Files",
+        description="List of documenation files, .txt, .pdf, .md"
+    )
     country_code: str = pydantic.Field(
         ...,
         title="Country Code",
@@ -60,10 +73,20 @@ class Route(pydantic.BaseModel):
         title="Author",
         description="Main author of the project"
     )
-    contributors: typing.List[str] = typing.Field(
+    contributors: typing.List[str] = pydantic.Field(
         None,
         title="Contributor List",
         description="Additional contributors to the project"
+    )
+    release_date: datetime.date = pydantic.Field(
+        ...,
+        title="Release Date",
+        description="Date of release"
+    )
+    version: str = pydantic.Field(
+        ...,
+        title="Version",
+        description="Semantic version of the project release"
     )
 
     @pydantic.validator('country_code')
@@ -74,19 +97,52 @@ class Route(pydantic.BaseModel):
             raise AssertionError(f"'{value}' is not a recognised country code")
         return value
 
-    @pydantic.validator(
-        'name',
-        'rly_file',
-        'ttb_files',
-        'ssn_files',
-        'country_code',
-        'factual',
-        'difficulty',
-        'author')
-    def check_name_exists(cls, name):
-        if not name:
-            raise AssertionError("Required key is empty")
-        return name
+    @pydantic.validator('version')
+    def check_semver(cls, version):
+        semver.VersionInfo.parse(version)
+
+    @pydantic.validator('rly_file')
+    def check_rly_file(cls, rly_file):
+        if any(i in rly_file for i in ['/', '\\']):
+            raise AssertionError("RLY file cannot be a path")
+        if not os.path.splitext(rly_file)[1].lower() == ".rly":
+            raise AssertionError("RLY file must have suffix '.rly'")
+
+    @pydantic.validator('ttb_files')
+    def check_ttb_files(cls, ttb_files):
+        for ttb_file in ttb_files:
+            if any(i in ttb_file for i in ['/', '\\']):
+                raise AssertionError("TTB file cannot be a path")
+            if not os.path.splitext(ttb_file)[1].lower() == ".ttb":
+                raise AssertionError("TTB file must have suffix '.ttb'")
+
+    @pydantic.validator('ssn_files')
+    def check_ssn_files(cls, ssn_files):
+        if not ssn_files:
+            return
+        for ssn_file in ssn_files:
+            if any(i in ssn_file for i in ['/', '\\']):
+                raise AssertionError("SSN file cannot be a path")
+            if not os.path.splitext(ssn_file)[1].lower() == ".ssn":
+                raise AssertionError("SSN file must have suffix '.ssn'")
+
+    @pydantic.validator('doc_files')
+    def check_doc_files(cls, doc_files):
+        for doc_file in doc_files:
+            if any(i in doc_file for i in ['/', '\\']):
+                raise AssertionError("DOC file cannot be a path")
+            if os.path.splitext(doc_file)[1].lower() not in (".pdf", ".md", ".txt"):
+                raise AssertionError("DOC file must have suffix '.txt', '.pdf' or '.md'")
+
+    @pydantic.validator('img_files')
+    def check_img_files(cls, img_files):
+        if not img_files:
+            return
+        for img_file in img_files:
+            if any(i in img_file for i in ['/', '\\']):
+                raise AssertionError("IMG file cannot be a path")
+            if os.path.splitext(img_file)[1].lower() not in (".bmp", ".png"):
+                raise AssertionError("DOC file must have suffix '.bmp', '.png'")
 
     @pydantic.validator('year')
     def positive_year(cls, year):
