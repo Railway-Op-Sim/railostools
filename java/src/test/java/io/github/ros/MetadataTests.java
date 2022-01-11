@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class MetadataTests {
     @Test
-    void trueTest() {
+    public void trueTest() {
         assertTrue(true);
     }
 }
