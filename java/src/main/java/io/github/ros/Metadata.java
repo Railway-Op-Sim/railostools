@@ -1,4 +1,4 @@
-package main.java.io.github.ros;
+package io.github.ros;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ public class Metadata {
     public String display_name;
     public int year;
     public boolean factual;
+    public int difficulty;
     public String country_code;
     public String version;
     public String rly_file;
@@ -17,7 +18,7 @@ public class Metadata {
     public List<String> ssn_files;
     public List<String> doc_files;
 
-    public Metadata(String name, String author, String description, String display_name, int year, boolean factual,
+    public Metadata(String name, String author, String description, String display_name, int year, boolean factual, int difficulty
             String country_code, String version, String rly_file, List<String> contributors, List<String> ttb_files,
             List<String> ssn_files, List<String> doc_files) {
         this.name = name;
@@ -26,6 +27,7 @@ public class Metadata {
         this.display_name = display_name;
         this.year = year;
         this.factual = factual;
+        this.difficulty = difficulty;
         this.country_code = country_code;
         this.version = version;
         this.rly_file = rly_file;

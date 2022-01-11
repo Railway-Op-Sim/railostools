@@ -58,4 +58,7 @@ jobs:
           java-version: '16'
           distribution: 'adopt'
       - name: Run Unit Tests
-        run: mvn test
+        run: |
+          cd java
+          mvn test
+
