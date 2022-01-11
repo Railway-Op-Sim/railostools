@@ -18,7 +18,7 @@ public class Metadata {
     public List<String> ssn_files;
     public List<String> doc_files;
 
-    public Metadata(String name, String author, String description, String display_name, int year, boolean factual, int difficulty
+    public Metadata(String name, String author, String description, String display_name, int year, boolean factual, int difficulty,
             String country_code, String version, String rly_file, List<String> contributors, List<String> ttb_files,
             List<String> ssn_files, List<String> doc_files) {
         this.name = name;
