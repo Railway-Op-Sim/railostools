@@ -1,12 +1,27 @@
 package io.github.ros;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class MetadataTests {
+
     @Test
-    public void trueTest() {
-        assertTrue(true);
+    @DisplayName("Testing YAML Parsing")
+    public void yamlParse() {
+        try {
+            MetadataBuilder mb = new MetadataBuilder(new File("data/Antwerpen_Centraal.toml"));
+            assertEquals("Simulation of Antwerp south", mb.metadata.name);
+            assertEquals("Krizar", mb.metadata.author);
+            assertEquals(Boolean.TRUE, mb.metadata.factual);
+            assertEquals("Albert Ball", mb.metadata.contributors.get(0));
+            assertEquals(3, mb.metadata.difficulty);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
