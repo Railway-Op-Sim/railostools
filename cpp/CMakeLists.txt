@@ -10,12 +10,18 @@ project( rostools VERSION 0.4.0 LANGUAGES CXX )
 set( ROSTOOLS rostools )
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
+set( ROSTOOLS_STATIC_LIBRARY FALSE )
 
 file( GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
 
 set( EXTERNAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
-add_library( ${ROSTOOLS} ${SRC_FILES} )
+if( ROSTOOLS_STATIC_LIBRARY )
+    add_library( ${ROSTOOLS} STATIC ${SRC_FILES} )
+else()
+    add_library( ${ROSTOOLS} SHARED ${SRC_FILES} )
+endif()
+
 target_include_directories( ${ROSTOOLS} PRIVATE ${EXTERNAL_SOURCES} )
 target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include )
 
