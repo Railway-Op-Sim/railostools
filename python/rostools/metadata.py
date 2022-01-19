@@ -41,7 +41,12 @@ class Route(pydantic.BaseModel):
     img_files: typing.List[str] = pydantic.Field(
         None,
         title="Image Files",
-        description="List of image files, .png"
+        description="List of Images files"
+    )
+    graphic_files: typing.List[str] = pydantic.Field(
+        None,
+        title="Graphic Files",
+        description="List of Graphics files used in simulation map"
     )
     doc_files: typing.List[str] = pydantic.Field(
         ...,

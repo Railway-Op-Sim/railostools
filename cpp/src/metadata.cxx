@@ -100,3 +100,19 @@ std::vector<std::filesystem::path> ROSTools::Metadata::doc_files() const {
     }
     return files_;
 }
+
+std::vector<std::filesystem::path> ROSTools::Metadata::img_files() const {
+    std::vector<std::filesystem::path> files_;
+    for(const std::string& file : retrieve_list_("img_files")) {
+        files_.push_back(file);
+    }
+    return files_;
+}
+
+std::vector<std::filesystem::path> ROSTools::Metadata::graphic_files() const {
+    std::vector<std::filesystem::path> files_;
+    for(const std::string& file : retrieve_list_("graphic_files")) {
+        files_.push_back(file);
+    }
+    return files_;
+}

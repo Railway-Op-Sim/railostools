@@ -40,6 +40,8 @@ namespace ROSTools {
             std::vector<std::filesystem::path> ssn_files() const;
             std::vector<std::filesystem::path> ttb_files() const;
             std::vector<std::filesystem::path> doc_files() const;
+            std::vector<std::filesystem::path> img_files() const;
+            std::vector<std::filesystem::path> graphic_files() const;
             std::vector<std::string> contributors() const;
             bool factual() const;
             int year() const;
