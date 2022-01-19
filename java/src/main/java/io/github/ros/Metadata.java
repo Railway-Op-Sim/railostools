@@ -17,10 +17,12 @@ public class Metadata {
     public List<String> ttb_files;
     public List<String> ssn_files;
     public List<String> doc_files;
+    public List<String> img_files;
+    public List<String> graphic_files;
 
     public Metadata(String name, String author, String description, String display_name, int year, boolean factual, int difficulty,
             String country_code, String version, String rly_file, List<String> contributors, List<String> ttb_files,
-            List<String> ssn_files, List<String> doc_files) {
+            List<String> ssn_files, List<String> doc_files, List<String> img_files, List<String> graphic_files) {
         this.name = name;
         this.author = author;
         this.description = description;
@@ -35,6 +37,8 @@ public class Metadata {
         this.ttb_files = ttb_files;
         this.ssn_files = ssn_files;
         this.doc_files = doc_files;
+        this.img_files = img_files;
+        this.graphic_files = graphic_files;
     }
 
     public String toString() {
