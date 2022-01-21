@@ -1,8 +1,11 @@
 package io.github.ros;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
+import io.github.ros.MetadataBuilder.MetadataValidationError;
+import io.github.ros.MetadataBuilder;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

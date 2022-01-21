@@ -59,7 +59,7 @@ public class Metadata {
     @UniqueElements
     public List<String> graphic_files;
 
-    @NotBlank
+    @NotNull
     @PastOrPresent
     public LocalDate release_date;
 
