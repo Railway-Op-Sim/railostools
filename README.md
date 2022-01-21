@@ -148,20 +148,3 @@ in the `lib` folder you created. Finally create a text file `discord_app_id.txt`
 
 If you have a binary for the launcher place it in `discord_launcher` and open it, else execute the `discord.py` script from within
 this folder.
-
-## C++ Tools
-
-Included are libraries for C++ including metadata parsing.
-
-### Installation Instructions
-
-- Start by cloning the repository `git clone  https://github.com/Railway-Op-Sim/rostools.git`
-- Go in to `ROSTools/cpp` with `cd ROSTools/cpp`
-- Run `cmake -Bbuild`
-- Run `cmake --build build --target install --config Release`
-
-The tool should now be install at ` C:/Program Files (x86)/rostools/`
-
-
-
-
