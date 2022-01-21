@@ -3,10 +3,13 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include <sstream>
 #include <filesystem>
 
 #include "tomlplusplus/toml.hpp"
 #include "semver/semver.hpp"
+#include "date/date.h"
 
 #include "country_codes.hxx"
 
@@ -47,6 +50,7 @@ namespace ROSTools {
             int year() const;
             std::string description() const;
             std::string author() const;
+            date::year_month_day release_date() const;
     };
 };
 

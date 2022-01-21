@@ -116,3 +116,22 @@ std::vector<std::filesystem::path> ROSTools::Metadata::graphic_files() const {
     }
     return files_;
 }
+
+date::year_month_day ROSTools::Metadata::release_date() const {
+    const std::string date_ = retrieve_string_("release_date");
+    std::stringstream stream_(date_);
+    std::string part_;
+
+    std::vector<int> date_elements_;
+
+    while(std::getline(stream_, part_, '-'))
+    {
+        date_elements_.push_back(std::stoi(part_));
+    }
+    
+    if(date_elements_.size() != 3) {
+        throw std::runtime_error("Expected release_date to be in form YYYY-MM-DD");
+    }
+
+    return date::year{date_elements_[0]}/date::month{date_elements_[1]}/date::day{date_elements_[2]};
+}
