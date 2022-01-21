@@ -1,7 +1,10 @@
 package io.github.ros;
 
 import java.util.List;
-import java.util.Date;
+import java.util.Map;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -21,11 +24,11 @@ public class Metadata {
     public String display_name;
  
     @Range(min=1900, max=9999)
-    public int year;
+    public long year;
  
     public boolean factual;
  
-    public int difficulty;
+    public long difficulty;
 
     @NotBlank
     @Length(min=2, max=2)
@@ -58,12 +61,12 @@ public class Metadata {
 
     @NotBlank
     @PastOrPresent
-    public Date release_date;
+    public LocalDate release_date;
 
 
     public Metadata(String name, String author, String description, String display_name, int year, boolean factual, int difficulty,
-            String country_code, String version, String rly_file, List<String> contributors, List<String> ttb_files,
-            List<String> ssn_files, List<String> doc_files, List<String> img_files, List<String> graphic_files, Date release_date) {
+            String country_code, Version version, String rly_file, List<String> contributors, List<String> ttb_files,
+            List<String> ssn_files, List<String> doc_files, List<String> img_files, List<String> graphic_files, LocalDate release_date) {
         this.name = name;
         this.author = author;
         this.description = description;
@@ -72,7 +75,7 @@ public class Metadata {
         this.factual = factual;
         this.difficulty = difficulty;
         this.country_code = country_code;
-        this.version = Version.parseVersion(version);
+        this.version = version;
         this.rly_file = rly_file;
         this.contributors = contributors;
         this.ttb_files = ttb_files;
@@ -83,7 +86,26 @@ public class Metadata {
         this.release_date = release_date;
     }
 
-    public String toString() {
-        return "\nName: " + name + "\nAuthor" + author;
+    @SuppressWarnings(value = "unchecked") //Replace this with proper checks in the future
+    public Metadata(Map<String, Object> map) {
+        this.name = map.get("name").toString();
+        this.author = map.get("author").toString();
+        this.description = map.get("description").toString();
+        this.display_name = map.get("display_name").toString();
+        this.year = (long) map.get("year");
+        this.factual = (boolean) map.get("factual");
+        this.difficulty = (long) map.get("difficulty");
+        this.country_code = map.get("country_code").toString();
+        this.version = Version.parseVersion(map.get("version").toString());
+        this.rly_file = map.get("rly_file").toString();
+        this.contributors = (List<String>) map.get("contributors");
+        this.ttb_files = (List<String>) map.get("ttb_files");
+        this.ssn_files = (List<String>) map.get("ssn_files");
+        this.doc_files = (List<String>) map.get("doc_files");
+        this.img_files = (List<String>) map.get("img_files");
+        this.graphic_files = (List<String>) map.get("graphic_files");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.release_date = LocalDate.parse(map.get("release_date").toString(), formatter);
     }
 }
