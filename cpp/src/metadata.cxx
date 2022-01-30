@@ -232,6 +232,15 @@ void ROSTools::Metadata::setReleaseDate(const date::year_month_day& release_date
     set_key_value_("release_date", ss.str());
 }
 
+void ROSTools::Metadata::setReleaseNow() {
+    std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+    std::string s(30, '\0');
+
+    std::strftime(&s[0], s.size(), "%Y-%m-%d", std::localtime(&now));
+    set_key_value_("release_date", s);
+}
+
 void ROSTools::Metadata::set_list_(const std::string& key, const std::vector<std::string>& list_vals) {
     toml::array out_vals_;
 

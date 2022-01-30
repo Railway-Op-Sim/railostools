@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <chrono>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 
@@ -81,6 +83,7 @@ namespace ROSTools {
             void setContributors(const std::vector<std::string>& contributor_list);
             void setFactual(bool is_factual);
             void setReleaseDate(const date::year_month_day& release_date_val);
+            void setReleaseNow();
             void setDescription(const std::string& description_val);
             void setDisplayName(const std::string& display_name_val);
             void setName(const std::string& name_val);
