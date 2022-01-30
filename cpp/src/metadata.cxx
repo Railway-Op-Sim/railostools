@@ -95,6 +95,17 @@ void ROSTools::Metadata::validate() {
         }
     }
 
+    if(meta_data_.contains("graphic_files") && !retrieve_list_("graphic_files").empty()) {
+        if(!meta_data_.contains("minimum_required")) {
+            setMinimumRequired("2.4.0"); // Graphics introduced in v2.4.0
+        }
+        else {
+            if(minimum_required() < semver::version{"2.4.0"}) {
+                setMinimumRequired("2.4.0");
+            }
+        }
+    }
+
     if(COUNTRY_CODES.count(country_code()) == 0) {
         throw std::runtime_error("Invalid country code '"+country_code()+"'");
     }
