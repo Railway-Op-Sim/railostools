@@ -90,7 +90,7 @@ void ROSTools::Metadata::validate() {
         if(!meta_data_.contains(required)) {
             throw std::runtime_error("Expected missing key '"+required+"'");
         }
-        if(!meta_data_[required].value<std::string>().value_or("").empty()) {
+        if(meta_data_[required].value<std::string>().value_or("").empty()) {
             throw std::runtime_error("Required key '"+required+"' cannot have empty value");
         }
     }
