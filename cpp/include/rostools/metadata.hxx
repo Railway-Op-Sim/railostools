@@ -38,14 +38,16 @@ namespace ROSTools {
             void set_key_value_(const std::string& key, const T& value);
             void append_to_list_(const std::string& label, const std::string& key, const std::string& value);
             void set_list_(const std::string& key, const std::vector<std::string>& list_vals);
-            void validate_();
         public:
             Metadata() {}
-            Metadata(const std::filesystem::path& file_name);
+            Metadata(const std::filesystem::path& file_name, bool validate_inputs=true);
+            void validate();
+            void add_missing_keys();
             toml::table data() const {return meta_data_;}
             std::string name() const;
             std::filesystem::path rly_file() const;
             semver::version version() const;
+            semver::version minimum_required() const;
             std::string country_code() const;
             std::string display_name() const;
             std::filesystem::path toml_file() const {return toml_file_;}
@@ -86,6 +88,8 @@ namespace ROSTools {
             void write(const std::filesystem::path& output_file);
             void setVersion(const semver::version& version);
             void setVersion(const std::string& version);
+            void setMinimumRequired(const semver::version& version);
+            void setMinimumRequired(const std::string& version="0.1.0");
     };
 };
 

@@ -51,6 +51,14 @@ semver::version ROSTools::Metadata::version() const {
     return semver::version(ver_str_);
 }
 
+semver::version ROSTools::Metadata::minimum_required() const {
+    const std::string key_ = "minimum_required";
+    if(!meta_data_.contains(key_)) return semver::version{"0.1.0"};
+    const std::string ver_str_ = meta_data_[key_].value<std::string>().value_or("");
+    if(ver_str_.empty()) return semver::version();
+    return semver::version(ver_str_);
+}
+
 std::filesystem::path ROSTools::Metadata::rly_file() const {
     return std::filesystem::path(meta_data_["rly_file"].value<std::string>().value_or(""));
 }
@@ -70,20 +78,54 @@ std::vector<std::string> ROSTools::Metadata::retrieve_list_(const std::string& k
     return items_;
 }
 
-ROSTools::Metadata::Metadata(const std::filesystem::path& file_name) {
+ROSTools::Metadata::Metadata(const std::filesystem::path& file_name, bool validate_inputs) {
     toml_file_ = file_name;
     meta_data_ = toml::parse_file(file_name.string());
 
+    if(validate_inputs) validate();
+}
+
+void ROSTools::Metadata::validate() {
     for(const std::string& required : MANDATORY_KEYS) {
         if(!meta_data_.contains(required)) {
             throw std::runtime_error("Expected missing key '"+required+"'");
+        }
+        if(!meta_data_[required].value<std::string>().value_or("").empty()) {
+            throw std::runtime_error("Required key '"+required+"' cannot have empty value");
         }
     }
 
     if(COUNTRY_CODES.count(country_code()) == 0) {
         throw std::runtime_error("Invalid country code '"+country_code()+"'");
     }
+}
 
+void ROSTools::Metadata::add_missing_keys() {
+    const std::vector<std::string> list_vals_ = {
+        "ttb_files",
+        "doc_files",
+    };
+
+    const std::vector<std::string> str_vals_ = {
+        "rly_file",
+        "author",
+        "release_date",
+        "name",
+        "version",
+        "country_code"
+    };
+
+    for(const std::string& key : list_vals_) {
+        if(meta_data_.contains(key)) continue;
+        set_list_(key, {});
+    }
+
+    for(const std::string& key : str_vals_) {
+        if(meta_data_.contains(key)) continue;
+        set_key_value_(key, "");
+    }
+
+    if(!meta_data_.contains("factual")) set_key_value_("factual", false);
 }
 
 std::vector<std::filesystem::path> ROSTools::Metadata::ssn_files() const {
@@ -137,7 +179,7 @@ date::year_month_day ROSTools::Metadata::release_date() const {
     {
         date_elements_.push_back(std::stoi(part_));
     }
-    
+
     if(date_elements_.size() != 3) {
         throw std::runtime_error("Expected release_date to be in form YYYY-MM-DD");
     }
@@ -287,3 +329,12 @@ void ROSTools::Metadata::setVersion(const semver::version& version) {
 void ROSTools::Metadata::setVersion(const std::string& version) {
     setVersion(semver::version{version});
 }
+
+void ROSTools::Metadata::setMinimumRequired(const semver::version& version) {
+    set_key_value_("minimum_required", semver::to_string(version));
+}
+
+void ROSTools::Metadata::setMinimumRequired(const std::string& version) {
+    setVersion(semver::version{version});
+}
+
