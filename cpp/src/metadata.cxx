@@ -86,7 +86,13 @@ ROSTools::Metadata::Metadata(const std::filesystem::path& file_name, bool valida
 }
 
 void ROSTools::Metadata::validate() {
-    const std::vector<std::string> check_excludes_ = {"factual", "country_code", "year"};
+    const std::vector<std::string> check_excludes_ = {
+        "factual",
+        "country_code",
+        "year",
+        "version"
+    };
+
     for(const std::string& required : MANDATORY_KEYS) {
         if(!meta_data_.contains(required)) {
             throw std::runtime_error("Expected missing key '"+required+"'");
