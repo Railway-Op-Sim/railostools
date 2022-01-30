@@ -90,8 +90,15 @@ void ROSTools::Metadata::validate() {
         if(!meta_data_.contains(required)) {
             throw std::runtime_error("Expected missing key '"+required+"'");
         }
-        if(meta_data_[required].value<std::string>().value_or("").empty()) {
-            throw std::runtime_error("Required key '"+required+"' cannot have empty value");
+        if(required.find("files") != std::string::npos) {
+            if(retrieve_list_(required).empty()) {
+                throw std::runtime_error("Required key '"+required+"' cannot have empty list");
+            }
+        }
+        else {
+            if(retrieve_string_(required).empty()) {
+                throw std::runtime_error("Required key '"+required+"' cannot be empty list");
+            }
         }
     }
 
