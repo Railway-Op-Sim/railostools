@@ -364,7 +364,11 @@ void ROSTools::Metadata::setVersion(const semver::version& version) {
 }
 
 void ROSTools::Metadata::setVersion(const std::string& version) {
-    setVersion(semver::version{version});
+    try {
+        setVersion(semver::version{version});
+    } catch(std::exception&) {
+        throw std::runtime_error("Failed to parse version "+version);
+    }
 }
 
 void ROSTools::Metadata::setMinimumRequired(const semver::version& version) {
@@ -372,6 +376,10 @@ void ROSTools::Metadata::setMinimumRequired(const semver::version& version) {
 }
 
 void ROSTools::Metadata::setMinimumRequired(const std::string& version) {
-    setVersion(semver::version{version});
+    try {
+        setMinimumRequired(semver::version{version});
+    } catch(std::exception&) {
+        throw std::runtime_error("Failed to parse minimum required version "+version);
+    }
 }
 
