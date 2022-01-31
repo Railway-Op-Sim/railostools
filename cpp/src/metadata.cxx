@@ -253,7 +253,8 @@ void ROSTools::Metadata::set_list_(const std::string& key, const std::vector<std
 void ROSTools::Metadata::append_to_list_(const std::string& label, const std::string& key, const std::string& value) {
     std::vector<std::string> existing_ = retrieve_list_(key);
     if(std::find(existing_.begin(), existing_.end(), value) != existing_.end()) {
-        throw std::runtime_error(label+" '"+value+"' already in list.");
+        // Already in the list
+        return;
     }
     existing_.push_back(value);
     set_list_(key, existing_);
