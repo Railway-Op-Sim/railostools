@@ -2,15 +2,23 @@ cmake_minimum_required( VERSION 3.20 )
 set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_CXX_STANDARD_REQUIRED True )
 
-option( BUILD_TESTS "Build Unit Tests" OFF )
-option( CODE_COVERAGE "Enable Coverage" OFF )
+option( ROSTOOLS_BUILD_TESTS "Build Unit Tests" OFF )
+option( ROSTOOLS_CODE_COVERAGE "Enable Coverage" OFF )
 
-project( rostools VERSION 0.6.0 LANGUAGES CXX )
+project( rostools VERSION 0.6.1 LANGUAGES CXX )
 
 set( ROSTOOLS rostools )
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
-set( ROSTOOLS_STATIC_LIBRARY FALSE )
+
+if( NOT DEFINED ROSTOOLS_STATIC_LIBRARY )
+    set( ROSTOOLS_STATIC_LIBRARY OFF )
+endif()
+
+message( STATUS "[ROSTools]" )
+message( STATUS "\t- Use Static Library: ${ROSTOOLS_STATIC_LIBRARY}" )
+message( STATUS "\t- Build Tests: ${ROSTOOLS_BUILD_TESTS}" )
+message( STATUS "\t- Test Coverage: ${ROSTOOLS_CODE_COVERAGE}" )
 
 file( GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
 
@@ -66,4 +74,6 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DEST
 
 install( EXPORT ${ROSTOOLS} DESTINATION "lib/rostools" )
 
-add_subdirectory( tests EXCLUDE_FROM_ALL )
+if( NOT ROSTOOLS_BUILD_TESTS )
+    add_subdirectory( tests EXCLUDE_FROM_ALL )
+endif()
