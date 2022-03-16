@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rostools"
-version = "0.4.0"
+version = "0.4.1"
 description = "Toolkit for Railway Operation Simulator"
 authors = [" Kristian Zarębski <krizar312@gmail.com>"]
 license = "GPL-v3"
@@ -14,6 +14,7 @@ discordsdk = "^0.2.5"
 toml = "^0.10.2"
 pycountry = "^20.7.3"
 pydantic = "^1.8.2"
+semver = "^2.13.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
