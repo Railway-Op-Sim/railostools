@@ -1,8 +1,6 @@
-package io.github.ros;
+package net.danielgill.railostools;
 
 import java.io.File;
-import io.github.ros.MetadataBuilder.MetadataValidationError;
-import io.github.ros.MetadataBuilder;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +13,7 @@ public class MetadataTest {
     @DisplayName("Testing TOML Parsing")
     public void tomlParse() {
 
-        MetadataBuilder mb = assertDoesNotThrow(() -> new MetadataBuilder(
-                new File("src/test/java/io/github/ros/data/Antwerpen_Centraal.toml")));
+        MetadataBuilder mb = assertDoesNotThrow(() -> new MetadataBuilder(new File(this.getClass().getClassLoader().getResource("Antwerpen_Centraal.toml").toURI())));
 
         assertEquals("Simulation of Antwerp south", mb.metadata.name);
         assertEquals("Krizar", mb.metadata.author);
