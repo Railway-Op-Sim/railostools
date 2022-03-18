@@ -1,4 +1,4 @@
-package io.github.ros;
+package net.danielgill.railostools.metadata;
 
 import java.util.List;
 import java.util.Map;
