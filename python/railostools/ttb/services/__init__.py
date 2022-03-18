@@ -1,6 +1,6 @@
 import typing
 import pydantic
-import rostools.common.utilities as ros_util
+import railostools.common.utilities as ros_util
 
 
 @ros_util.dictify

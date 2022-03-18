@@ -16,3 +16,6 @@ class Coordinate:
         _sign_x = "N" if self.X < 0 else ""
         _sign_y = "N" if self.Y < 0 else ""
         return f"{_sign_x}{abs(self.X)}-{_sign_y}{abs(self.Y)}"
+
+    def to_dict(self) -> str:
+        return self.__str__()

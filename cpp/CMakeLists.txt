@@ -5,9 +5,9 @@ set( CMAKE_CXX_STANDARD_REQUIRED True )
 option( ROSTOOLS_BUILD_TESTS "Build Unit Tests" OFF )
 option( ROSTOOLS_CODE_COVERAGE "Enable Coverage" OFF )
 
-project( rostools VERSION 0.6.1 LANGUAGES CXX )
+project( railostools VERSION 0.6.1 LANGUAGES CXX )
 
-set( ROSTOOLS rostools )
+set( ROSTOOLS railostools )
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
 
@@ -38,10 +38,10 @@ target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/incl
 install(
     TARGETS ${ROSTOOLS}
     LIBRARY
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/rostools
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/railostools
 )
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/rostools
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/railostools
     DESTINATION include
     PATTERN "*.hxx"
 )
@@ -55,7 +55,7 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
-install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/rostools )
+install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/railostools )
 
 install( TARGETS ${ROSTOOLS} EXPORT ${ROSTOOLS} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
 
@@ -70,9 +70,9 @@ write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config
   COMPATIBILITY AnyNewerVersion
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DESTINATION lib/rostools )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DESTINATION lib/railostools )
 
-install( EXPORT ${ROSTOOLS} DESTINATION "lib/rostools" )
+install( EXPORT ${ROSTOOLS} DESTINATION "lib/railostools" )
 
 if( NOT ROSTOOLS_BUILD_TESTS )
     add_subdirectory( tests EXCLUDE_FROM_ALL )

@@ -134,7 +134,7 @@ dmypy.json
 .idea/
 
 # Discord ID file
-rostools/discord_app_id.txt
+railostools/discord_app_id.txt
 
 # VSCode
 .vscode/

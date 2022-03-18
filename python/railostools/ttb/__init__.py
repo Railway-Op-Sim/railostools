@@ -1,9 +1,10 @@
 
 
+import datetime
 import typing
 import pydantic
-import rostools.ttb.services as ros_srv
-import rostools.common.utilities as ros_util
+import railostools.ttb.services as ros_srv
+import railostools.common.utilities as ros_util
 
 
 class Element:
@@ -78,7 +79,13 @@ class Service(pydantic.BaseModel):
 
 
 class Timetable(pydantic.BaseModel):
-    pass
+    start_time: datetime.time
+    services: typing.List[Service]
+    comments: typing.Optional[typing.Dict[int, str]] = None
+
+    @pydantic.validator('start_time')
+    def to_string(cls, v):
+        return v.strftime("%H:%M")
 
 
 def concat(*args, join_type=None) -> str:

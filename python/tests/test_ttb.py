@@ -1,12 +1,12 @@
 import pytest
 
-import rostools.ttb.services.start as ros_ttb_start
-import rostools.common.coords as ros_coords
-import rostools.ttb as ros_ttb
-import rostools.ttb.services as ros_srv
-import rostools.ttb.services.start as ros_start
-import rostools.ttb.services.finish as ros_end
-import rostools.ttb.services.actions as ros_act
+import railostools.ttb.services.start as ros_ttb_start
+import railostools.common.coords as ros_coords
+import railostools.ttb as ros_ttb
+import railostools.ttb.services as ros_srv
+import railostools.ttb.services.start as ros_start
+import railostools.ttb.services.finish as ros_end
+import railostools.ttb.services.actions as ros_act
 
 @pytest.mark.ttb_strings
 def test_element_str():
@@ -64,7 +64,10 @@ def test_dictify():
             rear_element_id=ros_coords.Coordinate(10, 23),
             front_element_id=ros_coords.Coordinate(10, 24)
         ),
-        finish_type=ros_end.Frh(),
+        finish_type=ros_end.Fer(
+            time="11:34",
+            exit_coords=[ros_coords.Coordinate(23, -12)]
+        ),
         actions={
             0: ros_act.Location(
                 name="Liverpool South Parkway",

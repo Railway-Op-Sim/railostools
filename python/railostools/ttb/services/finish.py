@@ -2,10 +2,12 @@ import typing
 import pydantic
 import datetime
 
-import rostools.ttb.services as ros_srv
-import rostools.common.coords as ros_coords
-import rostools.ttb as ros_ttb
-import rostools.common.utilities as ros_util
+import railostools.ttb.services as ros_srv
+import railostools.common.coords as ros_coords
+import railostools.ttb as ros_ttb
+import railostools.common.utilities as ros_util
+
+from pydantic.fields import ModelField
 
 
 @ros_util.dictify
@@ -24,6 +26,11 @@ class Fns(pydantic.BaseModel, ros_ttb.FinishType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Fjo(pydantic.BaseModel, ros_ttb.FinishType):
@@ -40,6 +47,11 @@ class Fjo(pydantic.BaseModel, ros_ttb.FinishType):
     @pydantic.validator('time')
     def to_string(cls, v):
         return v.strftime("%H:%M")
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
 
 
 @ros_util.dictify
@@ -58,6 +70,11 @@ class Fer(pydantic.BaseModel, ros_ttb.FinishType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Frh_sh(pydantic.BaseModel, ros_ttb.FinishType):
@@ -74,6 +91,11 @@ class Frh_sh(pydantic.BaseModel, ros_ttb.FinishType):
     @pydantic.validator('time')
     def to_string(cls, v):
         return v.strftime("%H:%M")
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
 
 
 @ros_util.dictify
@@ -94,6 +116,11 @@ class Fns_sh(pydantic.BaseModel, ros_ttb.FinishType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class F_nshs(pydantic.BaseModel, ros_ttb.FinishType):
@@ -111,8 +138,18 @@ class F_nshs(pydantic.BaseModel, ros_ttb.FinishType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Frh(pydantic.BaseModel, ros_ttb.FinishType):
     def __str__(self) -> str:
         return self.__class__.__name__
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals

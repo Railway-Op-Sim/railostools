@@ -2,10 +2,12 @@ import pydantic
 import typing
 import datetime
 
-import rostools.ttb.services as ros_srv
-import rostools.common.coords as ros_coords
-import rostools.ttb as ros_ttb
-import rostools.common.utilities as ros_util
+import railostools.ttb.services as ros_srv
+import railostools.common.coords as ros_coords
+import railostools.ttb as ros_ttb
+import railostools.common.utilities as ros_util
+
+from pydantic.fields import ModelField
 
 
 @ros_util.dictify
@@ -41,6 +43,11 @@ class pas(pydantic.BaseModel, ros_ttb.ActionType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class jbo(pydantic.BaseModel, ros_ttb.ActionType):
@@ -51,6 +58,11 @@ class jbo(pydantic.BaseModel, ros_ttb.ActionType):
             f'{self.joining_service_ref}',
             join_type=ros_ttb.Element
         )
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
 
 
 @ros_util.dictify
@@ -63,6 +75,11 @@ class fsp(pydantic.BaseModel, ros_ttb.ActionType):
             join_type=ros_ttb.Element
         )
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class rsp(pydantic.BaseModel, ros_ttb.ActionType):
@@ -74,8 +91,18 @@ class rsp(pydantic.BaseModel, ros_ttb.ActionType):
             join_type=ros_ttb.Element
         )
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class cdt(pydantic.BaseModel, ros_ttb.ActionType):
     def __str__(self) -> str:
         return self.__class__.__name__
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals

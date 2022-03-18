@@ -1,16 +1,16 @@
 # ROSTools
-[![ROSTools](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+[![ROSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/railostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/railostools)
 
 *Railway Operation Simulator Toolkit*
 
 ROSTools provides a set of tools for working with Railway Operation Simulator program files.
 The package is both an importable Python3.6+ module and a command line interface.
 
-All command line tools are available under the parent `rostools` command:
+All command line tools are available under the parent `railostools` command:
 
 ```sh
-$ rostools
-Usage: rostools [OPTIONS] COMMAND [ARGS]...
+$ railostools
+Usage: railostools [OPTIONS] COMMAND [ARGS]...
 
   Python based utilities for Railway Operation Simulator
 
@@ -30,8 +30,8 @@ The command `ttb2json` converts a `.ttb` file to a JSON file containing the meta
 This allows for easier data interpretation within other projects.
 
 ```sh
-$ rostools ttb2json --help
-Usage: rostools ttb2json [OPTIONS] TTB_FILE
+$ railostools ttb2json --help
+Usage: railostools ttb2json [OPTIONS] TTB_FILE
 
   Extract ROS timetable file to json
 
@@ -46,8 +46,8 @@ The command `rly2json` converts a `.rly` file to a JSON file containing the meta
 This allows for easier data interpretation within other projects.
 
 ```sh
-$ rostools rly2json --help
-Usage: rostools rly2json [OPTIONS] RLY_FILE
+$ railostools rly2json --help
+Usage: railostools rly2json [OPTIONS] RLY_FILE
 
   Extract ROS railway file to json
 
@@ -58,12 +58,12 @@ Options:
 
 ## API
 
-Features within `rostools` can also be accessed via the dedicated Python API.
+Features within `railostools` can also be accessed via the dedicated Python API.
 
 ### The `TTBParser` Class
 
 ```python3
-from rostools.ttb import TTBParser
+from railostools.ttb import TTBParser
 
 # Create a parser instance for parsing files
 my_parser = TTBParser()
@@ -85,7 +85,7 @@ my_parser.json('Enoshima_Week_2021.json')
 ### The `RlyParser` Class
 
 ```python3
-from rostools.rly import RlyParser
+from railostools.rly import RlyParser
 
 # Create a parser instance for parsing files
 my_parser = RlyParser()
@@ -110,9 +110,9 @@ it has been confirmed by file modification time that the log has been updated. T
 latest log during running. The class uses the Python `asyncio` library.
 
 ```python3
-import rostools.performance
+import railostools.performance
 import asyncio
-from rostools.performance import Monitor
+from railostools.performance import Monitor
 
 ROS_LOG_DIR = 'C:\\Program Files (x86)\\RailwayOperationSimulator\\Railway\\Performance\ logs'
 
@@ -121,7 +121,7 @@ my_monitor = Monitor(ROS_LOG_DIR)
 
 # Create a listener function which will just print the data
 # MUST have 'monitor' as an argument, this is the monitor instance
-async def listener(monitor: rostools.performance.Monitor, user_name: str) -> None:
+async def listener(monitor: railostools.performance.Monitor, user_name: str) -> None:
     # Run until the monitor stops
     while monitor.running:
         print(f"Running for user '{user_name}'")

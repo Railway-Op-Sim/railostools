@@ -1,10 +1,12 @@
 import pydantic
 import datetime
 
-import rostools.ttb.services as ros_srv
-import rostools.common.coords as ros_coords
-import rostools.ttb as ros_ttb
-import rostools.common.utilities as ros_util
+import railostools.ttb.services as ros_srv
+import railostools.common.coords as ros_coords
+import railostools.ttb as ros_ttb
+import railostools.common.utilities as ros_util
+
+from pydantic.fields import ModelField
 
 
 @ros_util.dictify
@@ -29,6 +31,11 @@ class Snt(pydantic.BaseModel, ros_ttb.StartType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Sfs(pydantic.BaseModel, ros_ttb.StartType):
@@ -45,6 +52,11 @@ class Sfs(pydantic.BaseModel, ros_ttb.StartType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Sns_fsh(pydantic.BaseModel, ros_ttb.StartType):
@@ -60,6 +72,11 @@ class Sns_fsh(pydantic.BaseModel, ros_ttb.StartType):
     @pydantic.validator('time')
     def to_string(cls, v):
         return v.strftime("%H:%M")
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
 
 
 @ros_util.dictify
@@ -80,6 +97,11 @@ class Snt_sh(pydantic.BaseModel, ros_ttb.StartType):
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals
+
 
 @ros_util.dictify
 class Sns_sh(pydantic.BaseModel, ros_ttb.StartType):
@@ -97,3 +119,8 @@ class Sns_sh(pydantic.BaseModel, ros_ttb.StartType):
     @pydantic.validator('time')
     def to_string(cls, v):
         return v.strftime("%H:%M")
+
+    @pydantic.root_validator
+    def add_name_as_field(cls, vals):
+        vals["name"] = cls.__class__.__name__
+        return vals

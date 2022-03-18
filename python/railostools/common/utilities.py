@@ -1,8 +1,6 @@
-import datetime
 import typing
 import json
 
-import pydantic
 
 def dictify(class_orig):
     def to_dict(self) -> typing.Dict[str, typing.Any]:
@@ -30,7 +28,9 @@ def dictify(class_orig):
                     try:
                         _out_dict[variable] = getattr(self, variable).to_dict()
                     except AttributeError:
-                        _out_dict[variable] = str(getattr(self, variable))
+                        _out_dict[variable] = getattr(self, variable)
+        if not _out_dict:
+            return class_orig.__str__(self)
         return _out_dict
     class_orig.to_dict = to_dict
     return class_orig

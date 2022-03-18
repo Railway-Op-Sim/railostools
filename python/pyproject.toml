@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "rostools"
+name = "railostools"
 version = "1.0.0"
 description = ""
 authors = [" Kristian Zarębski <krizar312@gmail.com>"]
