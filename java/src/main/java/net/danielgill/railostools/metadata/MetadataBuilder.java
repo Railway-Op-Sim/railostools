@@ -1,4 +1,4 @@
-package net.danielgill.railostools;
+package net.danielgill.railostools.metadata;
 
 import java.io.File;
 import java.util.Map;
