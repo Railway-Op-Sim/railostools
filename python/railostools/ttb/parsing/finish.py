@@ -1,0 +1,172 @@
+from datetime import datetime
+import typing
+
+import railostools.ttb.components as ros_comp
+import railostools.ttb.components.finish as ros_finish
+import railostools.exceptions as ros_exc
+import railostools.ttb.string as ros_ttb_str
+import railostools.common.coords as ros_coords
+
+import railostools.ttb.parsing.components as ros_parse_comp
+
+
+def parse_Fns(finish_components: typing.List[str]) -> ros_finish.Fns:
+    """Parse an Fns type string"""
+    if len(finish_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{finish_components}' for finish type 'Fns'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'Snt'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _new_srv = ros_parse_comp.parse_reference(finish_components[2])
+    return ros_finish.Fns(time=finish_components[0], new_service_ref=_new_srv)
+
+
+def parse_Fjo(finish_components: typing.List[str]) -> ros_finish.Fjo:
+    """Parse an Fjo type string"""
+    if len(finish_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{finish_components}' for finish type 'Fjo'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'Fjo'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _joining_srv = ros_parse_comp.parse_reference(finish_components[2])
+    return ros_finish.Fjo(time=finish_components[0], joining_service_ref=_joining_srv)
+
+
+def parse_Fer(finish_components: typing.List[str]) -> ros_finish.Fer:
+    """Parse an Fer type string"""
+    if len(finish_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{finish_components}' for finish type 'Fer'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'Fjo'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _exit_elements = [
+        ros_coords.coord_from_str(i)
+        for i in finish_components[2].split()
+    ]
+
+    return ros_finish.Fer(time=finish_components[0], exit_coords=_exit_elements)
+
+
+def parse_Frh_sh(finish_components: typing.List[str]) -> ros_finish.Fer:
+    """Parse an Frh-sh type string"""
+    if len(finish_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{finish_components}' for finish type 'Frh-sh'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'Frh-sh'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _linked_ref = ros_parse_comp.parse_reference(finish_components[2])
+
+    return ros_finish.Frh_sh(time=finish_components[0], linked_shuttle_ref=_linked_ref)
+
+
+def parse_Fns_sh(finish_components: typing.List[str]) -> ros_finish.Fer:
+    """Parse an Fns-sh type string"""
+    if len(finish_components) != 4:
+        raise ros_exc.ParsingError(
+            "Expected 4 items in components "
+            f"'{finish_components}' for finish type 'Fns-sh'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'Fns-sh'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _linked_shuttle_ref = ros_parse_comp.parse_reference(finish_components[2])
+    _finish_ref = ros_parse_comp.parse_reference(finish_components[3])
+
+    return ros_finish.Fns_sh(time=finish_components[0], linked_shuttle_ref=_linked_shuttle_ref, finishing_service_ref=_finish_ref)
+
+
+def parse_F_nshs(finish_components: typing.List[str]) -> ros_finish.Fer:
+    """Parse an F-nshs type string"""
+    if len(finish_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{finish_components}' for finish type 'F-nshs'"
+        )
+
+    try:
+        datetime.strptime(finish_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for finish type 'F-nshs'"
+            f"but received '{finish_components[0]}'"
+        ) from e
+
+    _linked_shuttle_ref = ros_parse_comp.parse_reference(finish_components[2])
+
+    return ros_finish.F_nshs(time=finish_components[0], linked_shuttle_ref=_linked_shuttle_ref)
+
+
+def parse_Frh(finish_components: typing.List[str]) -> ros_finish.Fer:
+    """Parse an Frh type string"""
+    if len(finish_components) != 1:
+        raise ros_exc.ParsingError(
+            "Expected one component "
+            f"'{finish_components}' for finish type 'Frh'"
+        )
+
+    return ros_finish.Frh()
+
+
+def parse_finish(finish_str: str) -> ros_comp.StartType:
+    PARSE_DICT = {
+        "Fns": parse_Fns,
+        "Fjo": parse_Fjo,
+        "Fer": parse_Fer,
+        "Frh_sh": parse_Frh_sh,
+        "Fns_sh": parse_Fns_sh,
+        "F_nshs": parse_F_nshs,
+        "Frh": parse_Frh
+    }
+
+    try:
+        _components = ros_ttb_str.split(finish_str)
+    except IndexError as e:
+        raise ros_exc.ParsingError(
+            f"Failed to extract ttb components from '{finish_str}'"
+        ) from e
+
+    for start_type, parser in PARSE_DICT.items():
+        if start_type.replace("-", "_") in finish_str:
+            return parser(_components)

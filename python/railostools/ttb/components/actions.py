@@ -22,13 +22,13 @@ class Location(pydantic.BaseModel, ros_comp.ActionType):
 
     @pydantic.validator('start_time', 'end_time')
     def to_string(cls, v):
-        return v.strftime("%H:%M")
+        return v.strftime("%H:%M") if v else v
 
 
 @ros_util.dictify
 class pas(pydantic.BaseModel, ros_comp.ActionType):
-    time: typing.Optional[datetime.time]
-    location: ros_coords.Coordinate
+    time: datetime.time
+    location: str
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
@@ -49,6 +49,7 @@ class pas(pydantic.BaseModel, ros_comp.ActionType):
 
 @ros_util.dictify
 class jbo(pydantic.BaseModel, ros_comp.ActionType):
+    time: datetime.time
     joining_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
@@ -65,6 +66,7 @@ class jbo(pydantic.BaseModel, ros_comp.ActionType):
 
 @ros_util.dictify
 class fsp(pydantic.BaseModel, ros_comp.ActionType):
+    time: datetime.time
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
@@ -81,6 +83,7 @@ class fsp(pydantic.BaseModel, ros_comp.ActionType):
 
 @ros_util.dictify
 class rsp(pydantic.BaseModel, ros_comp.ActionType):
+    time: datetime.time
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
@@ -97,6 +100,7 @@ class rsp(pydantic.BaseModel, ros_comp.ActionType):
 
 @ros_util.dictify
 class cdt(pydantic.BaseModel, ros_comp.ActionType):
+    time: datetime.time
     def __str__(self) -> str:
         return self.__class__.__name__
 
