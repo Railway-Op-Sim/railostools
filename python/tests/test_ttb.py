@@ -1,16 +1,14 @@
 import pytest
 
-import railostools.ttb.services.start as ros_ttb_start
 import railostools.common.coords as ros_coords
-import railostools.ttb as ros_ttb
-import railostools.ttb.services as ros_srv
-import railostools.ttb.services.start as ros_start
-import railostools.ttb.services.finish as ros_end
-import railostools.ttb.services.actions as ros_act
+import railostools.ttb.components as ros_comp
+import railostools.ttb.components.start as ros_start
+import railostools.ttb.components.finish as ros_end
+import railostools.ttb.components.actions as ros_act
 
 @pytest.mark.ttb_strings
 def test_element_str():
-    _start_service = ros_ttb_start.Snt(
+    _start_service = ros_start.Snt(
         time="11:45",
         rear_element_id=ros_coords.Coordinate(10, -10),
         front_element_id=ros_coords.Coordinate(10, -11)
@@ -22,9 +20,9 @@ def test_element_str():
 @pytest.mark.ttb_strings
 def test_service_str():
     EXPECTED = "1U03;Test service;120;145;73;2002\x0011:23;Snt;10-23 10-24\x0011:34;11:35;Liverpool South Parkway\x00Frh"
-    _service = ros_ttb.Service(
-        header=ros_ttb.Header(
-            reference=ros_srv.Reference(headcode="1U03"),
+    _service = ros_comp.Service(
+        header=ros_comp.Header(
+            reference=ros_comp.Reference(service="1U", id=3),
             description="Test service",
             start_speed=120,
             max_speed=145,
@@ -50,9 +48,9 @@ def test_service_str():
 
 @pytest.mark.ttb_strings
 def test_dictify():
-    _service = ros_ttb.Service(
-        header=ros_ttb.Header(
-            reference=ros_srv.Reference(headcode="1U03"),
+    ros_comp.Service(
+        header=ros_comp.Header(
+            reference=ros_comp.Reference(service="1U", id=3),
             description="Test service",
             start_speed=120,
             max_speed=145,
@@ -76,4 +74,3 @@ def test_dictify():
             )
         }
     )
-    print(_service.to_dict())
