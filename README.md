@@ -1,5 +1,5 @@
 # ROSTools
-[![ROSTools](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+[![ROSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
 
 *Railway Operation Simulator Toolkit*
 
