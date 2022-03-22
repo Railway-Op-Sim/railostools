@@ -3,30 +3,29 @@ import typing
 import datetime
 
 import railostools.ttb.components as ros_comp
-import railostools.common.coords as ros_coords
 import railostools.ttb.string as ros_ttb_str
 import railostools.common.utilities as ros_util
 
 
 @ros_util.dictify
-class Location(pydantic.BaseModel, ros_comp.ActionType):
-    start_time: datetime.time
+class Location(ros_comp.ActionType, pydantic.BaseModel):
+    time: datetime.time
     end_time: typing.Optional[datetime.time]
     name: str
     def __str__(self) -> str:
-        _elements = [self.start_time]
+        _elements = [self.time]
         if self.end_time:
             _elements.append(self.end_time)
         _elements.append(self.name)
         return ros_ttb_str.concat(*_elements)
 
-    @pydantic.validator('start_time', 'end_time')
-    def to_string(cls, v):
+    @pydantic.validator('time', 'end_time')
+    def to_string(cls, v: datetime.time):
         return v.strftime("%H:%M") if v else v
 
 
 @ros_util.dictify
-class pas(pydantic.BaseModel, ros_comp.ActionType):
+class pas(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     location: str
     def __str__(self) -> str:
@@ -48,7 +47,7 @@ class pas(pydantic.BaseModel, ros_comp.ActionType):
 
 
 @ros_util.dictify
-class jbo(pydantic.BaseModel, ros_comp.ActionType):
+class jbo(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -65,7 +64,7 @@ class jbo(pydantic.BaseModel, ros_comp.ActionType):
 
 
 @ros_util.dictify
-class fsp(pydantic.BaseModel, ros_comp.ActionType):
+class fsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -82,7 +81,7 @@ class fsp(pydantic.BaseModel, ros_comp.ActionType):
 
 
 @ros_util.dictify
-class rsp(pydantic.BaseModel, ros_comp.ActionType):
+class rsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -99,7 +98,7 @@ class rsp(pydantic.BaseModel, ros_comp.ActionType):
 
 
 @ros_util.dictify
-class cdt(pydantic.BaseModel, ros_comp.ActionType):
+class cdt(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     def __str__(self) -> str:
         return self.__class__.__name__

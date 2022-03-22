@@ -51,6 +51,23 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
     )
 
 
+def parse_Sns(start_components: typing.List[str]) -> ros_start.Sfs:
+    if len(start_components) != 3:
+        raise ros_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{start_components}' for start type 'Sns'"
+        )
+    try:
+        datetime.strptime(start_components[0], "%H:%M")
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            "Expected time string for start type 'Sns'"
+            f"but received '{start_components[0]}'"
+        ) from e
+    _parent_srv = ros_parse_comp.parse_reference(start_components[2])
+    return ros_start.Sns(time=start_components[0], parent_service=_parent_srv)
+
+
 def parse_Sfs(start_components: typing.List[str]) -> ros_start.Sfs:
     if len(start_components) != 3:
         raise ros_exc.ParsingError(
@@ -143,7 +160,8 @@ def parse_start(start_str: str) -> ros_comp.StartType:
         "Sfs": parse_Sfs,
         "Sns-fsh": parse_Sns_fsh,
         "Snt-sh": parse_Snt_sh,
-        "Sns-sh": parse_Sns_sh
+        "Sns-sh": parse_Sns_sh,
+        "Sns": parse_Sns
     }
 
     try:
@@ -154,5 +172,9 @@ def parse_start(start_str: str) -> ros_comp.StartType:
         ) from e
 
     for start_type, parser in PARSE_DICT.items():
-        if start_type.replace("-", "_") in start_str:
+        if start_type in start_str:
             return parser(_components)
+
+    raise ros_exc.ParsingError(
+        f"Failed to determine start type for '{start_str}'"
+    )

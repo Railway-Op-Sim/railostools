@@ -11,7 +11,7 @@ from pydantic.fields import ModelField
 
 
 @ros_util.dictify
-class Fns(pydantic.BaseModel, ros_comp.FinishType):
+class Fns(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -33,7 +33,7 @@ class Fns(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class Fjo(pydantic.BaseModel, ros_comp.FinishType):
+class Fjo(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -55,7 +55,7 @@ class Fjo(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class Fer(pydantic.BaseModel, ros_comp.FinishType):
+class Fer(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     exit_coords: typing.List[ros_coords.Coordinate]
     def __str__(self) -> str:
@@ -77,7 +77,7 @@ class Fer(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class Frh_sh(pydantic.BaseModel, ros_comp.FinishType):
+class Frh_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -99,7 +99,7 @@ class Frh_sh(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class Fns_sh(pydantic.BaseModel, ros_comp.FinishType):
+class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
     finishing_service_ref: ros_comp.Reference
@@ -123,7 +123,7 @@ class Fns_sh(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class F_nshs(pydantic.BaseModel, ros_comp.FinishType):
+class F_nshs(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
     def __str__(self) -> str:
@@ -145,7 +145,7 @@ class F_nshs(pydantic.BaseModel, ros_comp.FinishType):
 
 
 @ros_util.dictify
-class Frh(pydantic.BaseModel, ros_comp.FinishType):
+class Frh(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return self.__class__.__name__
 

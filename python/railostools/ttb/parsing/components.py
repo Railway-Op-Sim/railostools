@@ -25,31 +25,32 @@ def parse_reference(train_ref: str) -> ros_comp.Reference:
 def parse_header(header_str: str) -> ros_comp.Header:
     """Parse a service header"""
     _components = ros_ttb_str.split(header_str)
-    if len(_components) not in (2, 7, 8):
+    if len(_components) not in (1, 2, 7, 8):
         raise ros_exc.ParsingError(
-            "Expected 2, 7 or 8 items in components "
+            "Expected 1, 2, 7 or 8 items in components "
             f"'{_components}' for service header"
         )
 
-    if len(_components) > 2:
-        start_speed=int(_components[2])
-        max_speed=int(_components[3])
-        mass=int(_components[4])
-        power=int(_components[5])
-    if len(_components) > 6:
-        max_signaller_speed=int(_components[6])
+    description=_components[1] if len(_components) > 1 else None
+    start_speed=int(_components[2]) if len(_components) > 2 else None
+    max_speed=int(_components[3]) if len(_components) > 2 else None
+    mass=int(_components[4]) if len(_components) > 2 else None
+    brake_force=int(_components[5]) if len(_components) > 2 else None
+    power=int(_components[6]) if len(_components) > 2 else None
+    max_signaller_speed=int(_components[7]) if len(_components) > 7 else None
+
 
     _reference = parse_reference(_components[0])
 
     return ros_comp.Header(
         reference=_reference,
-        description=_components[1],
-        start_speed=int(_components[2]),
-        max_speed=int(_components[3]),
-        mass=int(_components[4]),
-        brake_force=int(_components[5]),
-        power=int(_components[6]),
-        max_signaller_speed=int(_components[7]) if len(_components) == 6 else None
+        description=description,
+        start_speed=start_speed,
+        max_speed=max_speed,
+        mass=mass,
+        brake_force=brake_force,
+        power=power,
+        max_signaller_speed=max_signaller_speed
     )
 
 
@@ -67,7 +68,7 @@ def parse_repeat(repeat_str: str) -> ros_comp.Repeat:
             "Expected 4 items in components "
             f"'{_components}' for repeat statement"
         )
-
+    print(_components)
     return ros_comp.Repeat(
         mins=int(_components[1]),
         digits=int(_components[2]),

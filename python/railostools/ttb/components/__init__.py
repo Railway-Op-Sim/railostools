@@ -1,4 +1,6 @@
 import datetime
+from doctest import debug_script
+from pydoc import describe
 import typing
 import py
 import pydantic
@@ -21,9 +23,19 @@ class FinishType(Element):
         return super().__str__()
 
 
-class ActionType(Element):
+class ActionType(Element, pydantic.BaseModel):
+    time: datetime.time
+    warning: bool = False
     def __str__(self) -> str:
-        return super().__str__()
+        return f'{"W" if self.warning else ""}{super().__str__()}'
+
+    @pydantic.root_validator(pre=True)
+    def check_for_warning(cls, vals: typing.Dict) -> typing.Dict:
+        _time = vals["time"]
+        if isinstance(_time, str) and _time.upper().startswith("W"):
+            vals["warning"] = True
+            vals["time"] = _time[1:]
+        return vals
 
 
 class StartType(Element):
@@ -52,7 +64,7 @@ class Reference(pydantic.BaseModel):
 @ros_util.dictify
 class Header(pydantic.BaseModel, Element):
     reference: ros_comp.Reference
-    description: str
+    description: typing.Optional[str]
     start_speed: typing.Optional[pydantic.conint(ge=0)] = None
     max_speed: typing.Optional[pydantic.conint(ge=0)] = None
     mass: typing.Optional[pydantic.conint(ge=0)] = None
@@ -62,8 +74,9 @@ class Header(pydantic.BaseModel, Element):
     def __str__(self) -> str:
         _elements = [
             f"{self.reference}",
-            self.description,
         ]
+        if self.description:
+            _elements.append(self.description)
         if self.max_speed:
             _elements += [
                 f"{self.start_speed}",
@@ -80,7 +93,7 @@ class Header(pydantic.BaseModel, Element):
 @ros_util.dictify
 class Repeat(pydantic.BaseModel, Element):
     mins: pydantic.conint(gt=1)
-    digits: pydantic.conint(gt=1)
+    digits: pydantic.conint(ge=0)
     repeats: pydantic.conint(gt=1)
     def __str__(self) -> str:
         return ros_ttb_str.concat(

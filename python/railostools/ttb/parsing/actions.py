@@ -16,13 +16,6 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
             "Expected 2 or 3 items in components "
             f"'{action_components}' for location"
         )
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in location "
-            f"but received '{action_components[0]}'"
-        ) from e
 
     if len(action_components) == 3:
         try:
@@ -39,7 +32,7 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
         _location = action_components[1]
 
     return ros_act.Location(
-        start_time=action_components[0],
+        time=action_components[0],
         end_time=_depart,
         name=_location
     )
@@ -53,14 +46,6 @@ def parse_pas(action_components: typing.List[str]) -> ros_act.Location:
             f"'{action_components}' for 'pas' statement"
         )
 
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in location "
-            f"but received '{action_components[0]}'"
-        ) from e
-
     return ros_act.pas(time=action_components[0], location=action_components[2])
 
 
@@ -71,14 +56,6 @@ def parse_jbo(action_components: typing.List[str]) -> ros_act.Location:
             "Expected 3 items in components "
             f"'{action_components}' for 'jbo' statement"
         )
-
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in 'jbo' statement "
-            f"but received '{action_components[0]}'"
-        ) from e
 
     _joined_ref = ros_parse_comp.parse_reference(action_components[2])
 
@@ -93,14 +70,6 @@ def parse_fsp(action_components: typing.List[str]) -> ros_act.fsp:
             f"'{action_components}' for 'fsp' statement"
         )
 
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in 'fsp' statement "
-            f"but received '{action_components[0]}'"
-        ) from e
-
     _new_serv = ros_parse_comp.parse_reference(action_components[2])
 
     return ros_act.fsp(time=action_components[0], new_service_ref=_new_serv)
@@ -114,14 +83,6 @@ def parse_rsp(action_components: typing.List[str]) -> ros_act.fsp:
             f"'{action_components}' for 'rsp' statement"
         )
 
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in 'rsp' statement "
-            f"but received '{action_components[0]}'"
-        ) from e
-
     _new_serv = ros_parse_comp.parse_reference(action_components[2])
 
     return ros_act.fsp(time=action_components[0], new_service_ref=_new_serv)
@@ -134,14 +95,6 @@ def parse_cdt(action_components: typing.List[str]) -> ros_act.fsp:
             "Expected 2 items in components "
             f"'{action_components}' for 'cdt' statement"
         )
-
-    try:
-        datetime.strptime(action_components[0], "%H:%M")
-    except ValueError as e:
-        raise ros_exc.ParsingError(
-            "Expected time string for arrival time in location "
-            f"but received '{action_components[0]}'"
-        ) from e
 
     return ros_act.cdt(time=action_components[0])
 
@@ -161,6 +114,9 @@ def parse_action(action_str: str) -> ros_comp.ActionType:
         raise ros_exc.ParsingError(
             f"Failed to extract ttb components from '{action_str}'"
         ) from e
+
+    if _components[0].upper().startswith("W"):
+        _components[0] = _components[0][1:]
 
     for start_type, parser in PARSE_DICT.items():
         if start_type.replace("-", "_") in action_str:

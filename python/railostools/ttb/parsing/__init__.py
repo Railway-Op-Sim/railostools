@@ -44,7 +44,7 @@ class TTBParser:
         try:
             parse_action(statement)
             return True
-        except ros_exc.ParsingError:
+        except ros_exc.ParsingError as e:
             return False
 
     @property
@@ -82,6 +82,7 @@ class TTBParser:
 
     def _parse_service(self, service_components: typing.List[str]) -> ttb_comp.Service:
         """Parse a single service from the components"""
+        print(service_components)
         _header = parse_header(service_components[0])
         _start_type = parse_start(service_components[1])
 

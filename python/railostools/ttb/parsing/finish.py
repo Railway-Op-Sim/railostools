@@ -151,12 +151,12 @@ def parse_Frh(finish_components: typing.List[str]) -> ros_finish.Fer:
 
 def parse_finish(finish_str: str) -> ros_comp.StartType:
     PARSE_DICT = {
-        "Fns": parse_Fns,
         "Fjo": parse_Fjo,
         "Fer": parse_Fer,
-        "Frh_sh": parse_Frh_sh,
-        "Fns_sh": parse_Fns_sh,
-        "F_nshs": parse_F_nshs,
+        "Frh-sh": parse_Frh_sh,
+        "Fns-sh": parse_Fns_sh,
+        "Fns": parse_Fns,
+        "F-nshs": parse_F_nshs,
         "Frh": parse_Frh
     }
 
@@ -167,6 +167,9 @@ def parse_finish(finish_str: str) -> ros_comp.StartType:
             f"Failed to extract ttb components from '{finish_str}'"
         ) from e
 
-    for start_type, parser in PARSE_DICT.items():
-        if start_type.replace("-", "_") in finish_str:
+    for finish_type, parser in PARSE_DICT.items():
+        if finish_type in finish_str:
             return parser(_components)
+    raise ros_exc.ParsingError(
+        f"Failed to determine finish type for '{finish_str}'"
+    )
