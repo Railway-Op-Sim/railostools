@@ -1,5 +1,5 @@
-#ifndef __ROSTOOLS_METADATA_HXX__
-#define __ROSTOOLS_METADATA_HXX__
+#ifndef __RAILOSTOOLS_METADATA_HXX__
+#define __RAILOSTOOLS_METADATA_HXX__
 
 #include <map>
 #include <string>
