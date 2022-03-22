@@ -1,14 +1,25 @@
-import pytest
+import os.path
 
-import railostools.ttb.parsing.start as rosparse_start
-import railostools.ttb.parsing.finish as rosparse_finish
+import pytest
+import railostools.ttb.parsing as ros_parse
 import railostools.ttb.parsing.actions as rosparse_act
+import railostools.ttb.parsing.finish as rosparse_finish
+import railostools.ttb.parsing.start as rosparse_start
 import railostools.ttb.string as ros_ttb_str
+
+TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+
+@pytest.fixture
+def ttb_parse_obj() -> ros_parse.TTBParser:
+    return ros_parse.TTBParser(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
+
 
 @pytest.mark.ttb_parsing
 def test_snt_parse() -> None:
     TEST_STR = "10:23;Snt;1-34 1-35"
     rosparse_start.parse_Snt(ros_ttb_str.split(TEST_STR))
+
 
 @pytest.mark.ttb_parsing
 def test_sfs_parse() -> None:
@@ -106,3 +117,9 @@ def test_location() -> None:
     rosparse_act.parse_location(ros_ttb_str.split(TEST_STR))
     TEST_STR = "10:11;Longbridge"
     rosparse_act.parse_location(ros_ttb_str.split(TEST_STR))
+
+
+@pytest.mark.ttb_parsing
+def test_services_str(ttb_parse_obj: ros_parse.TTBParser) -> None:
+    with ros_parse.TTBParser(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb")) as w:
+        pass

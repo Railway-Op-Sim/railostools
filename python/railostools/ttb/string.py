@@ -11,10 +11,11 @@ def concat(*args, join_type=None) -> str:
         return ";".join(str(i) for i in args)
 
 
-def split(component_str: str) -> typing.Union[typing.Tuple[typing.List[str], ...], typing.List[str]]:
-    _lines = component_str.split("\0")
-    if len(_lines) == 1:
-        return _lines[0].split(";")
-    return (
-        i.split(";") for i in _lines
-    )
+def split(component_str: str, split_type = None) -> typing.Union[typing.Tuple[typing.List[str], ...], typing.List[str]]:
+    if split_type is ros_comp.Element:
+        _split_char = "\0"
+    elif split_type is ros_comp.Service:
+        _split_char = ","
+    else:
+        _split_char = ";"
+    return component_str.split(_split_char)
