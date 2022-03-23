@@ -2,46 +2,45 @@ cmake_minimum_required( VERSION 3.20 )
 set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_CXX_STANDARD_REQUIRED True )
 
-option( ROSTOOLS_BUILD_TESTS "Build Unit Tests" OFF )
-option( ROSTOOLS_CODE_COVERAGE "Enable Coverage" OFF )
+option( RAILOSTOOLS_BUILD_TESTS "Build Unit Tests" OFF )
+option( RAILOSTOOLS_CODE_COVERAGE "Enable Coverage" OFF )
+set( RAILOSTOOLS railostools )
 
-project( railostools VERSION 0.6.1 LANGUAGES CXX )
-
-set( ROSTOOLS railostools )
+project( ${RAILOSTOOLS} VERSION 0.6.1 LANGUAGES CXX )
 set( TOMLPP tomlplusplus )
 set( SEMVER semver )
 
-if( NOT DEFINED ROSTOOLS_STATIC_LIBRARY )
-    set( ROSTOOLS_STATIC_LIBRARY OFF )
+if( NOT DEFINED RAILOSTOOLS_STATIC_LIBRARY )
+    set( RAILOSTOOLS_STATIC_LIBRARY OFF )
 endif()
 
 message( STATUS "[ROSTools]" )
-message( STATUS "\t- Use Static Library: ${ROSTOOLS_STATIC_LIBRARY}" )
-message( STATUS "\t- Build Tests: ${ROSTOOLS_BUILD_TESTS}" )
-message( STATUS "\t- Test Coverage: ${ROSTOOLS_CODE_COVERAGE}" )
+message( STATUS "\t- Use Static Library: ${RAILOSTOOLS_STATIC_LIBRARY}" )
+message( STATUS "\t- Build Tests: ${RAILOSTOOLS_BUILD_TESTS}" )
+message( STATUS "\t- Test Coverage: ${RAILOSTOOLS_CODE_COVERAGE}" )
 
 file( GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
 
 set( EXTERNAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
-if( ROSTOOLS_STATIC_LIBRARY )
-    add_library( ${ROSTOOLS} STATIC ${SRC_FILES} )
+if( RAILOSTOOLS_STATIC_LIBRARY )
+    add_library( ${RAILOSTOOLS} STATIC ${SRC_FILES} )
 else()
-    add_library( ${ROSTOOLS} SHARED ${SRC_FILES} )
+    add_library( ${RAILOSTOOLS} SHARED ${SRC_FILES} )
 endif()
 
-target_include_directories( ${ROSTOOLS} PRIVATE ${EXTERNAL_SOURCES} )
-target_include_directories( ${ROSTOOLS} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include )
+target_include_directories( ${RAILOSTOOLS} PRIVATE ${EXTERNAL_SOURCES} )
+target_include_directories( ${RAILOSTOOLS} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include )
 
 # ------------------------- Installation on System --------------------------------- #
 
 install(
-    TARGETS ${ROSTOOLS}
+    TARGETS ${RAILOSTOOLS}
     LIBRARY
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/railostools
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${RAILOSTOOLS}
 )
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/railostools
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${RAILOSTOOLS}
     DESTINATION include
     PATTERN "*.hxx"
 )
@@ -55,25 +54,25 @@ install(
     DESTINATION include
     PATTERN "*.hpp"
 )
-install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${ROSTOOLS}-config.cmake DESTINATION lib/railostools )
+install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${RAILOSTOOLS}-config.cmake DESTINATION lib/${RAILOSTOOLS} )
 
-install( TARGETS ${ROSTOOLS} EXPORT ${ROSTOOLS} DESTINATION "${ROSTOOLS_LIBRARY_DEST}" )
+install( TARGETS ${RAILOSTOOLS} EXPORT ${RAILOSTOOLS} DESTINATION "${RAILOSTOOLS_LIBRARY_DEST}" )
 
-target_include_directories( ${ROSTOOLS} PUBLIC
+target_include_directories( ${RAILOSTOOLS} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${EXTERNAL_SOURCES}>
     $<INSTALL_INTERFACE:include>
     $<INSTALL_INTERFACE:include>
 )
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake
+write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/${RAILOSTOOLS}-config-version.cmake
   COMPATIBILITY AnyNewerVersion
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ROSTOOLS}-config-version.cmake DESTINATION lib/railostools )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${RAILOSTOOLS}-config-version.cmake DESTINATION lib/${RAILOSTOOLS} )
 
-install( EXPORT ${ROSTOOLS} DESTINATION "lib/railostools" )
+install( EXPORT ${RAILOSTOOLS} DESTINATION "lib/${RAILOSTOOLS}" )
 
-if( NOT ROSTOOLS_BUILD_TESTS )
+if( NOT RAILOSTOOLS_BUILD_TESTS )
     add_subdirectory( tests EXCLUDE_FROM_ALL )
 endif()

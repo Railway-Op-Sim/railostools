@@ -1,5 +1,5 @@
-# ROSTools
-[![ROSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/railostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/railostools)
+# RailOSTools
+[![RailOSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
 
 *Railway Operation Simulator Toolkit*
 
@@ -127,7 +127,7 @@ async def listener(monitor: railostools.performance.Monitor, user_name: str) -> 
         print(f"Running for user '{user_name}'")
         print(monitor.data)
         await asyncio.sleep(10)
-    
+
 # Attach listener function to the async loop of the monitor
 # arguments are given as a dictionary
 my_monitor.exec_in_parallel(listener, {'user_name': 'John'})
