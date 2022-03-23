@@ -1,7 +1,6 @@
 import datetime
 import logging
 import os.path
-import jsbeautifier
 import json
 
 from typing import Any, Dict, List
@@ -10,7 +9,7 @@ from railostools.exceptions import RailwayParsingError
 
 
 class RlyParser:
-    _logger = logging.getLogger('ROSTools.RlyParser')
+    _logger = logging.getLogger('RailOSTools.RlyParser')
 
     def __init__(self) -> None:
         self._logger.debug('Creating new RlyParser')
@@ -150,16 +149,14 @@ class RlyParser:
 
         return _data_dict
 
-    def json(self, output_file) -> None:
+    def dump(self, output_file) -> None:
         """Dump metadata to a JSON file"""
-        _beautifier_opts = jsbeautifier.default_options()
-        _beautifier_opts.indent_size = 2
 
         if isinstance(output_file, str):
             with open(output_file, 'w') as out_f:
-                out_f.write(jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts))
+                json.dump(self._rly_data, out_f, indent=2)
         else:
-            _out_str = jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts)
+            _out_str = json.dumps(self._rly_data, indent=2)
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")

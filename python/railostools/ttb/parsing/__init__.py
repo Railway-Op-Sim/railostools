@@ -1,9 +1,9 @@
 import datetime
+import json
 import os.path
 import re
-import json
-from textwrap import indent
 import typing
+import logging
 import click
 import railostools.ttb.components as ttb_comp
 import railostools.ttb.string as ros_ttb_str
@@ -12,23 +12,14 @@ import railostools.exceptions as ros_exc
 from railostools.ttb.parsing.start import parse_start
 from railostools.ttb.parsing.finish import parse_finish
 from railostools.ttb.parsing.actions import parse_action
-from railostools.ttb.parsing.components import parse_reference, parse_header, parse_repeat
+from railostools.ttb.parsing.components import parse_header, parse_repeat
 
 
 class TTBParser:
-    def __init__(self, file_name: str) -> None:
-        self._input_file = file_name
-        if not os.path.exists(self._input_file):
-            raise FileNotFoundError(
-                f"Cannot parse file '{self._input_file}', file not found."
-            )
-
-        if os.path.splitext(self._input_file)[-1].lower() != ".ttb":
-            raise AssertionError(
-                f"Cannot parse file '{self._input_file}', file is not a valid timetable file."
-            )
-        with open(file_name) as in_f:
-            self._file_lines = ros_ttb_str.split(in_f.read(), ttb_comp.Element)
+    def __init__(self) -> None:
+        self._logger = logging.getLogger("RailOSTools.TTBParser")
+        self._data: typing.Optional[ttb_comp.Timetable] = None
+        self._file_lines: typing.List[str] = []
 
     def is_comment(self, statement: str) -> bool:
         """Returns if a given statement is a comment"""
@@ -50,15 +41,22 @@ class TTBParser:
     @property
     def start_time(self) -> datetime.time:
         """Retrieves the timetable start time"""
-        return datetime.datetime.strptime(self._file_lines[0], "%H:%M").time()
+        _index: int = 0
+        while self.is_comment(self._file_lines[_index]):
+            if _index >= len(self._file_lines):
+                raise ros_exc.ParsingError(
+                    "Failed to retrieve timetable start time"
+                )
+            _index += 1
+        return datetime.datetime.strptime(self._file_lines[_index], "%H:%M").time()
 
     @property
-    def comments(self) -> typing.Tuple[typing.Tuple[int, str], ...]:
+    def comments(self) -> typing.Dict[int, str]:
         """Retrieves all timetable comments along with position in file"""
         return {
             i: c for i, c in enumerate(self._file_lines)
             if self.is_comment(c)
-        }
+        } or None
 
     @property
     def services_str(self) -> typing.List[typing.List[str]]:
@@ -113,7 +111,7 @@ class TTBParser:
         else:
             _repeat = None
 
-        return ttb_comp.Service(
+        return ttb_comp.TimetabledService(
             header=_header,
             start_type=_start_type,
             finish_type=_finish_type,
@@ -121,22 +119,38 @@ class TTBParser:
             repeats=_repeat
         )
 
+    def parse(self, file_name: str) -> None:
+        if not os.path.exists(file_name):
+            raise FileNotFoundError(
+                f"Cannot parse file '{file_name}', file not found."
+            )
 
-    def __enter__(self) -> ttb_comp.Timetable:
+        if os.path.splitext(file_name)[-1].lower() != ".ttb":
+            raise AssertionError(
+                f"Cannot parse file '{file_name}', file is not a valid timetable file."
+            )
+        with open(file_name) as in_f:
+            self._file_lines = ros_ttb_str.split(in_f.read(), ttb_comp.Element)
+
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv
 
-    def __exit__(self, *args, **kwargs):
-        pass
+        self._data = ttb_comp.Timetable(
+            start_time=self.start_time,
+            services=_services,
+            comments=self.comments
+        )
 
+    def json(self, output_file) -> None:
+        """Dump metadata to a JSON file"""
 
-@click.command()
-@click.argument("file_name")
-def test_run(file_name: str):
-    with TTBParser(file_name) as parser:
-        pass
+        if isinstance(output_file, str):
+            with open(output_file, 'w') as out_f:
+                json.dump(self._data.dict(), out_f, indent=2)
+        else:
+            _out_str = json.dumps(self._data.dict(), indent=2)
+            output_file.write(_out_str)
 
-if __name__ in "__main__":
-    test_run()
+        self._logger.info(f"SUCCESS: Output written to '{output_file}")

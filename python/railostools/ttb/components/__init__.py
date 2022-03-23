@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import datetime
 from doctest import debug_script
 from pydoc import describe
@@ -6,7 +7,6 @@ import py
 import pydantic
 import railostools.ttb.string as ros_ttb_str
 import railostools.ttb.components as ros_comp
-import railostools.common.utilities as ros_util
 
 class Element:
     def __str__(self) -> str:
@@ -43,7 +43,6 @@ class StartType(Element):
         return super().__str__()
 
 
-@ros_util.dictify
 class Reference(pydantic.BaseModel):
     prefix: typing.Optional[pydantic.constr(max_length=4)] = None
     service: pydantic.constr(max_length=2, min_length=2)
@@ -61,7 +60,6 @@ class Reference(pydantic.BaseModel):
         self.id -= num
 
 
-@ros_util.dictify
 class Header(pydantic.BaseModel, Element):
     reference: ros_comp.Reference
     description: typing.Optional[str]
@@ -90,7 +88,6 @@ class Header(pydantic.BaseModel, Element):
         return ros_ttb_str.concat(*_elements)
 
 
-@ros_util.dictify
 class Repeat(pydantic.BaseModel, Element):
     mins: pydantic.conint(gt=1)
     digits: pydantic.conint(ge=0)
@@ -102,6 +99,7 @@ class Repeat(pydantic.BaseModel, Element):
             f"{self.repeats}"
         )
 
+
 class Service(pydantic.BaseModel):
     header: Header
     start_type: StartType
@@ -109,8 +107,8 @@ class Service(pydantic.BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-@ros_util.dictify
-class TimetabledService(pydantic.BaseModel):
+
+class TimetabledService(Service, pydantic.BaseModel):
     header: Header
     start_type: StartType
     finish_type: FinishType
@@ -132,7 +130,6 @@ class TimetabledService(pydantic.BaseModel):
         arbitrary_types_allowed = True
 
 
-@ros_util.dictify
 class SignallerService(Service, pydantic.BaseModel):
     header: Header
     start_type: StartType
@@ -146,10 +143,9 @@ class SignallerService(Service, pydantic.BaseModel):
         arbitrary_types_allowed = True
 
 
-@ros_util.dictify
 class Timetable(pydantic.BaseModel):
     start_time: datetime.time
-    services: typing.List[Service]
+    services: typing.Dict[str, Service]
     comments: typing.Optional[typing.Dict[int, str]] = None
 
     @pydantic.validator('start_time')

@@ -4,12 +4,8 @@ import datetime
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str
 import railostools.common.coords as ros_coords
-import railostools.common.utilities as ros_util
-
-from pydantic.fields import ModelField
 
 
-@ros_util.dictify
 class Snt(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     rear_element_id: ros_coords.Coordinate
@@ -33,11 +29,10 @@ class Snt(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Snt"
         return vals
 
 
-@ros_util.dictify
 class Sns(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     parent_service: ros_comp.Reference
@@ -53,11 +48,10 @@ class Sns(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Sns"
         return vals
 
 
-@ros_util.dictify
 class Sfs(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     splitting_service: ros_comp.Reference
@@ -74,11 +68,10 @@ class Sfs(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Sfs"
         return vals
 
 
-@ros_util.dictify
 class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     shuttle_ref: ros_comp.Reference
@@ -95,11 +88,10 @@ class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Sns-fsh"
         return vals
 
 
-@ros_util.dictify
 class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     rear_element_id: ros_coords.Coordinate
@@ -119,11 +111,10 @@ class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Snt-sh"
         return vals
 
 
-@ros_util.dictify
 class Sns_sh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     feeder_ref: ros_comp.Reference
@@ -142,5 +133,5 @@ class Sns_sh(ros_comp.StartType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Sns-sh"
         return vals

@@ -113,7 +113,6 @@ class Session:
             ) from e
         if os.path.exists(_file):
             return _file
-        print("BLAM", os.path.join(_file, '*.txt'))
         _search = glob.glob(os.path.join(_file, '*.txt'))
         return _search[0] if _search else None
 

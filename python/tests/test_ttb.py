@@ -48,7 +48,7 @@ def test_service_str():
 
 @pytest.mark.ttb_strings
 def test_dictify():
-    ros_comp.Service(
+    ros_comp.TimetabledService(
         header=ros_comp.Header(
             reference=ros_comp.Reference(service="1U", id=3),
             description="Test service",

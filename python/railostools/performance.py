@@ -126,7 +126,6 @@ class Monitor:
 
                 await self._process_lines(_lines)
                 await asyncio.sleep(self._wait_interval)
-                print(self._data)
                 _timer += 5
         except KeyboardInterrupt:
             self._is_running = False

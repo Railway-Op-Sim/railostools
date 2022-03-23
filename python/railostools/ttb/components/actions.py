@@ -4,10 +4,8 @@ import datetime
 
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str
-import railostools.common.utilities as ros_util
 
 
-@ros_util.dictify
 class Location(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     end_time: typing.Optional[datetime.time]
@@ -24,7 +22,6 @@ class Location(ros_comp.ActionType, pydantic.BaseModel):
         return v.strftime("%H:%M") if v else v
 
 
-@ros_util.dictify
 class pas(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     location: str
@@ -42,11 +39,10 @@ class pas(ros_comp.ActionType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "pas"
         return vals
 
 
-@ros_util.dictify
 class jbo(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: ros_comp.Reference
@@ -59,11 +55,14 @@ class jbo(ros_comp.ActionType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "jbo"
         return vals
 
+    @pydantic.validator('time')
+    def to_string(cls, v):
+        return v.strftime("%H:%M")
 
-@ros_util.dictify
+
 class fsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
@@ -76,11 +75,14 @@ class fsp(ros_comp.ActionType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "fsp"
         return vals
 
+    @pydantic.validator('time')
+    def to_string(cls, v):
+        return v.strftime("%H:%M")
 
-@ros_util.dictify
+
 class rsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
@@ -93,11 +95,14 @@ class rsp(ros_comp.ActionType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "rsp"
         return vals
 
+    @pydantic.validator('time')
+    def to_string(cls, v):
+        return v.strftime("%H:%M")
 
-@ros_util.dictify
+
 class cdt(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     def __str__(self) -> str:
@@ -105,5 +110,9 @@ class cdt(ros_comp.ActionType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "cdt"
         return vals
+
+    @pydantic.validator('time')
+    def to_string(cls, v):
+        return v.strftime("%H:%M")

@@ -5,12 +5,8 @@ import datetime
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str
 import railostools.common.coords as ros_coords
-import railostools.common.utilities as ros_util
-
-from pydantic.fields import ModelField
 
 
-@ros_util.dictify
 class Fns(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
@@ -28,11 +24,10 @@ class Fns(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Fns"
         return vals
 
 
-@ros_util.dictify
 class Fjo(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: ros_comp.Reference
@@ -50,11 +45,10 @@ class Fjo(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Fjo"
         return vals
 
 
-@ros_util.dictify
 class Fer(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     exit_coords: typing.List[ros_coords.Coordinate]
@@ -72,11 +66,10 @@ class Fer(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Fer"
         return vals
 
 
-@ros_util.dictify
 class Frh_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
@@ -94,11 +87,10 @@ class Frh_sh(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Frh-sh"
         return vals
 
 
-@ros_util.dictify
 class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
@@ -118,11 +110,10 @@ class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Fns-sh"
         return vals
 
 
-@ros_util.dictify
 class F_nshs(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
@@ -140,16 +131,15 @@ class F_nshs(ros_comp.FinishType, pydantic.BaseModel):
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "F-nshs"
         return vals
 
 
-@ros_util.dictify
 class Frh(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return self.__class__.__name__
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
-        vals["name"] = cls.__class__.__name__
+        vals["name"] = "Frh"
         return vals

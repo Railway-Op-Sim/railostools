@@ -1,12 +1,12 @@
 import typing
+import pydantic
 import dataclasses
 import re
 
 import railostools.exceptions as ros_exc
 
 
-@dataclasses.dataclass
-class Coordinate:
+class Coordinate(pydantic.BaseModel):
     X: int
     Y: int
 
@@ -27,10 +27,10 @@ class Coordinate:
         return int(pow(self.X**2+self.Y**2, 0.5))
 
     def __sub__(self, other):
-        return Coordinate(self.X-other.X, self.Y-other.Y)
+        return Coordinate(X=self.X-other.X, Y=self.Y-other.Y)
 
     def __add__(self, other):
-        return Coordinate(self.X+other.X, self.Y+other.Y)
+        return Coordinate(X=self.X+other.X, Y=self.Y+other.Y)
 
 
 def coord_from_str(coordinate_str: str) -> Coordinate:
@@ -43,4 +43,5 @@ def coord_from_str(coordinate_str: str) -> Coordinate:
         )
 
     _coord = coordinate_str.split("-")
-    return Coordinate(*(int(i.replace("N", "-")) for i in _coord))
+    _args = dict(zip(("X", "Y"), (int(i.replace("N", "-")) for i in _coord)))
+    return Coordinate(**_args)
