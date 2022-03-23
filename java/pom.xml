@@ -43,6 +43,11 @@
       <version>0.7.2</version>
     </dependency>
     <dependency>
+      <groupId>net.danielgill.ros</groupId>
+      <artifactId>timetable-lib</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.8.1</version>
