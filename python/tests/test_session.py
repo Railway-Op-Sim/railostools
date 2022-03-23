@@ -24,5 +24,5 @@ def test_session_pass(mocker: pytest_mock.MockerFixture) -> None:
     assert _session.timetable == "Birmingham 0700 Start"
     assert _session.main_mode == ros_enum.Level1Mode(3)
     assert _session.operation_mode == ros_enum.Level2OperMode(3)
-    assert _session.performance_file.split("/")[-1] == "Log 23-03-2022 18.46.06; Birmingham; Birmingham 0700 Start.txt"
+    assert _session.performance_file.split("\\")[-1] == "Log 23-03-2022 18.46.06; Birmingham; Birmingham 0700 Start.txt"
 
