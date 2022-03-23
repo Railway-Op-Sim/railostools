@@ -29,3 +29,8 @@ class SessionINIError(Exception):
     """Exceptions relating to reading of the session file"""
     def __init__(self, msg: str) -> None:
         super().__init__(msg)
+
+
+class RailwayParsingError(Exception):
+    def __init__(self, msg: str) -> None:
+        super().__init__(msg)

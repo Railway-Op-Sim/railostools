@@ -6,7 +6,7 @@ import json
 
 from typing import Any, Dict, List
 
-from rostools.exceptions import RailwayParsingError
+from railostools.exceptions import RailwayParsingError
 
 
 class RlyParser:
