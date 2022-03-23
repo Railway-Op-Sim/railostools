@@ -21,7 +21,7 @@ jobs:
         working-directory: python
       - name: Run tests
         run: |
-          python -m poetry run coverage run --source=rostools/ -m pytest -s
+          python -m poetry run coverage run --source=railostools/ -m pytest -s
           python -m poetry run coverage xml
         working-directory: python
       - uses: codecov/codecov-action@v2

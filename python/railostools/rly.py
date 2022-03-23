@@ -1,19 +1,17 @@
 import datetime
+import json
 import logging
 import os.path
-import jsbeautifier
-import json
-
 from typing import Any, Dict, List
 
-from rostools.exceptions import RailwayParsingError
+from railostools.exceptions import RailwayParsingError
 
 
 class RlyParser:
-    _logger = logging.getLogger('ROSTools.RlyParser')
+    _logger = logging.getLogger("RailOSTools.RlyParser")
 
     def __init__(self) -> None:
-        self._logger.debug('Creating new RlyParser')
+        self._logger.debug("Creating new RlyParser")
         self._rly_data = {}
         self._start_time: datetime.datetime = None
         self._current_file = None
@@ -22,8 +20,7 @@ class RlyParser:
         self._logger.info(f"Parsing RLY file '{rly_file}'")
         if not os.path.exists(rly_file):
             raise FileNotFoundError(
-                f"Cannot parse railway file '{rly_file}', "
-                "file does not exist."
+                f"Cannot parse railway file '{rly_file}', " "file does not exist."
             )
         _key = os.path.splitext(os.path.basename(rly_file))[0]
         self._rly_data[_key] = self._get_rly_components(open(rly_file).readlines())
@@ -33,19 +30,25 @@ class RlyParser:
     def n_active_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['metadata']['n_active_elements']
+        return self._rly_data[
+            os.path.splitext(os.path.basename(self._current_file))[0]
+        ]["metadata"]["n_active_elements"]
 
     @property
     def n_inactive_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['metadata']['n_inactive_elements']
+        return self._rly_data[
+            os.path.splitext(os.path.basename(self._current_file))[0]
+        ]["metadata"]["n_inactive_elements"]
 
     @property
     def program_version(self) -> str:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]['program_version']
+        return self._rly_data[
+            os.path.splitext(os.path.basename(self._current_file))[0]
+        ]["program_version"]
 
     @property
     def data(self):
@@ -56,92 +59,92 @@ class RlyParser:
     def _parse_active_element(self, active_elem: List[str]) -> Dict:
         active_elem = [i.strip() for i in active_elem]
         return {
-            'element_id': int(active_elem[1]),
-            'position': (int(active_elem[2]), int(active_elem[3])),
-            'length': (
+            "element_id": int(active_elem[1]),
+            "position": (int(active_elem[2]), int(active_elem[3])),
+            "length": (
                 int(active_elem[4]),
-                int(active_elem[5])
-                if active_elem[5] != '-1' else None
+                int(active_elem[5]) if active_elem[5] != "-1" else None,
             ),
-            'speed_limit': (
+            "speed_limit": (
                 int(active_elem[6]),
-                int(active_elem[7])
-                if active_elem[7] != '-1' else None
+                int(active_elem[7]) if active_elem[7] != "-1" else None,
             ),
-            'location_name': active_elem[8] or None,
-            'active_element_name': active_elem[9] or None,
+            "location_name": active_elem[8] or None,
+            "active_element_name": active_elem[9] or None,
         }
 
     def _parse_text(self, text_elem: List[str]) -> Dict:
         text_elem = [i.strip() for i in text_elem]
         return {
-            'n_items': int(text_elem[0]),
-            'position': (int(text_elem[2]), int(text_elem[3])),
-            'text_string': text_elem[4],
-            'font': {
-                'name': text_elem[5],
-                'size': int(text_elem[6]),
-                'color': int(text_elem[7]),
-                'charset': int(text_elem[8]),
-                'style': int(text_elem[9])
-            }
+            "n_items": int(text_elem[0]),
+            "position": (int(text_elem[2]), int(text_elem[3])),
+            "text_string": text_elem[4],
+            "font": {
+                "name": text_elem[5],
+                "size": int(text_elem[6]),
+                "color": int(text_elem[7]),
+                "charset": int(text_elem[8]),
+                "style": int(text_elem[9]),
+            },
         }
 
     def _parse_inactive_element(self, inactive_elem: List[str]) -> Dict:
         inactive_elem = [i.strip() for i in inactive_elem]
         return {
-            'element_id': int(inactive_elem[1]),
-            'position': (int(inactive_elem[2]), int(inactive_elem[3])),
-            'location_name': inactive_elem[4] or None,
+            "element_id": int(inactive_elem[1]),
+            "position": (int(inactive_elem[2]), int(inactive_elem[3])),
+            "location_name": inactive_elem[4] or None,
         }
 
     def _parse_metadata(self, metadata: List[str]) -> Dict:
         metadata = [i.strip() for i in metadata]
         return {
-            'program_version': metadata[0],
-            'home_position': (int(metadata[1]), int(metadata[2])),
-            'n_active_elements': int(metadata[3])
+            "program_version": metadata[0],
+            "home_position": (int(metadata[1]), int(metadata[2])),
+            "n_active_elements": int(metadata[3]),
         }
 
     def _get_rly_components(self, railway_file_data: str) -> Dict[str, Any]:
-        self._logger.debug('Retrieving components from extracted railway file data')
+        self._logger.debug("Retrieving components from extracted railway file data")
         _functions = {
-            'metadata': lambda x: self._parse_metadata(x),
-            'inactive_elements': lambda x: self._parse_inactive_element(x),
-            'active_elements': lambda x: self._parse_active_element(x),
-            'text': lambda x: self._parse_text(x)
+            "metadata": lambda x: self._parse_metadata(x),
+            "inactive_elements": lambda x: self._parse_inactive_element(x),
+            "active_elements": lambda x: self._parse_active_element(x),
+            "text": lambda x: self._parse_text(x),
         }
         _data_dict = {}
-        _key = 'metadata'
+        _key = "metadata"
         _part = []
         _counter = 0
         for i, line in enumerate(railway_file_data):
             _counter += 1
-            if '**Active elements**' in line:
+            if "**Active elements**" in line:
                 _data_dict[_key] = _functions[_key](_part)
-                _key = 'active_elements'
+                _key = "active_elements"
                 _data_dict[_key] = []
                 _part = []
                 continue
-            elif '**Inactive elements**' in line:
-                _data_dict['metadata']['n_inactive_elements'] = int(railway_file_data[i-1])
-                _key = 'inactive_elements'
+            elif "**Inactive elements**" in line:
+                _data_dict["metadata"]["n_inactive_elements"] = int(
+                    railway_file_data[i - 1]
+                )
+                _key = "inactive_elements"
                 _part = []
                 _data_dict[_key] = []
                 continue
-            elif '***' in line:
+            elif "***" in line:
                 try:
                     _data_dict[_key].append(_functions[_key](_part))
                 except ValueError as e:
-                    if _key != 'inactive_elements':
+                    if _key != "inactive_elements":
                         raise e
-                    _key = 'text'
+                    _key = "text"
                     _part = []
                     _data_dict[_key] = []
                     continue
                 _part = []
                 continue
-            _part.append(line.strip().replace('\0', ''))
+            _part.append(line.strip().replace("\0", ""))
 
         if _counter != len(railway_file_data):
             raise RailwayParsingError(
@@ -150,16 +153,14 @@ class RlyParser:
 
         return _data_dict
 
-    def json(self, output_file) -> None:
+    def dump(self, output_file) -> None:
         """Dump metadata to a JSON file"""
-        _beautifier_opts = jsbeautifier.default_options()
-        _beautifier_opts.indent_size = 2
 
         if isinstance(output_file, str):
-            with open(output_file, 'w') as out_f:
-                out_f.write(jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts))
+            with open(output_file, "w") as out_f:
+                json.dump(self._rly_data, out_f, indent=2)
         else:
-            _out_str = jsbeautifier.beautify(json.dumps(self._rly_data), _beautifier_opts)
+            _out_str = json.dumps(self._rly_data, indent=2)
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")
