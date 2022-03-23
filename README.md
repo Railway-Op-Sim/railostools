@@ -3,8 +3,9 @@
 
 *Railway Operation Simulator Toolkit*
 
-ROSTools provides a set of tools for working with Railway Operation Simulator program files.
-The package is both an importable Python3.6+ module and a command line interface.
+RailOSTools provides a set of tools for working with Railway Operation Simulator program files. The repository contains various API language implementations to provide access to Railway Operation Simulator session and file properties
+
+## Python
 
 All command line tools are available under the parent `railostools` command:
 
@@ -22,9 +23,9 @@ Commands:
   ttb2json  Extract ROS timetable file to json
 ```
 
-## Command Line Interface
+### Command Line Interface
 
-### Parsing `.ttb` Files
+#### Parsing `.ttb` Files
 
 The command `ttb2json` converts a `.ttb` file to a JSON file containing the metadata for the services.
 This allows for easier data interpretation within other projects.
@@ -56,11 +57,11 @@ Options:
   --help         Show this message and exit.
 ```
 
-## API
+### API
 
 Features within `railostools` can also be accessed via the dedicated Python API.
 
-### The `TTBParser` Class
+#### The `TTBParser` Class
 
 ```python3
 from railostools.ttb import TTBParser
@@ -82,7 +83,7 @@ print(my_parser.data)
 my_parser.dump('Enoshima_Week_2021.json')
 ```
 
-### The `RlyParser` Class
+#### The `RlyParser` Class
 
 ```python3
 from railostools.rly import RlyParser
@@ -103,7 +104,7 @@ print(my_parser.data)
 my_parser.dump('Antwerpen_Centraal.json')
 ```
 
-### Performance Log Monitoring
+#### Performance Log Monitoring
 The performance log parsing module can asynchronously monitor the Railway Operation Simulator logs directory extracting
 contents which can then be processed by applications live. The `Monitor` class is designed to only retrieve data when
 it has been confirmed by file modification time that the log has been updated. These times are also used to fetch the
