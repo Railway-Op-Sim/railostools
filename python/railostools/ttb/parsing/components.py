@@ -68,7 +68,6 @@ def parse_repeat(repeat_str: str) -> ros_comp.Repeat:
             "Expected 4 items in components "
             f"'{_components}' for repeat statement"
         )
-    print(_components)
     return ros_comp.Repeat(
         mins=int(_components[1]),
         digits=int(_components[2]),

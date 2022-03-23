@@ -20,7 +20,7 @@ def test_element_str():
 @pytest.mark.ttb_strings
 def test_service_str():
     EXPECTED = "1U03;Test service;120;145;73;2002\x0011:23;Snt;10-23 10-24\x0011:34;11:35;Liverpool South Parkway\x00Frh"
-    _service = ros_comp.Service(
+    _service = ros_comp.TimetabledService(
         header=ros_comp.Header(
             reference=ros_comp.Reference(service="1U", id=3),
             description="Test service",
@@ -38,7 +38,7 @@ def test_service_str():
         actions={
             0: ros_act.Location(
                 name="Liverpool South Parkway",
-                start_time="11:34",
+                time="11:34",
                 end_time="11:35"
             )
         }
@@ -69,7 +69,7 @@ def test_dictify():
         actions={
             0: ros_act.Location(
                 name="Liverpool South Parkway",
-                start_time="11:34",
+                time="11:34",
                 end_time="11:35"
             )
         }

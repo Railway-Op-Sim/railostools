@@ -82,7 +82,6 @@ class TTBParser:
 
     def _parse_service(self, service_components: typing.List[str]) -> ttb_comp.Service:
         """Parse a single service from the components"""
-        print(service_components)
         _header = parse_header(service_components[0])
         _start_type = parse_start(service_components[1])
 
@@ -128,7 +127,6 @@ class TTBParser:
         for service in self.services_str:
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv
-        print(json.dumps(_services, indent=2))
 
     def __exit__(self, *args, **kwargs):
         pass

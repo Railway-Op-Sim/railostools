@@ -8,6 +8,9 @@ authors = [" Kristian Zarębski <krizar312@gmail.com>"]
 python = "^3.9"
 pydantic = "^1.9.0"
 click = "^8.0.4"
+semver = "^2.13.0"
+toml = "^0.10.2"
+pycountry = "^22.3.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
