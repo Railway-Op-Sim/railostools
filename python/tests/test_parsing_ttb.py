@@ -10,11 +10,6 @@ import railostools.ttb.string as ros_ttb_str
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-@pytest.fixture
-def ttb_parse_obj() -> ros_parse.TTBParser:
-    return ros_parse.TTBParser(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
-
-
 @pytest.mark.ttb_parsing
 def test_snt_parse() -> None:
     TEST_STR = "10:23;Snt;1-34 1-35"
@@ -120,6 +115,7 @@ def test_location() -> None:
 
 
 @pytest.mark.ttb_parsing
-def test_services_str(ttb_parse_obj: ros_parse.TTBParser) -> None:
-    with ros_parse.TTBParser(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb")) as w:
-        pass
+def test_services_str() -> None:
+   _parser = ros_parse.TTBParser()
+   _parser.parse(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
+   _parser.services_str

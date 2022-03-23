@@ -2,6 +2,7 @@ import datetime
 import typing
 
 import pydantic
+
 import railostools.common.coords as ros_coords
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str

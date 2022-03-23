@@ -2,6 +2,7 @@ import logging
 import os
 
 import click
+
 from railostools.metadata import validate
 from railostools.rly import RlyParser
 from railostools.ttb.parsing import TTBParser

@@ -10,8 +10,8 @@ import railostools.ttb.components.actions as ros_act
 def test_element_str():
     _start_service = ros_start.Snt(
         time="11:45",
-        rear_element_id=ros_coords.Coordinate(10, -10),
-        front_element_id=ros_coords.Coordinate(10, -11)
+        rear_element_id=ros_coords.Coordinate(X=10, Y=-10),
+        front_element_id=ros_coords.Coordinate(X=10, Y=-11)
     )
 
     assert f'{_start_service}' == '11:45;Snt;10-N10 10-N11'
@@ -31,8 +31,8 @@ def test_service_str():
         ),
         start_type=ros_start.Snt(
             time="11:23",
-            rear_element_id=ros_coords.Coordinate(10, 23),
-            front_element_id=ros_coords.Coordinate(10, 24)
+            rear_element_id=ros_coords.Coordinate(X=10, Y=23),
+            front_element_id=ros_coords.Coordinate(X=10, Y=24)
         ),
         finish_type=ros_end.Frh(),
         actions={
@@ -59,12 +59,12 @@ def test_dictify():
         ),
         start_type=ros_start.Snt(
             time="11:23",
-            rear_element_id=ros_coords.Coordinate(10, 23),
-            front_element_id=ros_coords.Coordinate(10, 24)
+            rear_element_id=ros_coords.Coordinate(X=10, Y=23),
+            front_element_id=ros_coords.Coordinate(X=10, Y=24)
         ),
         finish_type=ros_end.Fer(
             time="11:34",
-            exit_coords=[ros_coords.Coordinate(23, -12)]
+            exit_coords=[ros_coords.Coordinate(X=23, Y=-12)]
         ),
         actions={
             0: ros_act.Location(

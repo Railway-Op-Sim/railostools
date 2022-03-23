@@ -2,6 +2,7 @@ import re
 import typing
 
 import pydantic
+
 import railostools.exceptions as ros_exc
 
 

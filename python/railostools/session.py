@@ -3,9 +3,10 @@ import glob
 import os.path
 import typing
 
+import toml
+
 import railostools.common.enumeration as ros_enum
 import railostools.exceptions as ros_exc
-import toml
 
 
 class Session:

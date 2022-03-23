@@ -5,9 +5,10 @@ import typing
 
 import pycountry
 import pydantic
-import railostools.exceptions as ros_exc
 import semver
 import toml
+
+import railostools.exceptions as ros_exc
 
 
 class Metadata(pydantic.BaseModel):
