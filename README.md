@@ -79,7 +79,7 @@ print(my_parser.comments)
 print(my_parser.data)
 
 # Save data as JSON file
-my_parser.json('Enoshima_Week_2021.json')
+my_parser.dump('Enoshima_Week_2021.json')
 ```
 
 ### The `RlyParser` Class
@@ -100,7 +100,7 @@ print(f'Number of elements are {my_parser.n_active_elements+my_parser.n_inactive
 print(my_parser.data)
 
 # Save data as JSON file
-my_parser.json('Antwerpen_Centraal.json')
+my_parser.dump('Antwerpen_Centraal.json')
 ```
 
 ### Performance Log Monitoring
@@ -135,16 +135,3 @@ my_monitor.exec_in_parallel(listener, {'user_name': 'John'})
 # Finally run the monitor
 my_monitor.run()
 ```
-
-### Discord Launcher (alpha)
-*Instructions currently for developers/testers only*
-
-**NOTE:** This requires a version of ROS with metadata dumping functionality (produces a `session.ini` file)
-
-For those with access to the Railway Operation Simulator Discord Application ID, make the directory `discord_launcher` in the main ROS folder and place a directory `lib` inside it.
-Download the [Discord SDK](https://dl-game-sdk.discordapp.net/2.5.6/discord_game_sdk.zip) and place the file `lib/x86/discord_game_sdk.dll`
-in the `lib` folder you created. Finally create a text file `discord_app_id.txt` containing the application ID in the 
-`discord_launcher` folder.
-
-If you have a binary for the launcher place it in `discord_launcher` and open it, else execute the `discord.py` script from within
-this folder.
