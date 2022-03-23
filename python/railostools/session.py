@@ -1,7 +1,6 @@
 import configparser
 import os.path
 import glob
-from this import d
 import toml
 import typing
 
@@ -79,11 +78,7 @@ class Session:
     def main_mode(self) -> ros_enum.Level1Mode:
         """Return the main program mode"""
         try:
-            return (
-                ros_enum.Level1Mode(self._parser.getint("session", "main_mode"))
-                if self.running
-                else None
-            )
+            return ros_enum.Level1Mode(self._parser.getint("session", "main_mode"))
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
@@ -95,11 +90,7 @@ class Session:
     def operation_mode(self) -> ros_enum.Level2OperMode:
         """Return the program operation mode"""
         try:
-            return (
-                ros_enum.Level2OperMode(self._parser.getint("session", "operation_mode"))
-                if self.running
-                else None
-            )
+            return ros_enum.Level2OperMode(self._parser.getint("session", "operation_mode"))
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
@@ -110,25 +101,25 @@ class Session:
     @property
     def performance_file(self) -> str:
         """Return the performance log file"""
-        if not self.running:
-            return None
         try:
             _file = self._parser.get("session", "performance_file")
             if not _file:
                 return None
-            return _file
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
             raise ros_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
+        if os.path.exists(_file):
+            return _file
+        print("BLAM", os.path.join(_file, '*.txt'))
+        _search = glob.glob(os.path.join(_file, '*.txt'))
+        return _search[0] if _search else None
 
     @property
     def timetable(self) -> str:
         """Return the current timetable file"""
-        if not self.running:
-            return None
         try:
             _file = self._parser.get("session", "timetable")
             if not _file:

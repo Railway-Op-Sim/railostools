@@ -11,9 +11,13 @@ click = "^8.0.4"
 semver = "^2.13.0"
 toml = "^0.10.2"
 pycountry = "^22.3.5"
+opcua = "^0.98.13"
+configparser = "^5.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+pytest-mock = "^3.7.0"
+coverage = "^6.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
