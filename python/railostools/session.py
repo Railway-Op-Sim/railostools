@@ -1,15 +1,17 @@
 import configparser
-import os.path
 import glob
-import toml
+import os.path
 import typing
 
-import railostools.exceptions as ros_exc
 import railostools.common.enumeration as ros_enum
+import railostools.exceptions as ros_exc
+import toml
+
 
 class Session:
     SESSION_FILE = "session.ini"
     _parser = configparser.ConfigParser()
+
     def __init__(self, railway_op_sim_dir: str) -> None:
         self._ros_loc = railway_op_sim_dir
         if not os.path.exists(os.path.join(self._ros_loc, "railway.exe")):
@@ -43,7 +45,7 @@ class Session:
         else:
             for meta_file in _meta_list:
                 _mf_data = toml.load(meta_file)
-                if _mf_data.get('rly_file', None) == route:
+                if _mf_data.get("rly_file", None) == route:
                     _data = _mf_data
 
         return _data
@@ -90,7 +92,9 @@ class Session:
     def operation_mode(self) -> ros_enum.Level2OperMode:
         """Return the program operation mode"""
         try:
-            return ros_enum.Level2OperMode(self._parser.getint("session", "operation_mode"))
+            return ros_enum.Level2OperMode(
+                self._parser.getint("session", "operation_mode")
+            )
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
@@ -113,7 +117,7 @@ class Session:
             ) from e
         if os.path.exists(_file):
             return _file
-        _search = glob.glob(os.path.join(_file, '*.txt'))
+        _search = glob.glob(os.path.join(_file, "*.txt"))
         return _search[0] if _search else None
 
     @property

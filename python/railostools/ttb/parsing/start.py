@@ -1,13 +1,12 @@
-from datetime import datetime
 import typing
+from datetime import datetime
 
+import railostools.common.coords as ros_coords
+import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.components.start as ros_start
-import railostools.exceptions as ros_exc
-import railostools.ttb.string as ros_ttb_str
-import railostools.common.coords as ros_coords
-
 import railostools.ttb.parsing.components as ros_parse_comp
+import railostools.ttb.string as ros_ttb_str
 
 
 def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
@@ -32,7 +31,7 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
     _rear_element = ros_coords.coord_from_str(_start_pos_r)
     _front_element = ros_coords.coord_from_str(_start_pos_f)
 
-    if abs(_rear_element-_front_element) > 1:
+    if abs(_rear_element - _front_element) > 1:
         raise ros_exc.ParsingError(
             f"Rear and front elements [{_rear_element}, {_front_element}] must be adjacent"
         )
@@ -47,7 +46,7 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
         time=start_components[0],
         rear_element_id=_rear_element,
         front_element_id=_front_element,
-        under_signaller_control=len(start_components) == 4
+        under_signaller_control=len(start_components) == 4,
     )
 
 
@@ -126,7 +125,7 @@ def parse_Snt_sh(start_components: typing.List[str]) -> ros_start.Snt_sh:
         time=start_components[0],
         rear_element_id=_rear_element,
         front_element_id=_front_element,
-        shuttle_ref=_shuttle_srv
+        shuttle_ref=_shuttle_srv,
     )
 
 
@@ -148,9 +147,7 @@ def parse_Sns_sh(start_components: typing.List[str]) -> ros_start.Sns_sh:
     _linked_srv = ros_parse_comp.parse_reference(start_components[3])
 
     return ros_start.Sns_sh(
-        time=start_components[0],
-        feeder_ref=_feeder_srv,
-        linked_shuttle_ref=_linked_srv
+        time=start_components[0], feeder_ref=_feeder_srv, linked_shuttle_ref=_linked_srv
     )
 
 
@@ -161,7 +158,7 @@ def parse_start(start_str: str) -> ros_comp.StartType:
         "Sns-fsh": parse_Sns_fsh,
         "Snt-sh": parse_Snt_sh,
         "Sns-sh": parse_Sns_sh,
-        "Sns": parse_Sns
+        "Sns": parse_Sns,
     }
 
     try:
@@ -175,6 +172,4 @@ def parse_start(start_str: str) -> ros_comp.StartType:
         if start_type in start_str:
             return parser(_components)
 
-    raise ros_exc.ParsingError(
-        f"Failed to determine start type for '{start_str}'"
-    )
+    raise ros_exc.ParsingError(f"Failed to determine start type for '{start_str}'")

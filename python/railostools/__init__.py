@@ -1,25 +1,25 @@
-import click
-import os
 import logging
-from railostools.ttb.parsing import TTBParser
-from railostools.rly import RlyParser
+import os
 
+import click
 from railostools.metadata import validate
+from railostools.rly import RlyParser
+from railostools.ttb.parsing import TTBParser
 
 logging.basicConfig()
 
 
 @click.group()
-@click.option('--debug/--normal', help='Run in debug mode', default=False)
+@click.option("--debug/--normal", help="Run in debug mode", default=False)
 def railostools(debug: bool = False) -> None:
     """Python based utilities for Railway Operation Simulator"""
-    logging.getLogger('RailOSTools').setLevel(logging.DEBUG if debug else logging.INFO)
+    logging.getLogger("RailOSTools").setLevel(logging.DEBUG if debug else logging.INFO)
 
 
 @railostools.command()
-@click.argument('ttb_file')
-@click.option('--output', help='JSON output file', default=None)
-def ttb2json(ttb_file: str, output: str = '') -> None:
+@click.argument("ttb_file")
+@click.option("--output", help="JSON output file", default=None)
+def ttb2json(ttb_file: str, output: str = "") -> None:
     """Extract ROS timetable file to json"""
     if not os.path.exists(ttb_file):
         raise FileNotFoundError(
@@ -27,7 +27,7 @@ def ttb2json(ttb_file: str, output: str = '') -> None:
         )
 
     if not output:
-        output = f'{os.path.splitext(ttb_file)[0]}.json'
+        output = f"{os.path.splitext(ttb_file)[0]}.json"
 
     ttb_parser = TTBParser()
     ttb_parser.parse(ttb_file)
@@ -35,20 +35,19 @@ def ttb2json(ttb_file: str, output: str = '') -> None:
 
 
 @railostools.command()
-@click.argument('input_file')
+@click.argument("input_file")
 def validate(input_file: str):
     """Validate Railway Operation Simulator file"""
     if not os.path.exists(input_file):
         raise FileNotFoundError(
-            f"Cannot validate file '{input_file}', "
-            "file not found."
+            f"Cannot validate file '{input_file}', " "file not found."
         )
-    if os.path.splitext(input_file)[1] == '.toml':
+    if os.path.splitext(input_file)[1] == ".toml":
         validate(input_file)
-    elif os.path.splitext(input_file)[1] == '.ttb':
+    elif os.path.splitext(input_file)[1] == ".ttb":
         with TTBParser(input_file):
             pass
-    elif os.path.splitext(input_file)[1] in ['.rly']:
+    elif os.path.splitext(input_file)[1] in [".rly"]:
         raise NotImplementedError(
             f"Validation of files of type '{os.path.splitext(input_file)[1]}' is not yet implemented"
         )
@@ -59,8 +58,8 @@ def validate(input_file: str):
 
 
 @railostools.command()
-@click.argument('rly_file')
-@click.option('--output', help='JSON output file', default=None)
+@click.argument("rly_file")
+@click.option("--output", help="JSON output file", default=None)
 def rly2json(rly_file: str, output: str):
     """Extract Railway Operation Simulator railway file to json"""
     if not os.path.exists(rly_file):
@@ -69,7 +68,7 @@ def rly2json(rly_file: str, output: str):
         )
 
     if not output:
-        output = f'{os.path.splitext(rly_file)[0]}.json'
+        output = f"{os.path.splitext(rly_file)[0]}.json"
 
     _parser = RlyParser()
     _parser.parse(rly_file)

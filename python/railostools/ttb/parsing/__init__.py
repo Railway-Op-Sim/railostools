@@ -1,18 +1,17 @@
 import datetime
 import json
+import logging
 import os.path
 import re
 import typing
-import logging
-import click
+
+import railostools.exceptions as ros_exc
 import railostools.ttb.components as ttb_comp
 import railostools.ttb.string as ros_ttb_str
-import railostools.exceptions as ros_exc
-
-from railostools.ttb.parsing.start import parse_start
-from railostools.ttb.parsing.finish import parse_finish
 from railostools.ttb.parsing.actions import parse_action
 from railostools.ttb.parsing.components import parse_header, parse_repeat
+from railostools.ttb.parsing.finish import parse_finish
+from railostools.ttb.parsing.start import parse_start
 
 
 class TTBParser:
@@ -25,8 +24,8 @@ class TTBParser:
         """Returns if a given statement is a comment"""
         return any(
             [
-                statement.startswith('*'),
-                ";" not in statement and len(statement.split()) > 2
+                statement.startswith("*"),
+                ";" not in statement and len(statement.split()) > 2,
             ]
         )
 
@@ -44,9 +43,7 @@ class TTBParser:
         _index: int = 0
         while self.is_comment(self._file_lines[_index]):
             if _index >= len(self._file_lines):
-                raise ros_exc.ParsingError(
-                    "Failed to retrieve timetable start time"
-                )
+                raise ros_exc.ParsingError("Failed to retrieve timetable start time")
             _index += 1
         return datetime.datetime.strptime(self._file_lines[_index], "%H:%M").time()
 
@@ -54,8 +51,7 @@ class TTBParser:
     def comments(self) -> typing.Dict[int, str]:
         """Retrieves all timetable comments along with position in file"""
         return {
-            i: c for i, c in enumerate(self._file_lines)
-            if self.is_comment(c)
+            i: c for i, c in enumerate(self._file_lines) if self.is_comment(c)
         } or None
 
     @property
@@ -63,15 +59,18 @@ class TTBParser:
         """Retrieve individual service strings"""
         _service_list = []
         _non_comment_lines = [
-            i for i in self._file_lines
-            if i not in self.comments.values()
-            and not re.findall(r"^\d{2}:\d{2}$", i)
+            i
+            for i in self._file_lines
+            if i not in self.comments.values() and not re.findall(r"^\d{2}:\d{2}$", i)
         ]
 
         _service_list.extend(
-            _service for line in _non_comment_lines if (
+            _service
+            for line in _non_comment_lines
+            if (
                 _service := [
-                    k.strip() for k in ros_ttb_str.split(line, ttb_comp.Service)
+                    k.strip()
+                    for k in ros_ttb_str.split(line, ttb_comp.Service)
                     if k.strip()
                 ]
             )
@@ -87,16 +86,16 @@ class TTBParser:
 
         _index = 2
 
-        _signaller_service = any([
-            _header.max_signaller_speed,
-            hasattr(_start_type, "under_signaller_control") and getattr(_start_type, "under_signaller_control")
-        ])
+        _signaller_service = any(
+            [
+                _header.max_signaller_speed,
+                hasattr(_start_type, "under_signaller_control")
+                and getattr(_start_type, "under_signaller_control"),
+            ]
+        )
 
         if _signaller_service:
-            return ttb_comp.SignallerService(
-                header=_header,
-                start_type=_start_type
-            )
+            return ttb_comp.SignallerService(header=_header, start_type=_start_type)
 
         while self.is_action(component := service_components[_index]):
             _actions[_index] = parse_action(component)
@@ -116,14 +115,12 @@ class TTBParser:
             start_type=_start_type,
             finish_type=_finish_type,
             actions=_actions,
-            repeats=_repeat
+            repeats=_repeat,
         )
 
     def parse(self, file_name: str) -> None:
         if not os.path.exists(file_name):
-            raise FileNotFoundError(
-                f"Cannot parse file '{file_name}', file not found."
-            )
+            raise FileNotFoundError(f"Cannot parse file '{file_name}', file not found.")
 
         if os.path.splitext(file_name)[-1].lower() != ".ttb":
             raise AssertionError(
@@ -138,16 +135,14 @@ class TTBParser:
             _services[str(_srv.header.reference)] = _srv
 
         self._data = ttb_comp.Timetable(
-            start_time=self.start_time,
-            services=_services,
-            comments=self.comments
+            start_time=self.start_time, services=_services, comments=self.comments
         )
 
     def json(self, output_file) -> None:
         """Dump metadata to a JSON file"""
 
         if isinstance(output_file, str):
-            with open(output_file, 'w') as out_f:
+            with open(output_file, "w") as out_f:
                 json.dump(self._data.dict(), out_f, indent=2)
         else:
             _out_str = json.dumps(self._data.dict(), indent=2)

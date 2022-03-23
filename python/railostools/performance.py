@@ -1,17 +1,16 @@
 import asyncio
+import glob
 import inspect
+import logging
 import os
 import re
-import logging
-import glob
+from typing import Callable, Dict, List, Tuple
 
 import railostools.exceptions as rexc
 
-from typing import List, Callable, Tuple, Dict
-
 
 class Monitor:
-    _logger = logging.getLogger('ROSTools.PerformanceMonitor')
+    _logger = logging.getLogger("ROSTools.PerformanceMonitor")
 
     def __init__(self, ros_log_dir: str, time_out: int = 120) -> None:
         if not os.path.exists(ros_log_dir):
@@ -19,18 +18,20 @@ class Monitor:
                 f"Cannot monitor performance output, "
                 f"directory '{ros_log_dir}' does not exist"
             )
-        self._log_dir = ros_log_dir                          # ROS Performance Log directory
-        self._async_funcs: List[Tuple[Callable, Dict]] = []  # Methods with args to run in sync with monitor
-        self._time_out = time_out                            # Time limit for listening
-        self._data = {}                                      # Parsed log data
-        self._is_running = False                             # Status of monitor
-        self._wait_interval: int = 5                         # Wait period
-        self._latest = ''                                    # Raw data of latest full log line
+        self._log_dir = ros_log_dir  # ROS Performance Log directory
+        self._async_funcs: List[
+            Tuple[Callable, Dict]
+        ] = []  # Methods with args to run in sync with monitor
+        self._time_out = time_out  # Time limit for listening
+        self._data = {}  # Parsed log data
+        self._is_running = False  # Status of monitor
+        self._wait_interval: int = 5  # Wait period
+        self._latest = ""  # Raw data of latest full log line
 
     async def _process_lines(self, file_lines: List[str]) -> None:
         _is_ttb_perf = re.compile(
-            r'\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]',
-            re.IGNORECASE
+            r"\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]",
+            re.IGNORECASE,
         )
         _service_lines = [line for line in file_lines if _is_ttb_perf.findall(line)]
 
@@ -38,16 +39,16 @@ class Monitor:
             return
 
         # If the last service line is incomplete remove it
-        if '\n' not in _service_lines[-1]:
+        if "\n" not in _service_lines[-1]:
             _service_lines = _service_lines[:-1]
 
         for line in _service_lines:
-            _time = re.findall(r'(\d{2}:\d{2}:\d{2})', line)[0]
+            _time = re.findall(r"(\d{2}:\d{2}:\d{2})", line)[0]
             try:
-                _head_code = re.findall(r'\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s', line)[0]
+                _head_code = re.findall(r"\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s", line)[0]
             except IndexError:
                 continue
-            _msg = line.replace(_time, '').replace(_head_code, '')[1:].strip().rstrip()
+            _msg = line.replace(_time, "").replace(_head_code, "")[1:].strip().rstrip()
             if _head_code not in self._data:
                 self._data[_head_code] = []
             self._data[_head_code].append((_time, _msg))
@@ -68,7 +69,7 @@ class Monitor:
         _timer: int = 0
 
         # Used to store log file to be processed
-        _log: str = ''
+        _log: str = ""
 
         # Used to store number of log files in directory
         _n_logs: int = 0
@@ -85,7 +86,7 @@ class Monitor:
                     _timer += 5
                     continue
 
-                _log_files = glob.glob(os.path.join(self._log_dir, 'Log*.txt'))
+                _log_files = glob.glob(os.path.join(self._log_dir, "Log*.txt"))
 
                 # If there are no log files in the given directory
                 # then continue timer. Print warning every minute.
@@ -93,7 +94,7 @@ class Monitor:
                     if _timer % 60 == 0:
                         self._logger.warning(
                             "No log files currently found in directory '%s'",
-                            self._log_dir
+                            self._log_dir,
                         )
                     await asyncio.sleep(self._wait_interval)
                     _timer += 5
@@ -103,8 +104,7 @@ class Monitor:
                 if len(_log_files) > _n_logs:
                     _time_sorted_logs = sorted(_log_files, key=os.path.getmtime)
                     self._logger.info(
-                        "New log file found, switching to '%s'",
-                        _time_sorted_logs[-1]
+                        "New log file found, switching to '%s'", _time_sorted_logs[-1]
                     )
                     _mod_time = 0
                     _log = _time_sorted_logs[-1]
@@ -148,14 +148,14 @@ class Monitor:
         if not args:
             args = {}
 
-        if 'monitor' not in inspect.signature(function).parameters:
+        if "monitor" not in inspect.signature(function).parameters:
             raise rexc.InvalidListenerError(function)
         self._async_funcs.append((function, args))
 
     async def _async_main(self) -> None:
         await asyncio.gather(
             self._examine_log_dir(),
-            *[i[0](**i[1], monitor=self) for i in self._async_funcs]
+            *[i[0](**i[1], monitor=self) for i in self._async_funcs],
         )
 
     def run(self) -> None:

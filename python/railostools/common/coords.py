@@ -1,7 +1,7 @@
-import typing
-import pydantic
 import re
+import typing
 
+import pydantic
 import railostools.exceptions as ros_exc
 
 
@@ -23,13 +23,13 @@ class Coordinate(pydantic.BaseModel):
         return self.__str__()
 
     def __abs__(self) -> int:
-        return int(pow(self.X**2+self.Y**2, 0.5))
+        return int(pow(self.X**2 + self.Y**2, 0.5))
 
     def __sub__(self, other):
-        return Coordinate(X=self.X-other.X, Y=self.Y-other.Y)
+        return Coordinate(X=self.X - other.X, Y=self.Y - other.Y)
 
     def __add__(self, other):
-        return Coordinate(X=self.X+other.X, Y=self.Y+other.Y)
+        return Coordinate(X=self.X + other.X, Y=self.Y + other.Y)
 
 
 def coord_from_str(coordinate_str: str) -> Coordinate:
@@ -37,9 +37,7 @@ def coord_from_str(coordinate_str: str) -> Coordinate:
     _coord_regex = re.compile(r"^N*\d+\-N*\d+$")
 
     if not _coord_regex.findall(coordinate_str):
-        raise ros_exc.ParsingError(
-            f"Invalid coordinate '{coordinate_str}'"
-        )
+        raise ros_exc.ParsingError(f"Invalid coordinate '{coordinate_str}'")
 
     _coord = coordinate_str.split("-")
     _args = dict(zip(("X", "Y"), (int(i.replace("N", "-")) for i in _coord)))

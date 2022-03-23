@@ -1,12 +1,10 @@
-from abc import abstractmethod
 import datetime
-from doctest import debug_script
-from pydoc import describe
 import typing
-import py
+
 import pydantic
-import railostools.ttb.string as ros_ttb_str
 import railostools.ttb.components as ros_comp
+import railostools.ttb.string as ros_ttb_str
+
 
 class Element:
     def __str__(self) -> str:
@@ -26,6 +24,7 @@ class FinishType(Element):
 class ActionType(Element, pydantic.BaseModel):
     time: datetime.time
     warning: bool = False
+
     def __str__(self) -> str:
         return f'{"W" if self.warning else ""}{super().__str__()}'
 
@@ -47,13 +46,16 @@ class Reference(pydantic.BaseModel):
     prefix: typing.Optional[pydantic.constr(max_length=4)] = None
     service: pydantic.constr(max_length=2, min_length=2)
     id: pydantic.conint(ge=0, lt=100)
+
     def __str__(self) -> str:
-        _id_str = str(self.id) if len(str(self.id)) == 2 else f'0{self.id}'
+        _id_str = str(self.id) if len(str(self.id)) == 2 else f"0{self.id}"
         return f'{self.prefix or ""}{self.service}{_id_str}'
+
     def __iadd__(self, num: int) -> None:
         if self.id + num > 99:
             raise ValueError("ID must be between 0 and 99")
         self.id += num
+
     def __isub__(self, num: int) -> None:
         if self.id - num < 1:
             raise ValueError("ID must be between 0 and 99")
@@ -69,6 +71,7 @@ class Header(pydantic.BaseModel, Element):
     brake_force: typing.Optional[pydantic.conint(ge=0)] = None
     power: typing.Optional[pydantic.conint(ge=0)] = None
     max_signaller_speed: typing.Optional[pydantic.conint(ge=0)] = None
+
     def __str__(self) -> str:
         _elements = [
             f"{self.reference}",
@@ -92,12 +95,9 @@ class Repeat(pydantic.BaseModel, Element):
     mins: pydantic.conint(gt=1)
     digits: pydantic.conint(ge=0)
     repeats: pydantic.conint(gt=1)
+
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
-            f"{self.mins}",
-            f"{self.digits}",
-            f"{self.repeats}"
-        )
+        return ros_ttb_str.concat(f"{self.mins}", f"{self.digits}", f"{self.repeats}")
 
 
 class Service(pydantic.BaseModel):
@@ -114,15 +114,16 @@ class TimetabledService(Service, pydantic.BaseModel):
     finish_type: FinishType
     actions: typing.Optional[typing.Dict[int, ActionType]] = {}
     repeats: typing.Optional[Repeat] = None
+
     def __str__(self) -> str:
-        _elements = [
-            f"{self.header}",
-            f"{self.start_type}"
-        ]
+        _elements = [f"{self.header}", f"{self.start_type}"]
         if self.actions:
-            _elements.append(ros_ttb_str.concat(*(
-                self.actions[k] for k, _ in enumerate(self.actions)
-            ), join_type=Element))
+            _elements.append(
+                ros_ttb_str.concat(
+                    *(self.actions[k] for k, _ in enumerate(self.actions)),
+                    join_type=Element,
+                )
+            )
         _elements.append(f"{self.finish_type}")
         return ros_ttb_str.concat(*_elements, join_type=Element)
 
@@ -133,11 +134,9 @@ class TimetabledService(Service, pydantic.BaseModel):
 class SignallerService(Service, pydantic.BaseModel):
     header: Header
     start_type: StartType
+
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
-            f"{self.header}",
-            f"{self.start_type}"
-        )
+        return ros_ttb_str.concat(f"{self.header}", f"{self.start_type}")
 
     class Config:
         arbitrary_types_allowed = True
@@ -148,7 +147,6 @@ class Timetable(pydantic.BaseModel):
     services: typing.Dict[str, Service]
     comments: typing.Optional[typing.Dict[int, str]] = None
 
-    @pydantic.validator('start_time')
+    @pydantic.validator("start_time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
-

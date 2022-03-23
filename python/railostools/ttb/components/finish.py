@@ -1,24 +1,22 @@
-import typing
-import pydantic
 import datetime
+import typing
 
+import pydantic
+import railostools.common.coords as ros_coords
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str
-import railostools.common.coords as ros_coords
 
 
 class Fns(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: ros_comp.Reference
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
-            self.time,
-            self.name,
-            f'{self.new_service_ref}',
-            join_type=ros_comp.Element
+            self.time, self.name, f"{self.new_service_ref}", join_type=ros_comp.Element
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
@@ -31,15 +29,16 @@ class Fns(ros_comp.FinishType, pydantic.BaseModel):
 class Fjo(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: ros_comp.Reference
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
             self.name,
-            f'{self.joining_service_ref}',
-            join_type=ros_comp.Element
+            f"{self.joining_service_ref}",
+            join_type=ros_comp.Element,
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
@@ -52,15 +51,13 @@ class Fjo(ros_comp.FinishType, pydantic.BaseModel):
 class Fer(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     exit_coords: typing.List[ros_coords.Coordinate]
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
-            self.time,
-            self.name,
-            " ".join(self.exit_coords),
-            join_type=ros_comp.Element
+            self.time, self.name, " ".join(self.exit_coords), join_type=ros_comp.Element
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
@@ -73,15 +70,16 @@ class Fer(ros_comp.FinishType, pydantic.BaseModel):
 class Frh_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
             self.name,
             f"{self.linked_shuttle_ref}",
-            join_type=ros_comp.Element
+            join_type=ros_comp.Element,
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
@@ -95,16 +93,17 @@ class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
     finishing_service_ref: ros_comp.Reference
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
             self.name,
             f"{self.linked_shuttle_ref}",
             f"{self.finishing_service_ref}",
-            join_type=ros_comp.Element
+            join_type=ros_comp.Element,
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
@@ -117,15 +116,16 @@ class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
 class F_nshs(ros_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
     linked_shuttle_ref: ros_comp.Reference
+
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
             self.name,
             f"{self.linked_shuttle_ref}",
-            join_type=ros_comp.Element
+            join_type=ros_comp.Element,
         )
 
-    @pydantic.validator('time')
+    @pydantic.validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 

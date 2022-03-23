@@ -1,13 +1,12 @@
-from datetime import datetime
 import typing
+from datetime import datetime
 
+import railostools.common.coords as ros_coords
+import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.components.finish as ros_finish
-import railostools.exceptions as ros_exc
-import railostools.ttb.string as ros_ttb_str
-import railostools.common.coords as ros_coords
-
 import railostools.ttb.parsing.components as ros_parse_comp
+import railostools.ttb.string as ros_ttb_str
 
 
 def parse_Fns(finish_components: typing.List[str]) -> ros_finish.Fns:
@@ -67,8 +66,7 @@ def parse_Fer(finish_components: typing.List[str]) -> ros_finish.Fer:
         ) from e
 
     _exit_elements = [
-        ros_coords.coord_from_str(i)
-        for i in finish_components[2].split()
+        ros_coords.coord_from_str(i) for i in finish_components[2].split()
     ]
 
     return ros_finish.Fer(time=finish_components[0], exit_coords=_exit_elements)
@@ -114,7 +112,11 @@ def parse_Fns_sh(finish_components: typing.List[str]) -> ros_finish.Fer:
     _linked_shuttle_ref = ros_parse_comp.parse_reference(finish_components[2])
     _finish_ref = ros_parse_comp.parse_reference(finish_components[3])
 
-    return ros_finish.Fns_sh(time=finish_components[0], linked_shuttle_ref=_linked_shuttle_ref, finishing_service_ref=_finish_ref)
+    return ros_finish.Fns_sh(
+        time=finish_components[0],
+        linked_shuttle_ref=_linked_shuttle_ref,
+        finishing_service_ref=_finish_ref,
+    )
 
 
 def parse_F_nshs(finish_components: typing.List[str]) -> ros_finish.Fer:
@@ -135,15 +137,16 @@ def parse_F_nshs(finish_components: typing.List[str]) -> ros_finish.Fer:
 
     _linked_shuttle_ref = ros_parse_comp.parse_reference(finish_components[2])
 
-    return ros_finish.F_nshs(time=finish_components[0], linked_shuttle_ref=_linked_shuttle_ref)
+    return ros_finish.F_nshs(
+        time=finish_components[0], linked_shuttle_ref=_linked_shuttle_ref
+    )
 
 
 def parse_Frh(finish_components: typing.List[str]) -> ros_finish.Fer:
     """Parse an Frh type string"""
     if len(finish_components) != 1:
         raise ros_exc.ParsingError(
-            "Expected one component "
-            f"'{finish_components}' for finish type 'Frh'"
+            "Expected one component " f"'{finish_components}' for finish type 'Frh'"
         )
 
     return ros_finish.Frh()
@@ -157,7 +160,7 @@ def parse_finish(finish_str: str) -> ros_comp.StartType:
         "Fns-sh": parse_Fns_sh,
         "Fns": parse_Fns,
         "F-nshs": parse_F_nshs,
-        "Frh": parse_Frh
+        "Frh": parse_Frh,
     }
 
     try:
@@ -170,6 +173,4 @@ def parse_finish(finish_str: str) -> ros_comp.StartType:
     for finish_type, parser in PARSE_DICT.items():
         if finish_type in finish_str:
             return parser(_components)
-    raise ros_exc.ParsingError(
-        f"Failed to determine finish type for '{finish_str}'"
-    )
+    raise ros_exc.ParsingError(f"Failed to determine finish type for '{finish_str}'")

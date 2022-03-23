@@ -1,20 +1,18 @@
-from datetime import datetime
 import typing
+from datetime import datetime
 
+import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.components.actions as ros_act
-import railostools.exceptions as ros_exc
-import railostools.ttb.string as ros_ttb_str
-
 import railostools.ttb.parsing.components as ros_parse_comp
+import railostools.ttb.string as ros_ttb_str
 
 
 def parse_location(action_components: typing.List[str]) -> ros_act.Location:
     """Parse a calling point string"""
     if len(action_components) not in (2, 3):
         raise ros_exc.ParsingError(
-            "Expected 2 or 3 items in components "
-            f"'{action_components}' for location"
+            "Expected 2 or 3 items in components " f"'{action_components}' for location"
         )
 
     if len(action_components) == 3:
@@ -31,11 +29,7 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
         _depart = None
         _location = action_components[1]
 
-    return ros_act.Location(
-        time=action_components[0],
-        end_time=_depart,
-        name=_location
-    )
+    return ros_act.Location(time=action_components[0], end_time=_depart, name=_location)
 
 
 def parse_pas(action_components: typing.List[str]) -> ros_act.Location:

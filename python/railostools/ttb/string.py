@@ -1,4 +1,5 @@
 import typing
+
 import railostools.ttb.components as ros_comp
 
 
@@ -11,7 +12,9 @@ def concat(*args, join_type=None) -> str:
         return ";".join(str(i) for i in args)
 
 
-def split(component_str: str, split_type = None) -> typing.Union[typing.Tuple[typing.List[str], ...], typing.List[str]]:
+def split(
+    component_str: str, split_type=None
+) -> typing.Union[typing.Tuple[typing.List[str], ...], typing.List[str]]:
     if split_type is ros_comp.Element:
         _split_char = "\0"
     elif split_type is ros_comp.Service:
