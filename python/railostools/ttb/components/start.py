@@ -14,7 +14,7 @@ class Snt(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         _elements = [
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.rear_element_id} {self.front_element_id}',
         ]
         if self.under_signaller_control:
@@ -39,7 +39,7 @@ class Sns(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.parent_service}'
         )
     @pydantic.validator('time')
@@ -58,7 +58,7 @@ class Sfs(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.splitting_service}'
         )
 
@@ -78,7 +78,7 @@ class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.shuttle_ref}'
         )
 
@@ -100,7 +100,7 @@ class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.rear_element_id} {self.front_element_id}',
             f'{self.shuttle_ref}'
         )
@@ -122,7 +122,7 @@ class Sns_sh(ros_comp.StartType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.linked_shuttle_ref}',
             f'{self.feeder_ref}'
         )

@@ -13,7 +13,7 @@ class Fns(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.new_service_ref}',
             join_type=ros_comp.Element
         )
@@ -34,7 +34,7 @@ class Fjo(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.joining_service_ref}',
             join_type=ros_comp.Element
         )
@@ -55,7 +55,7 @@ class Fer(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             " ".join(self.exit_coords),
             join_type=ros_comp.Element
         )
@@ -76,7 +76,7 @@ class Frh_sh(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f"{self.linked_shuttle_ref}",
             join_type=ros_comp.Element
         )
@@ -98,7 +98,7 @@ class Fns_sh(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f"{self.linked_shuttle_ref}",
             f"{self.finishing_service_ref}",
             join_type=ros_comp.Element
@@ -120,7 +120,7 @@ class F_nshs(ros_comp.FinishType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f"{self.linked_shuttle_ref}",
             join_type=ros_comp.Element
         )

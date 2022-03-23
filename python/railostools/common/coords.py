@@ -1,6 +1,5 @@
 import typing
 import pydantic
-import dataclasses
 import re
 
 import railostools.exceptions as ros_exc

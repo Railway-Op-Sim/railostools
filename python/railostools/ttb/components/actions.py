@@ -28,7 +28,7 @@ class pas(ros_comp.ActionType, pydantic.BaseModel):
     def __str__(self) -> str:
         return ros_ttb_str.concat(
             self.time,
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.location}',
             join_type=ros_comp.Element
         )
@@ -48,7 +48,7 @@ class jbo(ros_comp.ActionType, pydantic.BaseModel):
     joining_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.joining_service_ref}',
             join_type=ros_comp.Element
         )
@@ -68,7 +68,7 @@ class fsp(ros_comp.ActionType, pydantic.BaseModel):
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.new_service_ref}',
             join_type=ros_comp.Element
         )
@@ -88,7 +88,7 @@ class rsp(ros_comp.ActionType, pydantic.BaseModel):
     new_service_ref: ros_comp.Reference
     def __str__(self) -> str:
         return ros_ttb_str.concat(
-            self.__class__.__name__.replace("_", "-"),
+            self.name,
             f'{self.new_service_ref}',
             join_type=ros_comp.Element
         )
