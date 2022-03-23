@@ -1,11 +1,12 @@
 # RailOSTools
-[![RailOSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+[![RailOSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml)
 
 *Railway Operation Simulator Toolkit*
 
 RailOSTools provides a set of tools for working with Railway Operation Simulator program files. The repository contains various API language implementations to provide access to Railway Operation Simulator session and file properties
 
 ## Python
+[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
 
 All command line tools are available under the parent `railostools` command:
 
