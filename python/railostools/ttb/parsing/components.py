@@ -13,7 +13,11 @@ def parse_reference(train_ref: str) -> ros_comp.Reference:
         )
     _headcode = train_ref[-4:]
     _hc_service = _headcode[:2]
-    _hc_id = int(_headcode[2:])
+
+    try:
+        _hc_id = int(_headcode[2:])
+    except ValueError:
+        _hc_id = _headcode[2:]
 
     _prefix = train_ref[: len(train_ref) - 4] if len(train_ref) > 4 else None
 
