@@ -13,6 +13,8 @@ toml = "^0.10.2"
 pycountry = "^22.3.5"
 opcua = "^0.98.13"
 configparser = "^5.2.0"
+bokeh = "^2.4.2"
+matplotlib = "^3.5.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -52,7 +52,7 @@ class TTBParser:
         """Retrieves all timetable comments along with position in file"""
         return {
             i: c for i, c in enumerate(self._file_lines) if self.is_comment(c)
-        } or None
+        }
 
     @property
     def services_str(self) -> typing.List[typing.List[str]]:
@@ -129,6 +129,12 @@ class TTBParser:
         with open(file_name) as in_f:
             self._file_lines = ros_ttb_str.split(in_f.read(), ttb_comp.Element)
 
+        # Cover legacy in-line comments for timetable start
+        # see 'Liverpool' timetables '06:00 - Timetable starts' etc
+        for i, line in enumerate(self._file_lines):
+            if re.findall(r"\d{2}:\d{2}\s*\-", line):
+                self._file_lines[i] = line.split("-")[0].strip()
+
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
             _srv = self._parse_service(service)
@@ -138,7 +144,11 @@ class TTBParser:
             start_time=self.start_time, services=_services, comments=self.comments
         )
 
-    def json(self, output_file) -> None:
+    @property
+    def data(self) -> typing.Optional[ttb_comp.Timetable]:
+        return self._data or None
+
+    def dump(self, output_file) -> None:
         """Dump metadata to a JSON file"""
 
         if isinstance(output_file, str):

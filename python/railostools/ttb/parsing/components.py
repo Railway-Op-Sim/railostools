@@ -9,11 +9,18 @@ def parse_reference(train_ref: str) -> ros_comp.Reference:
     """Parse a service reference identifier"""
     if len(train_ref) > 8 or len(train_ref) < 4:
         raise ros_exc.ParsingError(
-            f"Length of ervice reference '{train_ref}' " "must be between 4 and 8"
+            f"Length of service reference '{train_ref}' " "must be between 4 and 8"
         )
     _headcode = train_ref[-4:]
     _hc_service = _headcode[:2]
-    _hc_id = int(_headcode[2:])
+
+    try:
+        _hc_id = int(_headcode[2:])
+    except ValueError as e:
+        raise ros_exc.ParsingError(
+            f"Invalid service suffix '{_headcode[2:]}', "
+            "value must be an incrementable integer between 0 and 99"
+        ) from e
 
     _prefix = train_ref[: len(train_ref) - 4] if len(train_ref) > 4 else None
 
