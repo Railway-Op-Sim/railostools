@@ -43,6 +43,11 @@ class RailwayParsingError(Exception):
         super().__init__(msg)
 
 
+class InvalidOperationError(Exception):
+    def __init__(self, msg: str) -> None:
+        super().__init__(msg)
+
+
 class InvalidListenerError(Exception):
     def __init__(self, function: typing.Callable):
         _msg = f"""Candidate function '{function.__name__}' is not a valid listener function.

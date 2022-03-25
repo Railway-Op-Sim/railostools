@@ -5,6 +5,7 @@ import pydantic
 
 import railostools.ttb.components as ros_comp
 import railostools.ttb.string as ros_ttb_str
+import railostools.exceptions as ros_exc
 
 
 class Element:
@@ -46,18 +47,29 @@ class StartType(Element):
 class Reference(pydantic.BaseModel):
     prefix: typing.Optional[pydantic.constr(max_length=4)] = None
     service: pydantic.constr(max_length=2, min_length=2)
-    id: pydantic.conint(ge=0, lt=100)
+    id: typing.Union[pydantic.conint(ge=0, lt=100), pydantic.constr(min_length=2, max_length=2)]
 
     def __str__(self) -> str:
-        _id_str = str(self.id) if len(str(self.id)) == 2 else f"0{self.id}"
+        if isinstance(self.id, int):
+            _id_str = str(self.id) if len(str(self.id)) == 2 else f"0{self.id}"
+        else:
+            _id_str = self.id
         return f'{self.prefix or ""}{self.service}{_id_str}'
 
     def __iadd__(self, num: int) -> None:
+        if isinstance(self.id, str):
+            raise ros_exc.InvalidOperationError(
+                f"Cannot increment reference with ID '{self.id}'"
+            )
         if self.id + num > 99:
             raise ValueError("ID must be between 0 and 99")
         self.id += num
 
     def __isub__(self, num: int) -> None:
+        if isinstance(self.id, str):
+            raise ros_exc.InvalidOperationError(
+                f"Cannot decrement reference with ID '{self.id}'"
+            )
         if self.id - num < 1:
             raise ValueError("ID must be between 0 and 99")
         self.id -= num

@@ -58,10 +58,11 @@ class TTBParser:
     def services_str(self) -> typing.List[typing.List[str]]:
         """Retrieve individual service strings"""
         _service_list = []
+        _comments = self.comments or {}
         _non_comment_lines = [
             i
             for i in self._file_lines
-            if i not in self.comments.values() and not re.findall(r"^\d{2}:\d{2}$", i)
+            if i not in _comments.values() and not re.findall(r"^\d{2}:\d{2}$", i)
         ]
 
         _service_list.extend(
