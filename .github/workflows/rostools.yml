@@ -64,6 +64,8 @@ jobs:
   build_rust:
     name: Rust Library
     runs-on: ubuntu-latest
+    env:
+      work-dir: rust/
     steps:
     - uses: actions/checkout@v2
     - name: Install stable toolchain
@@ -71,10 +73,13 @@ jobs:
       with:
         toolchain: stable
         override: true
+      working-directory: ${{env.work-dir}}
 
     - name: Run cargo-tarpaulin
       uses: actions-rs/tarpaulin@v0.1
+      working-directory: ${{env.work-dir}}
     - uses: codecov/codecov-action@v2
       with:
         env_vars: OS
+      working-directory: ${{env.work-dir}}
 
