@@ -77,8 +77,9 @@ jobs:
 
     - name: Run cargo-tarpaulin
       uses: actions-rs/tarpaulin@v0.1
-      args:
-        '-- --root rust'
+      with:
+        args:
+          '-- --root rust'
 
     - uses: codecov/codecov-action@v2
       with:
