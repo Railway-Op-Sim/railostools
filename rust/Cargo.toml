@@ -9,6 +9,7 @@ edition = "2021"
 toml = "0.5.8"
 chrono = "0.4.19"
 semver = "1.0.7"
+rust_iso3166 = "0.1.4"
 serde = {version = "1.0.136", features = ["derive"] }
 
 [dev-dependencies]

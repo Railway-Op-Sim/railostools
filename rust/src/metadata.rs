@@ -1,6 +1,7 @@
 use toml::Value;
 use chrono::NaiveDate;
 use semver::Version;
+use rust_iso3166::from_alpha2;
 use serde::Serialize;
 use std::{fs::read_to_string, panic, fs::File, io::Write, fmt::Result};
 
@@ -81,6 +82,24 @@ fn retrieve_optionals(file_content: &Value, label: &str, else_str: &str) -> Stri
     }
 }
 
+fn retrieve_country_code(file_content: &Value) -> String {
+    let country_code: String;
+    match file_content["country_code"].as_str() {
+        Some(n) => country_code = n.to_string(),
+        None => panic!("Expected value for key 'country_code'")
+    }
+
+    if country_code != "FN" {
+        match from_alpha2(&country_code) {
+            Some(_cc) => country_code,
+            None => panic!("Invalid country code '{}'", country_code)
+        }
+    }
+    else {
+        country_code
+    }
+}
+
 pub fn load_metadata_file(file_name: &String) -> Metadata {
     let file_content = load_toml_file(file_name);
     let name: String;
@@ -90,7 +109,7 @@ pub fn load_metadata_file(file_name: &String) -> Metadata {
     let img_files: Vec<Value>;
     let doc_files: Vec<Value>;
     let graphic_files: Vec<Value>;
-    let country_code: String;
+    let country_code: String = retrieve_country_code(&file_content);
     let is_factual: bool;
     let description: String;
     let display_name: String;
@@ -109,11 +128,6 @@ pub fn load_metadata_file(file_name: &String) -> Metadata {
     match file_content["rly_file"].as_str() {
         Some(n) => rly_file = n.to_string(),
         None => panic!("Expected value for key 'rly_file'")
-    }
-
-    match file_content["country_code"].as_str() {
-        Some(n) => country_code = n.to_string(),
-        None => panic!("Expected value for key 'country_code'")
     }
 
     match file_content["author"].as_str() {
@@ -225,8 +239,9 @@ mod tests {
     use std::{path::Path};
     use tempfile::tempfile;
 
-    #[test]
-    fn test_toml_file_parse() {
+    use super::retrieve_country_code;
+
+    fn read_test_toml(file_name: &str) -> String {
         let mut main_dir;
         match Path::new(file!()).parent() {
             Some(p) => main_dir = p,
@@ -236,14 +251,17 @@ mod tests {
             Some(p) => main_dir = p,
             None => panic!("Failed to retrieve test TOML file")
         }
-        let toml_file = main_dir.join("test_data").join("Antwerpen_Centraal.toml");
-        let toml_file_str;
+        let toml_file = main_dir.join("test_data").join(file_name);
 
         match toml_file.to_str() {
-            Some(s) => toml_file_str = s,
+            Some(s) => s.to_string(),
             None => panic!("Could not retrieve file path string")
         }
-        let parsed = load_metadata_file(&String::from(toml_file_str));
+    }
+
+    #[test]
+    fn test_toml_file_parse() {
+        let parsed = load_metadata_file(&String::from(read_test_toml("Antwerpen_Centraal.toml")));
         assert!(parsed.factual == true);
         assert!(parsed.name == "Simulation of Antwerp south");
         assert!(parsed.display_name == "Antwerpen Centraal");
@@ -284,7 +302,7 @@ mod tests {
             display_name: "".to_string(),
             author: "Joe Bloggs".to_string()
         };
-        let mut file;
+        let file;
 
         match tempfile() {
             Ok(t) => file = t,
@@ -292,5 +310,20 @@ mod tests {
         }
 
         out_dat.write(file);
+    }
+
+    #[test]
+    #[should_panic(expected="Invalid country code 'YO'")]
+    fn test_invalid_country_code() {
+        use super::load_toml_file;
+        let file_content = load_toml_file(&read_test_toml("invalid_country_code.toml"));
+        retrieve_country_code(&file_content);
+    }
+
+    #[test]
+    fn test_fiction_country_code() {
+        use super::load_toml_file;
+        let file_content = load_toml_file(&read_test_toml("fictional_country_code.toml"));
+        retrieve_country_code(&file_content);
     }
 }
