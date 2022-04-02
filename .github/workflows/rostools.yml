@@ -75,13 +75,7 @@ jobs:
         toolchain: stable
         override: true
 
-    - name: Run cargo-tarpaulin
-      uses: actions-rs/tarpaulin@v0.1
+    - name: Run Unit Tests
+      uses: actions-rs/cargo@v1
       with:
-        version: '0.20.0'
-        args:
-          '-- --root rust'
-
-    - uses: codecov/codecov-action@v2
-      with:
-        env_vars: OS
+        command: test
