@@ -61,4 +61,22 @@ jobs:
         run: |
           cd java
           mvn test
+  build_rust:
+    name: Rust Library
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install stable toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
 
+    - name: Run Unit Tests
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --manifest-path rust/Cargo.toml
