@@ -62,5 +62,3 @@ class Elements(enum.Enum):
     Up_DiagonalRight = 25
     Down_DiagonalRight = 26
     Down_DiagonalLeft = 27
-
-

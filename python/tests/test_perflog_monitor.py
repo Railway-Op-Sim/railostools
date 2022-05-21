@@ -6,11 +6,11 @@ import shutil
 import pytest
 import logging
 
-from rostools.performance import Monitor
+from railostools.performance import Monitor
 
 TEST_LOG_DIR = os.path.join(
     os.path.dirname(__file__),
-    'test_data'
+    'data'
 )
 
 logging.getLogger().setLevel(logging.DEBUG)
