@@ -1,33 +1,33 @@
 package net.danielgill.railostools.railway;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import net.danielgill.railostools.railway.element.Element;
-import net.danielgill.railostools.railway.element.ElementType;
-import net.danielgill.railostools.railway.element.NamedElement;
+import net.danielgill.ros.timetable.location.Location;
 
 public class Railway {
-    private ArrayList<Element> elements;
+    protected String programVersion = null;
+    protected Location homeLocation = null;
+    protected int activeElementCount = -1;
 
-    public Railway() {
+    private List<Element> elements;
+    private List<String> namedLocations;
+
+    public Railway() {  
         elements = new ArrayList<>();
+        namedLocations = new ArrayList<>();
     }
 
-    public void addElement(Element element) {
-        elements.add(element);
-    }
-
-    public Set<String> getNamedLocations() {
-        Set<String> namedLocations = new HashSet<String>();
-        for (Element element : elements) {
-            if (element.getType() == ElementType.NAMED) {
-                NamedElement namedElement = (NamedElement) element;
-                namedLocations.add(namedElement.getName());
-            }
+    public void addElement(Element e) {
+        elements.add(e);
+        if(e.getName() != null) {
+            namedLocations.add(e.getName());
         }
-        return namedLocations;
+    }
+
+    public List<String> getNamedLocations() {
+        return this.namedLocations;
     }
 
 }

@@ -3,19 +3,31 @@ package net.danielgill.railostools.railway.element;
 import net.danielgill.ros.timetable.location.Location;
 
 public abstract class Element {
-    private final Location location;
-    public final ElementType type;
+    protected ElementType type;
+    protected int speedTag;
+    protected Location location;
+    protected String name;
 
-    public Element(Location location, ElementType type) {
-        this.location = location;
+    protected Element(ElementType type, int speedTag, Location location, String name) {
         this.type = type;
+        this.speedTag = speedTag;
+        this.location = location;
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getSpeedTag() {
+        return this.speedTag;
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public ElementType getType() {
-        return type;
+        return this.type;
     }
 }

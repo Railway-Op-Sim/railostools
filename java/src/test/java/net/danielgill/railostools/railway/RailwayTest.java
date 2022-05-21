@@ -16,5 +16,6 @@ public class RailwayTest {
     public void testRailway() throws URISyntaxException, FileNotFoundException {
         Railway r = ParseRailway.parseRailway(new File(this.getClass().getClassLoader().getResource("Antwerpen_Centraal.rly").toURI()));
         assertNotNull(r);
+        System.out.print(r.getNamedLocations());
     }
 }
