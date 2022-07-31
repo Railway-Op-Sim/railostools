@@ -2,10 +2,16 @@ import datetime
 import json
 import logging
 import os.path
+import dataclasses
+import pandas
 import typing
 from typing import Any, Dict, List
 
 from railostools.exceptions import RailwayParsingError
+
+@dataclasses.dataclass
+class RlyInfoTables:
+    signals: pandas.DataFrame
 
 
 class RlyParser:
@@ -56,6 +62,23 @@ class RlyParser:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data
+
+    @property
+    def active_elements(self) -> typing.List[typing.Dict]:
+        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]]["active_elements"]
+
+    def _make_signal_table(self) -> pandas.DataFrame:
+        _df_dict = {col: [] for col in ["position", "signal"]}
+        for element in self.active_elements:
+            if not element["signal"]:
+                continue
+            for key in _df_dict:
+                _df_dict[key].append(element[key])
+        return pandas.DataFrame.from_dict(_df_dict)
+
+    @property
+    def tables(self) -> RlyInfoTables:
+        return RlyInfoTables(signals=self._make_signal_table())
 
     def _parse_active_element(self, active_elem: List[str]) -> Dict:
         active_elem: typing.List[str] = [i.strip() for i in active_elem]
