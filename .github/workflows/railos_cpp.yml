@@ -1,0 +1,22 @@
+name: RailOS Tools C++
+on:
+  - push
+  - pull_request
+jobs:
+  build_cxx:
+    name: C++ Library
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: '3.20.x'
+      - name: Build Library and Tests
+        run: |
+          cmake -Bbuild
+          cmake --build build --target tests
+        working-directory: cpp
+      - name: Run Unit Tests
+        run: ./build/tests/run-tests
+        working-directory: cpp
