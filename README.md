@@ -1,5 +1,5 @@
 # RailOSTools
-[![RailOSTools](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/rostools.yml)
+[![RailOS Tools C++](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_cpp.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_cpp.yml) [![RailOS Tools Python](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_python.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_python.yml) [![RailOSTools Java](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railsos_java.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railsos_java.yml)
 
 *Railway Operation Simulator Toolkit*
 
