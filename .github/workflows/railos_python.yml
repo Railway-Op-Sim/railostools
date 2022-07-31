@@ -1,4 +1,4 @@
-name: RailOSTools
+name: RailOSTools Python
 
 on:
   - push
