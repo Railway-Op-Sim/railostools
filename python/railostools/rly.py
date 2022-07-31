@@ -55,7 +55,7 @@ class RlyParser:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data[
             os.path.splitext(os.path.basename(self._current_file))[0]
-        ]["program_version"]
+        ]["metadata"]["program_version"]
 
     @property
     def data(self) -> typing.Dict:
