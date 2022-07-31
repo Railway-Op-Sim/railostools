@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os.path
+import typing
 from typing import Any, Dict, List
 import typing
 
@@ -58,13 +59,13 @@ class RlyParser:
         ])
 
     @property
-    def data(self):
+    def data(self) -> typing.Dict:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data
 
     def _parse_active_element(self, active_elem: List[str]) -> Dict:
-        active_elem = [i.strip() for i in active_elem]
+        active_elem: typing.List[str] = [i.strip() for i in active_elem]
         return {
             "element_id": int(active_elem[1]),
             "position": (int(active_elem[2]), int(active_elem[3])),
@@ -119,6 +120,13 @@ class RlyParser:
             "active_elements": lambda x: self._parse_active_element(x),
             "text": lambda x: self._parse_text(x),
         }
+        _signals: typing.Dict[str, typing.Optional[str]] = {
+            "G": "ground",
+            "4": "4AT",
+            "3": "3AT",
+            "2": "2AT",
+            "*": None,
+        }
         _data_dict = {}
         _key = "metadata"
         _part = []
@@ -141,7 +149,9 @@ class RlyParser:
                 continue
             elif "***" in line:
                 try:
-                    _data_dict[_key].append(_functions[_key](_part))
+                    _element = _functions[_key](_part)
+                    _element["signal"] = _signals[line[0]]
+                    _data_dict[_key].append(_element)
                 except ValueError as e:
                     if _key != "inactive_elements":
                         raise e

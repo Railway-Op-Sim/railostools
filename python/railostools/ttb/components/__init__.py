@@ -3,6 +3,7 @@ import typing
 
 import pydantic
 
+import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.strings as ros_ttb_str
 import railostools.exceptions as ros_exc
@@ -47,7 +48,9 @@ class StartType(Element):
 class Reference(pydantic.BaseModel):
     prefix: typing.Optional[pydantic.constr(max_length=4)] = None
     service: pydantic.constr(max_length=2, min_length=2)
-    id: typing.Union[pydantic.conint(ge=0, lt=100), pydantic.constr(min_length=2, max_length=2)]
+    id: typing.Union[
+        pydantic.conint(ge=0, lt=100), pydantic.constr(min_length=2, max_length=2)
+    ]
 
     def __str__(self) -> str:
         if isinstance(self.id, int):
