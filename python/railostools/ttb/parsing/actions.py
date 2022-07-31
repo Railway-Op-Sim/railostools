@@ -5,7 +5,7 @@ import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.components.actions as ros_act
 import railostools.ttb.parsing.components as ros_parse_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 
 def parse_location(action_components: typing.List[str]) -> ros_act.Location:

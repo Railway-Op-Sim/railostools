@@ -5,7 +5,7 @@ import railostools.ttb.parsing as ros_parse
 import railostools.ttb.parsing.actions as rosparse_act
 import railostools.ttb.parsing.finish as rosparse_finish
 import railostools.ttb.parsing.start as rosparse_start
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

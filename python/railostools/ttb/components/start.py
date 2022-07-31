@@ -4,7 +4,7 @@ import pydantic
 
 import railostools.common.coords as ros_coords
 import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 
 class Snt(ros_comp.StartType, pydantic.BaseModel):

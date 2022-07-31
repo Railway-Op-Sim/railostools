@@ -3,6 +3,7 @@ import json
 import logging
 import os.path
 from typing import Any, Dict, List
+import typing
 
 from railostools.exceptions import RailwayParsingError
 
@@ -30,25 +31,31 @@ class RlyParser:
     def n_active_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[
-            os.path.splitext(os.path.basename(self._current_file))[0]
-        ]["metadata"]["n_active_elements"]
+        return self._rly_data[self.current_entry]["metadata"]["n_active_elements"]
 
     @property
     def n_inactive_elements(self) -> int:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[
-            os.path.splitext(os.path.basename(self._current_file))[0]
-        ]["metadata"]["n_inactive_elements"]
+        return self._rly_data[self.current_entry]["metadata"]["n_inactive_elements"]
+
+    @property
+    def current_entry(self) -> str:
+        if not self._current_file:
+            raise RailwayParsingError("No file has been parsed yet")
+        return os.path.splitext(os.path.basename(self._current_file))[0]
 
     @property
     def program_version(self) -> str:
-        if not self._current_file:
-            raise RailwayParsingError("No file has been parsed yet")
-        return self._rly_data[
-            os.path.splitext(os.path.basename(self._current_file))[0]
-        ]["program_version"]
+        return self._rly_data[self.current_entry]["metadata"]["program_version"]
+
+    @property
+    def named_locations(self) -> typing.List[str]:
+        return set([
+            n["active_element_name"]
+            for n in self._rly_data[self.current_entry]["active_elements"]
+            if n["active_element_name"]
+        ])
 
     @property
     def data(self):

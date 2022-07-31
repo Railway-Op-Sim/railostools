@@ -7,7 +7,7 @@ import typing
 
 import railostools.exceptions as ros_exc
 import railostools.ttb.components as ttb_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 from railostools.ttb.parsing.actions import parse_action
 from railostools.ttb.parsing.components import parse_header, parse_repeat
 from railostools.ttb.parsing.finish import parse_finish

@@ -6,7 +6,7 @@ import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
 import railostools.ttb.components.finish as ros_finish
 import railostools.ttb.parsing.components as ros_parse_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 
 def parse_Fns(finish_components: typing.List[str]) -> ros_finish.Fns:

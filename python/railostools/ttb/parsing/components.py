@@ -2,7 +2,7 @@ import re
 
 import railostools.exceptions as ros_exc
 import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 
 def parse_reference(train_ref: str) -> ros_comp.Reference:

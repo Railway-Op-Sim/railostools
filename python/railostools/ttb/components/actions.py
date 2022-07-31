@@ -4,7 +4,7 @@ import typing
 import pydantic
 
 import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.strings as ros_ttb_str
 
 
 class Location(ros_comp.ActionType, pydantic.BaseModel):
