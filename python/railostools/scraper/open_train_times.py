@@ -1,10 +1,14 @@
 import datetime
+import json
 import typing
 import bs4
 import pandas
 import requests
 import tempfile
+import tqdm
+import time
 import re
+import os.path
 import dataclasses
 import railostools.rly as railos_rly
 import railostools.ttb.components as railos_ttb_comp
@@ -17,6 +21,8 @@ class OTTService:
     service: pandas.DataFrame
     description: str
     train_type: typing.Optional[str] = None
+    previous: typing.Optional[str] = None
+    next: typing.Optional[str] = None
     
 
 
@@ -24,8 +30,8 @@ def _clean_locations(data_frame: pandas.DataFrame) -> pandas.DataFrame:
     _locations: typing.List[str] = []
     _platforms: typing.List[str] = []
     for location in data_frame["Location"]:
-        if "Platform" in location:
-            _place, _platform = location.split("Platform")
+        if "Platform " in location:
+            _place, _platform = location.split("Platform ")
             _platform_search = re.findall(r"(\d+)", _platform)
             _platform = _platform_search[0] or ""
             _locations.append(_place)
@@ -86,7 +92,6 @@ def _parse_times(data_frame: pandas.DataFrame, column_name: str, add_pass: bool 
     return _out_frame
 
 
-
 def scrape(url: str) -> None:
     _data: str = requests.get(url).content
     _scraped = bs4.BeautifulSoup(_data, "html.parser")
@@ -119,15 +124,82 @@ def scrape(url: str) -> None:
     )
 
 
+def _link_services(services: typing.Dict[str, OTTService]) -> None:
+    _starts: typing.Dict[str, str] = {}
+    _stops: typing.Dict[str, str] = {}
+    for headcode, service in services.items():
+        _final_loc: str = f'{service.service["Location"].iloc[-1]}:{service.service["Plat"].iloc[-1]}:{service.service["WTT Arrival"].iloc[-1]}'
+        _stops[_final_loc] = headcode
+        _start_loc: str = f'{service.service["Location"].iloc[0]}:{service.service["Plat"].iloc[0]}:{service.service["WTT Departure"].iloc[0]}'
+        _starts[_start_loc] = headcode
+    for start, headcode in _starts.items():
+        if start in _stops:
+            services[headcode].previous = _stops[start]
+            services[_stops[start]].next = headcode
+
+
 def build_timetable(start_time: str, urls: typing.List[str], railway_file: str) -> None:
-    _parser = railos_rly.RlyParser()
-    _parser.parse(railway_file)
-    _locations: typing.Set[str] = _parser.named_locations
+    #_parser = railos_rly.RlyParser()
+    #_parser.parse(railway_file)
+    #_locations: typing.Set[str] = _parser.named_locations
 
     _start: datetime.datetime = datetime.datetime.strptime(start_time, "%H:%M")
 
-    _ott_services: typing.List[OTTService] = [scrape(i) for i in urls]
+    _ott_services: typing.Dict[str, OTTService] = {}
 
+    for url in urls:
+        _service: OTTService = scrape(url)
+        _ott_services[_service.headcode] = _service
+
+    _link_services(_ott_services)
+
+
+def get_station_listings(crs_code: str, date: datetime.datetime) -> typing.List[OTTService]:
+    with open(os.path.join(os.path.dirname(__file__), "tiploc.json")) as in_f:
+        _json_dat: typing.Dict[str, typing.Dict[str, str]] = json.load(in_f)
+
+    _station: str = _json_dat["crs"][crs_code]
+
+    _search_str: str = date.strftime("%Y-%m-%d/%H:%M")
+
+    _url: str = f"https://www.opentraintimes.com/location/{crs_code}/{_search_str}"
+
+    _listing = requests.get(_url)
+
+    _schedule_search: typing.List[str] = re.findall(r'href="(/schedule\/.+\/\d{4}-\d{2}-\d{2})"', _listing.text)
+
+    if not _schedule_search:
+        raise AssertionError(f"No results found using '{_url}'.")
+
+    _besoup = bs4.BeautifulSoup(_listing.content, "html.parser")
+
+    _listing = _besoup.find(id="schedules")
+
+    # with tempfile.NamedTemporaryFile(suffix=".html") as tfile:
+    #     with open(tfile.name, "w") as ofile:
+    #         ofile.write(str(_listing))
+    #     _data_frame: pandas.DataFrame = pandas.read_html(tfile.name)
+    
+    _results: typing.List[str, OTTService] = {}
+
+    print("Retrieving schedules, retrieval will pause 10s between entries so as to not bombard server")
+    for sched in tqdm.tqdm(_schedule_search[:5]):
+        _url: str = f"https://www.opentraintimes.com{sched}"
+        print(f"Retrieving from {_url}")
+        _service: OTTService = scrape(_url)
+        _results[_service.headcode] = _service
+        time.sleep(10)
+
+    return _results
+
+    
 
 if __name__ in "__main__":
-    print(scrape("https://www.opentraintimes.com/schedule/F42412/2022-07-27").service)
+    import pickle
+    _services_8_10 = get_station_listings("RMD", datetime.datetime.strptime("08:00 2022-07-29", "%H:%M %Y-%m-%d"))
+    _services_8_10.update(get_station_listings("RMD", datetime.datetime.strptime("09:00 2022-07-29", "%H:%M %Y-%m-%d")))
+    _services_8_10.update(get_station_listings("RMD", datetime.datetime.strptime("10:00 2022-07-29", "%H:%M %Y-%m-%d")))
+    _link_services(_services_8_10)
+    with open("demo_file.pckl", "wb") as outf:
+        pickle.dump(_services_8_10, outf)
+
