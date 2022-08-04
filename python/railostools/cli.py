@@ -3,9 +3,10 @@ import os
 
 import click
 
-from railostools.metadata import validate
+from railostools.metadata.validation import validate
 from railostools.rly import RlyParser
 from railostools.ttb.parsing import TTBParser
+from railostools.metadata.wikidata import MetadataExpander
 
 logging.basicConfig()
 
@@ -74,3 +75,11 @@ def rly2json(rly_file: str, output: str):
     _parser = RlyParser()
     _parser.parse(rly_file)
     _parser.dump(output)
+
+
+@railostools.command("metadata-expand")
+@click.argument("project_directory")
+def metadata_expander(project_directory: str) -> None:
+    logging.getLogger().setLevel(logging.INFO)
+    _expander = MetadataExpander(project_directory, "GB")
+    _expander.append_metadata()

@@ -14,14 +14,15 @@ pycountry = "^22.3.5"
 opcua = "^0.98.13"
 configparser = "^5.2.0"
 pandas = "^1.4.2"
+wikidspark = { "git" = "https://github.com/artemis-beta/wikidspark.git" }
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 pytest-mock = "^3.7.0"
 coverage = "^6.3.2"
 pre-commit = "^2.17.0"
 unimport = "^0.9.5"
 isort = "^5.10.1"
+pytest = "^7.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
