@@ -30,7 +30,7 @@ class RlyParser:
                 f"Cannot parse railway file '{rly_file}', " "file does not exist."
             )
         _key = os.path.splitext(os.path.basename(rly_file))[0]
-        self._rly_data[_key] = self._get_rly_components(open(rly_file).readlines())
+        self._rly_data[_key] = self._get_rly_components(open(rly_file, encoding="latin-1").readlines())
         self._current_file = rly_file
 
     @property
@@ -56,6 +56,14 @@ class RlyParser:
         return self._rly_data[
             os.path.splitext(os.path.basename(self._current_file))[0]
         ]["metadata"]["program_version"]
+
+    @property
+    def named_locations(self) -> typing.List[str]:
+        return set([
+            n["active_element_name"]
+            for n in self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]["active_elements"]
+            if n["active_element_name"]
+        ])
 
     @property
     def data(self) -> typing.Dict:

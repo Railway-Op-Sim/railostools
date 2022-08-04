@@ -1,0 +1,3 @@
+[submodule "python/tests/data/GB-Glasgow-Suburban"]
+	path = python/tests/data/GB-Glasgow-Suburban
+	url = https://github.com/Railway-Op-Sim/GB-Glasgow-Suburban.git
