@@ -1,3 +1,3 @@
 #[path = "metadata.rs"]
-mod metadata;
+pub mod metadata;
 
