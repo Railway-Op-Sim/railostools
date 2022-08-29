@@ -1,4 +1,4 @@
-enum Level1Mode {
+pub enum Level1Mode {
     BaseMode,
     TrackMode,
     PrefDirMode,
@@ -7,14 +7,14 @@ enum Level1Mode {
     TimetableMode,
 }
 
-enum Level2OperMode {
+pub enum Level2OperMode {
     NoOperMode,
     Operating,
     PreStart,
     Paused,
 }
 
-enum TrackType {
+pub enum TrackType {
     Simple,
     Crossover,
     Points,
@@ -34,7 +34,7 @@ enum TrackType {
 }
 
 
-enum Elements {
+pub enum Elements {
     Horizontal,
     Vertical,
     UpRight,
