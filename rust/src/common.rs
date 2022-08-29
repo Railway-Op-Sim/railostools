@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Level1Mode {
     BaseMode,
     TrackMode,
@@ -7,6 +8,7 @@ pub enum Level1Mode {
     TimetableMode,
 }
 
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Level2OperMode {
     NoOperMode,
     Operating,
@@ -14,6 +16,7 @@ pub enum Level2OperMode {
     Paused,
 }
 
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum TrackType {
     Simple,
     Crossover,
@@ -33,7 +36,7 @@ pub enum TrackType {
     LevelCrossing,
 }
 
-
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Elements {
     Horizontal,
     Vertical,
