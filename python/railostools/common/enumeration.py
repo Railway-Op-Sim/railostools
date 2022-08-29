@@ -18,21 +18,22 @@ class Level2OperMode(enum.Enum):
 
 
 class TrackType(enum.Enum):
-    Crossover = 0
-    Points = 1
-    Buffers = 2
-    Bridge = 3
-    SignalPost = 4
-    Continuation = 5
-    Platform = 6
-    GapJump = 7
-    FootCrossing = 8
-    Unused = 9
-    Concourse = 10
-    Parapet = 11
-    NamedNonStationLocation = 11
-    Erase = 12
-    LevelCrossing = 13
+    Simple = 0
+    Crossover = 1
+    Points = 2
+    Buffers = 3
+    Bridge = 4
+    SignalPost = 5
+    Continuation = 6
+    Platform = 7
+    GapJump = 8
+    FootCrossing = 9
+    Unused = 10
+    Concourse = 11
+    Parapet = 12
+    NamedNonStationLocation = 13
+    Erase = 14
+    LevelCrossing = 15
 
 
 class Elements(enum.Enum):
