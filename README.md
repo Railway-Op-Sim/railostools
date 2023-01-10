@@ -21,7 +21,7 @@ Options:
   --help              Show this message and exit.
 
 Commands:
-  ttb2json  Extract ROS timetable file to json
+  ttb2json  Extract RailOS timetable file to json
 ```
 
 ### Command Line Interface
@@ -35,7 +35,7 @@ This allows for easier data interpretation within other projects.
 $ railostools ttb2json --help
 Usage: railostools ttb2json [OPTIONS] TTB_FILE
 
-  Extract ROS timetable file to json
+  Extract RailOS timetable file to json
 
 Options:
   --output TEXT  JSON output file
@@ -51,7 +51,7 @@ This allows for easier data interpretation within other projects.
 $ railostools rly2json --help
 Usage: railostools rly2json [OPTIONS] RLY_FILE
 
-  Extract ROS railway file to json
+  Extract RailOS railway file to json
 
 Options:
   --output TEXT  JSON output file
@@ -118,7 +118,7 @@ from railostools.performance import Monitor
 
 ROS_LOG_DIR = 'C:\\Program Files (x86)\\RailwayOperationSimulator\\Railway\\Performance\ logs'
 
-# Create a new monitor pointing to the ROS log directory
+# Create a new monitor pointing to the RailOS log directory
 my_monitor = Monitor(ROS_LOG_DIR)
 
 # Create a listener function which will just print the data

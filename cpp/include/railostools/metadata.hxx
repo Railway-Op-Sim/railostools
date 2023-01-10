@@ -16,7 +16,7 @@
 
 #include "country_codes.hxx"
 
-namespace ROSTools {
+namespace RailOSTools {
 
     const std::vector<std::string> MANDATORY_KEYS = {
         "name",

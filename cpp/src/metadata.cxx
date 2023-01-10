@@ -1,57 +1,57 @@
 #include "railostools/metadata.hxx"
 
-std::string ROSTools::Metadata::retrieve_string_(const std::string& key) const {
+std::string RailOSTools::Metadata::retrieve_string_(const std::string& key) const {
     return meta_data_[key].value<std::string>().value_or("");
 }
 
 template<typename T>
-void ROSTools::Metadata::set_key_value_(const std::string& key, const T& value) {
+void RailOSTools::Metadata::set_key_value_(const std::string& key, const T& value) {
     meta_data_.insert_or_assign(key, toml::value{value});
 }
 
-std::string ROSTools::Metadata::name() const {
+std::string RailOSTools::Metadata::name() const {
     return retrieve_string_("name");
 }
 
-std::string ROSTools::Metadata::author() const {
+std::string RailOSTools::Metadata::author() const {
     return retrieve_string_("author");
 }
 
-std::string ROSTools::Metadata::description() const {
+std::string RailOSTools::Metadata::description() const {
     return retrieve_string_("description");
 }
 
-std::string ROSTools::Metadata::display_name() const {
+std::string RailOSTools::Metadata::display_name() const {
     return retrieve_string_("display_name");
 }
 
-int ROSTools::Metadata::year() const {
+int RailOSTools::Metadata::year() const {
     return meta_data_["year"].value<int>().value_or(-1);
 }
 
-int ROSTools::Metadata::difficulty() const {
+int RailOSTools::Metadata::difficulty() const {
     return meta_data_["difficulty"].value<int>().value_or(-1);
 }
 
-bool ROSTools::Metadata::factual() const {
+bool RailOSTools::Metadata::factual() const {
     return meta_data_["factual"].value<bool>().value_or(false);
 }
 
-std::string ROSTools::Metadata::country_code() const {
+std::string RailOSTools::Metadata::country_code() const {
     return retrieve_string_("country_code");
 }
 
-std::vector<std::string> ROSTools::Metadata::contributors() const {
+std::vector<std::string> RailOSTools::Metadata::contributors() const {
     return retrieve_list_("contributors");
 }
 
-semver::version ROSTools::Metadata::version() const {
+semver::version RailOSTools::Metadata::version() const {
     const std::string ver_str_ = meta_data_["version"].value<std::string>().value_or("");
     if(ver_str_.empty()) return semver::version();
     return semver::version(ver_str_);
 }
 
-semver::version ROSTools::Metadata::minimum_required() const {
+semver::version RailOSTools::Metadata::minimum_required() const {
     const std::string key_ = "minimum_required";
     if(!meta_data_.contains(key_)) return semver::version{"0.1.0"};
     const std::string ver_str_ = meta_data_[key_].value<std::string>().value_or("");
@@ -59,11 +59,11 @@ semver::version ROSTools::Metadata::minimum_required() const {
     return semver::version(ver_str_);
 }
 
-std::filesystem::path ROSTools::Metadata::rly_file() const {
+std::filesystem::path RailOSTools::Metadata::rly_file() const {
     return std::filesystem::path(meta_data_["rly_file"].value<std::string>().value_or(""));
 }
 
-std::vector<std::string> ROSTools::Metadata::retrieve_list_(const std::string& key) const {
+std::vector<std::string> RailOSTools::Metadata::retrieve_list_(const std::string& key) const {
     std::vector<std::string> items_;
     if(!meta_data_.contains(key)) {
         return items_;
@@ -78,14 +78,14 @@ std::vector<std::string> ROSTools::Metadata::retrieve_list_(const std::string& k
     return items_;
 }
 
-ROSTools::Metadata::Metadata(const std::filesystem::path& file_name, bool validate_inputs) {
+RailOSTools::Metadata::Metadata(const std::filesystem::path& file_name, bool validate_inputs) {
     toml_file_ = file_name;
     meta_data_ = toml::parse_file(file_name.string());
 
     if(validate_inputs) validate();
 }
 
-void ROSTools::Metadata::validate() {
+void RailOSTools::Metadata::validate() {
     const std::vector<std::string> check_excludes_ = {
         "factual",
         "country_code",
@@ -128,7 +128,7 @@ void ROSTools::Metadata::validate() {
     }
 }
 
-void ROSTools::Metadata::add_missing_keys() {
+void RailOSTools::Metadata::add_missing_keys() {
     const std::vector<std::string> list_vals_ = {
         "ttb_files",
         "doc_files",
@@ -156,7 +156,7 @@ void ROSTools::Metadata::add_missing_keys() {
     if(!meta_data_.contains("factual")) set_key_value_("factual", false);
 }
 
-std::vector<std::filesystem::path> ROSTools::Metadata::ssn_files() const {
+std::vector<std::filesystem::path> RailOSTools::Metadata::ssn_files() const {
     std::vector<std::filesystem::path> files_;
     for(const std::string& file : retrieve_list_("ssn_files")) {
         files_.push_back(file);
@@ -164,7 +164,7 @@ std::vector<std::filesystem::path> ROSTools::Metadata::ssn_files() const {
     return files_;
 }
 
-std::vector<std::filesystem::path> ROSTools::Metadata::ttb_files() const {
+std::vector<std::filesystem::path> RailOSTools::Metadata::ttb_files() const {
     std::vector<std::filesystem::path> files_;
     for(const std::string& file : retrieve_list_("ttb_files")) {
         files_.push_back(file);
@@ -172,7 +172,7 @@ std::vector<std::filesystem::path> ROSTools::Metadata::ttb_files() const {
     return files_;
 }
 
-std::vector<std::filesystem::path> ROSTools::Metadata::doc_files() const {
+std::vector<std::filesystem::path> RailOSTools::Metadata::doc_files() const {
     std::vector<std::filesystem::path> files_;
     for(const std::string& file : retrieve_list_("doc_files")) {
         files_.push_back(file);
@@ -180,7 +180,7 @@ std::vector<std::filesystem::path> ROSTools::Metadata::doc_files() const {
     return files_;
 }
 
-std::vector<std::filesystem::path> ROSTools::Metadata::img_files() const {
+std::vector<std::filesystem::path> RailOSTools::Metadata::img_files() const {
     std::vector<std::filesystem::path> files_;
     for(const std::string& file : retrieve_list_("img_files")) {
         files_.push_back(file);
@@ -188,7 +188,7 @@ std::vector<std::filesystem::path> ROSTools::Metadata::img_files() const {
     return files_;
 }
 
-std::vector<std::filesystem::path> ROSTools::Metadata::graphic_files() const {
+std::vector<std::filesystem::path> RailOSTools::Metadata::graphic_files() const {
     std::vector<std::filesystem::path> files_;
     for(const std::string& file : retrieve_list_("graphic_files")) {
         files_.push_back(file);
@@ -196,7 +196,7 @@ std::vector<std::filesystem::path> ROSTools::Metadata::graphic_files() const {
     return files_;
 }
 
-date::year_month_day ROSTools::Metadata::release_date() const {
+date::year_month_day RailOSTools::Metadata::release_date() const {
     const std::string date_ = retrieve_string_("release_date");
     std::stringstream stream_(date_);
     std::string part_;
@@ -215,24 +215,24 @@ date::year_month_day ROSTools::Metadata::release_date() const {
     return date::year{date_elements_[0]}/date::month{date_elements_[1]}/date::day{date_elements_[2]};
 }
 
-void ROSTools::Metadata::setAuthor(const std::string& author) {
+void RailOSTools::Metadata::setAuthor(const std::string& author) {
     if(author.empty()) {
         throw std::runtime_error("Key 'author' cannot be empty");
     }
     set_key_value_("author", author);
 }
 
-void ROSTools::Metadata::setFactual(bool is_factual) {
+void RailOSTools::Metadata::setFactual(bool is_factual) {
     set_key_value_("factual", is_factual);
 }
 
-void ROSTools::Metadata::setReleaseDate(const date::year_month_day& release_date_val) {
+void RailOSTools::Metadata::setReleaseDate(const date::year_month_day& release_date_val) {
     std::stringstream ss;
     ss << release_date_val;
     set_key_value_("release_date", ss.str());
 }
 
-void ROSTools::Metadata::setReleaseNow() {
+void RailOSTools::Metadata::setReleaseNow() {
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);
     std::stringstream ss;
@@ -241,7 +241,7 @@ void ROSTools::Metadata::setReleaseNow() {
     set_key_value_("release_date", ss.str());
 }
 
-void ROSTools::Metadata::set_list_(const std::string& key, const std::vector<std::string>& list_vals) {
+void RailOSTools::Metadata::set_list_(const std::string& key, const std::vector<std::string>& list_vals) {
     toml::array out_vals_;
 
     for(const std::string& val : list_vals) {
@@ -250,7 +250,7 @@ void ROSTools::Metadata::set_list_(const std::string& key, const std::vector<std
     meta_data_.insert_or_assign(key, out_vals_);
 }
 
-void ROSTools::Metadata::append_to_list_(const std::string& label, const std::string& key, const std::string& value) {
+void RailOSTools::Metadata::append_to_list_(const std::string& label, const std::string& key, const std::string& value) {
     std::vector<std::string> existing_ = retrieve_list_(key);
     if(std::find(existing_.begin(), existing_.end(), value) != existing_.end()) {
         // Already in the list
@@ -260,98 +260,98 @@ void ROSTools::Metadata::append_to_list_(const std::string& label, const std::st
     set_list_(key, existing_);
 }
 
-void ROSTools::Metadata::setContributors(const std::vector<std::string>& contributor_list) {
+void RailOSTools::Metadata::setContributors(const std::vector<std::string>& contributor_list) {
     set_list_("contributors", contributor_list);
 }
 
-void ROSTools::Metadata::setTTBFiles(const std::vector<std::string>& ttb_filenames) {
+void RailOSTools::Metadata::setTTBFiles(const std::vector<std::string>& ttb_filenames) {
     set_list_("ttb_files", ttb_filenames);
 }
 
-void ROSTools::Metadata::setSSNFiles(const std::vector<std::string>& ssn_filenames) {
+void RailOSTools::Metadata::setSSNFiles(const std::vector<std::string>& ssn_filenames) {
     set_list_("ssn_files", ssn_filenames);
 }
 
-void ROSTools::Metadata::setImgFiles(const std::vector<std::string>& img_filenames) {
+void RailOSTools::Metadata::setImgFiles(const std::vector<std::string>& img_filenames) {
     set_list_("img_files", img_filenames);
 }
 
-void ROSTools::Metadata::setGraphicFiles(const std::vector<std::string>& graphic_filenames) {
+void RailOSTools::Metadata::setGraphicFiles(const std::vector<std::string>& graphic_filenames) {
     set_list_("graphic_files", graphic_filenames);
 }
 
-void ROSTools::Metadata::setDocFiles(const std::vector<std::string>& doc_filenames) {
+void RailOSTools::Metadata::setDocFiles(const std::vector<std::string>& doc_filenames) {
     set_list_("doc_files", doc_filenames);
 }
 
-void ROSTools::Metadata::setRLYFile(const std::string& rly_filename){
+void RailOSTools::Metadata::setRLYFile(const std::string& rly_filename){
     if(rly_filename.empty()) {
         throw std::runtime_error("Key 'rly_file' cannot be empty");
     }
     set_key_value_("rly_file", rly_filename);
 }
 
-void ROSTools::Metadata::setDisplayName(const std::string& display_name_val){
+void RailOSTools::Metadata::setDisplayName(const std::string& display_name_val){
     set_key_value_("display_name", display_name_val);
 }
 
-void ROSTools::Metadata::setName(const std::string& name_val){
+void RailOSTools::Metadata::setName(const std::string& name_val){
     if(name_val.empty()) {
         throw std::runtime_error("Key 'name' cannot be empty");
     }
     set_key_value_("name", name_val);
 }
 
-void ROSTools::Metadata::setDescription(const std::string& description_val){
+void RailOSTools::Metadata::setDescription(const std::string& description_val){
     set_key_value_("description", description_val);
 }
 
-void ROSTools::Metadata::setYear(const int year){
+void RailOSTools::Metadata::setYear(const int year){
     if(year < 1900 || year > 9999) {
         throw std::runtime_error("Year must be in range [1999,9999]");
     }
     set_key_value_("year", year);
 }
 
-void ROSTools::Metadata::setDifficulty(const int difficulty_val){
+void RailOSTools::Metadata::setDifficulty(const int difficulty_val){
     if(difficulty_val < 1 || difficulty_val > 5) {
         throw std::runtime_error("Difficulty must be in the range [1, 5]");
     }
     set_key_value_("difficulty", difficulty_val);
 }
 
-void ROSTools::Metadata::addContributor(const std::string& contributor){
+void RailOSTools::Metadata::addContributor(const std::string& contributor){
     append_to_list_("Contributor", "contributors", contributor);
 }
 
-void ROSTools::Metadata::addTTBFile(const std::string& ttb_filename){
+void RailOSTools::Metadata::addTTBFile(const std::string& ttb_filename){
     append_to_list_("Timetable file", "ttb_files", ttb_filename);
 }
 
-void ROSTools::Metadata::addSSNFile(const std::string& ssn_filename){
+void RailOSTools::Metadata::addSSNFile(const std::string& ssn_filename){
     append_to_list_("Session file", "ssn_files", ssn_filename);
 }
 
-void ROSTools::Metadata::addImgFile(const std::string& img_filename){
+void RailOSTools::Metadata::addImgFile(const std::string& img_filename){
     append_to_list_("Image file", "img_files", img_filename);
 }
 
-void ROSTools::Metadata::addGraphicFile(const std::string& graphic_filename){
+void RailOSTools::Metadata::addGraphicFile(const std::string& graphic_filename){
     append_to_list_("Graphic file", "graphic_files", graphic_filename);
 }
 
-void ROSTools::Metadata::addDocFile(const std::string& doc_filename){
+void RailOSTools::Metadata::addDocFile(const std::string& doc_filename){
     append_to_list_("Document file", "doc_files", doc_filename);
 }
 
-void ROSTools::Metadata::setCountryCode(const std::string& country_code_val) {
+void RailOSTools::Metadata::setCountryCode(const std::string& country_code_val) {
     if(COUNTRY_CODES.count(country_code_val) == 0) {
         throw std::runtime_error("Invalid country code '"+country_code_val+"'");
     }
     set_key_value_("country_code", country_code_val);
 }
 
-void ROSTools::Metadata::write(const std::filesystem::path& output_file) {
+void RailOSTools::Metadata::write(const std::filesystem::path& output_file) {
     std::ofstream outs;
     outs.open(output_file);
 
@@ -360,11 +360,11 @@ void ROSTools::Metadata::write(const std::filesystem::path& output_file) {
     outs.close();
 }
 
-void ROSTools::Metadata::setVersion(const semver::version& version) {
+void RailOSTools::Metadata::setVersion(const semver::version& version) {
     set_key_value_("version", semver::to_string(version));
 }
 
-void ROSTools::Metadata::setVersion(const std::string& version) {
+void RailOSTools::Metadata::setVersion(const std::string& version) {
     try {
         setVersion(semver::version{version});
     } catch(std::exception&) {
@@ -372,11 +372,11 @@ void ROSTools::Metadata::setVersion(const std::string& version) {
     }
 }
 
-void ROSTools::Metadata::setMinimumRequired(const semver::version& version) {
+void RailOSTools::Metadata::setMinimumRequired(const semver::version& version) {
     set_key_value_("minimum_required", semver::to_string(version));
 }
 
-void ROSTools::Metadata::setMinimumRequired(const std::string& version) {
+void RailOSTools::Metadata::setMinimumRequired(const std::string& version) {
     try {
         setMinimumRequired(semver::version{version});
     } catch(std::exception&) {

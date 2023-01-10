@@ -134,7 +134,7 @@ class TimetabledService(Service, pydantic.BaseModel):
         _elements = [f"{self.header}", f"{self.start_type}"]
         if self.actions:
             _elements.append(
-                ros_ttb_str.concat(
+               railos_ttb_str.concat(
                     *(self.actions[k] for k, _ in enumerate(self.actions)),
                     join_type=Element,
                 )

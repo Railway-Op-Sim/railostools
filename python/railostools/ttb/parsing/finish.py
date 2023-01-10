@@ -66,7 +66,7 @@ def parse_Fer(finish_components: typing.List[str]) -> ros_finish.Fer:
         ) from e
 
     _exit_elements = [
-        ros_coords.coord_from_str(i) for i in finish_components[2].split()
+       railos_coords.coord_from_str(i) for i in finish_components[2].split()
     ]
 
     return ros_finish.Fer(time=finish_components[0], exit_coords=_exit_elements)

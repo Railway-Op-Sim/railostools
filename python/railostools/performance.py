@@ -18,7 +18,7 @@ class Monitor:
                 f"Cannot monitor performance output, "
                 f"directory '{ros_log_dir}' does not exist"
             )
-        self._log_dir = ros_log_dir  # ROS Performance Log directory
+        self._log_dir = ros_log_dir  # RailOS Performance Log directory
         self._async_funcs: List[
             Tuple[Callable, Dict]
         ] = []  # Methods with args to run in sync with monitor

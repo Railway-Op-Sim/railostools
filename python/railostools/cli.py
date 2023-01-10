@@ -22,7 +22,7 @@ def railostools(debug: bool = False) -> None:
 @click.argument("ttb_file")
 @click.option("--output", help="JSON output file", default=None)
 def ttb2json(ttb_file: str, output: str = "") -> None:
-    """Extract ROS timetable file to json"""
+    """Extract RailOS timetable file to json"""
     if not os.path.exists(ttb_file):
         raise FileNotFoundError(
             f"Cannot extract ttb file to json, file '{ttb_file}' does not exist"

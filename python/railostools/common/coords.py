@@ -34,7 +34,7 @@ class Coordinate(pydantic.BaseModel):
 
 
 def coord_from_str(coordinate_str: str) -> Coordinate:
-    """Convert an ROS coordinate string to a coordinate object"""
+    """Convert an RailOS coordinate string to a coordinate object"""
     _coord_regex = re.compile(r"^N*\d+\-N*\d+$")
 
     if not _coord_regex.findall(coordinate_str):
