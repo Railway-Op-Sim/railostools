@@ -10,7 +10,7 @@ SESSION_FILE = os.path.join(os.path.dirname(__file__), "data", "session.ini")
 
 @pytest.mark.session
 def test_session_no_ros() -> None:
-    with pytest.raises(ros_exc.ProgramNotFoundError):
+    with pytest.raises(railos_exc.ProgramNotFoundError):
        railos_sesh.Session(os.path.dirname(SESSION_FILE))
 
 

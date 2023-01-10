@@ -7,7 +7,7 @@ import railostools.ttb.components as railos_comp
 import railostools.ttb.string as railos_ttb_str
 
 
-class Snt(ros_comp.StartType, pydantic.BaseModel):
+class Snt(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     rear_element_id: railos_coords.Coordinate
     front_element_id: railos_coords.Coordinate
@@ -33,7 +33,7 @@ class Snt(ros_comp.StartType, pydantic.BaseModel):
         return vals
 
 
-class Sns(ros_comp.StartType, pydantic.BaseModel):
+class Sns(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     parent_service: railos_comp.Reference
 
@@ -50,7 +50,7 @@ class Sns(ros_comp.StartType, pydantic.BaseModel):
         return vals
 
 
-class Sfs(ros_comp.StartType, pydantic.BaseModel):
+class Sfs(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     splitting_service: railos_comp.Reference
 
@@ -67,7 +67,7 @@ class Sfs(ros_comp.StartType, pydantic.BaseModel):
         return vals
 
 
-class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
+class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     shuttle_ref: railos_comp.Reference
 
@@ -84,7 +84,7 @@ class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
         return vals
 
 
-class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
+class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     rear_element_id: railos_coords.Coordinate
     front_element_id: railos_coords.Coordinate
@@ -108,7 +108,7 @@ class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
         return vals
 
 
-class Sns_sh(ros_comp.StartType, pydantic.BaseModel):
+class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
     time: datetime.time
     feeder_ref: railos_comp.Reference
     linked_shuttle_ref: railos_comp.Reference

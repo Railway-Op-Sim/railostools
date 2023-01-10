@@ -116,6 +116,6 @@ def test_location() -> None:
 
 @pytest.mark.ttb_parsing
 def test_services_str() -> None:
-   _parser = railos_ttb_str.TTBParser()
+   _parser = railos_parse.TTBParser()
    _parser.parse(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
    _parser.services_str

@@ -14,18 +14,18 @@ class Session:
     _parser = configparser.ConfigParser()
 
     def __init__(self, railway_op_sim_dir: str) -> None:
-        self._ros_loc = railway_op_sim_dir
-        if not os.path.exists(os.path.join(self._ros_loc, "railway.exe")):
-            raise railos_exc.ProgramNotFoundError(self._ros_loc)
+        self._railos_loc = railway_op_sim_dir
+        if not os.path.exists(os.path.join(self._railos_loc, "railway.exe")):
+            raise railos_exc.ProgramNotFoundError(self._railos_loc)
 
     def _check_for_metadata(self, route: str) -> typing.Dict:
         """Check if metadata is available"""
-        if not os.path.exists(os.path.join(self._ros_loc, "Metadata")):
+        if not os.path.exists(os.path.join(self._railos_loc, "Metadata")):
             return {}
 
         _meta_list = [
             os.path.splitext(os.path.basename(i))[0]
-            for i in glob.glob(os.path.join(self._ros_loc, "Metadata", "*.toml"))
+            for i in glob.glob(os.path.join(self._railos_loc, "Metadata", "*.toml"))
         ]
 
         if os.path.splitext(os.path.basename(route))[0] not in _meta_list:
@@ -34,7 +34,7 @@ class Session:
         # By default the metadata file for a route should be the same prefix
         # as the route file
         _candidate_meta_file = os.path.join(
-            self._ros_loc,
+            self._railos_loc,
             "Metadata",
             f"{os.path.splitext(os.path.basename(route))[0]}.toml",
         )
@@ -53,7 +53,7 @@ class Session:
 
     def read(self) -> None:
         """Read current session metadata"""
-        self._parser.read(os.path.join(self._ros_loc, "session.ini"))
+        self._parser.read(os.path.join(self._railos_loc, "session.ini"))
 
     @property
     def railway(self) -> typing.Optional[str]:

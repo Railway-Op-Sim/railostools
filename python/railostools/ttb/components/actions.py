@@ -7,7 +7,7 @@ import railostools.ttb.components as railos_comp
 import railostools.ttb.string as railos_ttb_str
 
 
-class Location(ros_comp.ActionType, pydantic.BaseModel):
+class Location(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     end_time: typing.Optional[datetime.time]
     name: str
@@ -24,13 +24,13 @@ class Location(ros_comp.ActionType, pydantic.BaseModel):
         return v.strftime("%H:%M") if v else v
 
 
-class pas(ros_comp.ActionType, pydantic.BaseModel):
+class pas(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     location: str
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.time, self.name, f"{self.location}", join_type=ros_comp.Element
+            self.time, self.name, f"{self.location}", join_type=railos_comp.Element
         )
 
     @pydantic.validator("time")
@@ -43,13 +43,13 @@ class pas(ros_comp.ActionType, pydantic.BaseModel):
         return vals
 
 
-class jbo(ros_comp.ActionType, pydantic.BaseModel):
+class jbo(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     joining_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.name, f"{self.joining_service_ref}", join_type=ros_comp.Element
+            self.name, f"{self.joining_service_ref}", join_type=railos_comp.Element
         )
 
     @pydantic.root_validator
@@ -62,13 +62,13 @@ class jbo(ros_comp.ActionType, pydantic.BaseModel):
         return v.strftime("%H:%M")
 
 
-class fsp(ros_comp.ActionType, pydantic.BaseModel):
+class fsp(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.name, f"{self.new_service_ref}", join_type=ros_comp.Element
+            self.name, f"{self.new_service_ref}", join_type=railos_comp.Element
         )
 
     @pydantic.root_validator
@@ -81,13 +81,13 @@ class fsp(ros_comp.ActionType, pydantic.BaseModel):
         return v.strftime("%H:%M")
 
 
-class rsp(ros_comp.ActionType, pydantic.BaseModel):
+class rsp(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
     new_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.name, f"{self.new_service_ref}", join_type=ros_comp.Element
+            self.name, f"{self.new_service_ref}", join_type=railos_comp.Element
         )
 
     @pydantic.root_validator
@@ -100,7 +100,7 @@ class rsp(ros_comp.ActionType, pydantic.BaseModel):
         return v.strftime("%H:%M")
 
 
-class cdt(ros_comp.ActionType, pydantic.BaseModel):
+class cdt(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
 
     def __str__(self) -> str:
