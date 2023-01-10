@@ -29,12 +29,12 @@ def test_service_str():
             mass=73,
             power=2002
         ),
-        start_type=ros_start.Snt(
+        start_type=railos_start.Snt(
             time="11:23",
             rear_element_id=railos_coords.Coordinate(X=10, Y=23),
             front_element_id=railos_coords.Coordinate(X=10, Y=24)
         ),
-        finish_type=ros_end.Frh(),
+        finish_type=railos_end.Frh(),
         actions={
             0: railos_act.Location(
                 name="Liverpool South Parkway",
@@ -57,12 +57,12 @@ def test_dictify():
             mass=73,
             power=2002
         ),
-        start_type=ros_start.Snt(
+        start_type=railos_start.Snt(
             time="11:23",
             rear_element_id=railos_coords.Coordinate(X=10, Y=23),
             front_element_id=railos_coords.Coordinate(X=10, Y=24)
         ),
-        finish_type=ros_end.Fer(
+        finish_type=railos_end.Fer(
             time="11:34",
             exit_coords=[railos_coords.Coordinate(X=23, Y=-12)]
         ),
