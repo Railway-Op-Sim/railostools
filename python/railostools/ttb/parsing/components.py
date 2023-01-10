@@ -1,14 +1,14 @@
 import re
 
-import railostools.exceptions as ros_exc
-import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.exceptions as railos_exc
+import railostools.ttb.components as railos_comp
+import railostools.ttb.string as railos_ttb_str
 
 
-def parse_reference(train_ref: str) -> ros_comp.Reference:
+def parse_reference(train_ref: str) -> railos_comp.Reference:
     """Parse a service reference identifier"""
     if len(train_ref) > 8 or len(train_ref) < 4:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             f"Length of ervice reference '{train_ref}' " "must be between 4 and 8"
         )
     _headcode = train_ref[-4:]
@@ -21,14 +21,14 @@ def parse_reference(train_ref: str) -> ros_comp.Reference:
 
     _prefix = train_ref[: len(train_ref) - 4] if len(train_ref) > 4 else None
 
-    return ros_comp.Reference(prefix=_prefix, service=_hc_service, id=_hc_id)
+    return railos_comp.Reference(prefix=_prefix, service=_hc_service, id=_hc_id)
 
 
-def parse_header(header_str: str) -> ros_comp.Header:
+def parse_header(header_str: str) -> railos_comp.Header:
     """Parse a service header"""
-    _components = ros_ttb_str.split(header_str)
+    _components = railos_ttb_str.split(header_str)
     if len(_components) not in (1, 2, 7, 8):
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 1, 2, 7 or 8 items in components "
             f"'{_components}' for service header"
         )
@@ -43,7 +43,7 @@ def parse_header(header_str: str) -> ros_comp.Header:
 
     _reference = parse_reference(_components[0])
 
-    return ros_comp.Header(
+    return railos_comp.Header(
         reference=_reference,
         description=description,
         start_speed=start_speed,
@@ -55,18 +55,18 @@ def parse_header(header_str: str) -> ros_comp.Header:
     )
 
 
-def parse_repeat(repeat_str: str) -> ros_comp.Repeat:
+def parse_repeat(repeat_str: str) -> railos_comp.Repeat:
     """Parse a repeat statement"""
     if not re.findall(r"^R;", repeat_str):
-        raise ros_exc.ParsingError(f"Invalid repeat statement '{repeat_str}'")
+        raise railos_exc.ParsingError(f"Invalid repeat statement '{repeat_str}'")
 
-    _components = ros_ttb_str.split(repeat_str)
+    _components = railos_ttb_str.split(repeat_str)
 
     if len(_components) != 4:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 4 items in components " f"'{_components}' for repeat statement"
         )
-    return ros_comp.Repeat(
+    return railos_comp.Repeat(
         mins=int(_components[1]),
         digits=int(_components[2]),
         repeats=int(_components[3]),

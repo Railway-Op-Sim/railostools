@@ -8,7 +8,7 @@ import pydantic
 import semver
 import toml
 
-import railostools.exceptions as ros_exc
+import railostools.exceptions as railos_exc
 
 
 class Metadata(pydantic.BaseModel):
@@ -72,14 +72,14 @@ class Metadata(pydantic.BaseModel):
         if not year:
             return year
         if year < 1700:
-            raise ros_exc.MetadataError("Expected year value to be > 1700")
+            raise railos_exc.MetadataError("Expected year value to be > 1700")
 
     @pydantic.validator("difficulty")
     def validate_difficulty(cls, difficulty) -> typing.Optional[int]:
         if not difficulty:
             return difficulty
         if difficulty < 1 or difficulty > 5:
-            raise ros_exc.MetadataError("Difficulty must be in range [1, 5]")
+            raise railos_exc.MetadataError("Difficulty must be in range [1, 5]")
         return difficulty
 
     @pydantic.validator("country_code")
@@ -88,14 +88,14 @@ class Metadata(pydantic.BaseModel):
         _alpha_2 = [i.alpha_2 for i in pycountry.countries]
         if country_code == "FN" or country_code in _alpha_2:
             return country_code
-        raise ros_exc.MetadataError(f"Invalid country code '{country_code}'")
+        raise railos_exc.MetadataError(f"Invalid country code '{country_code}'")
 
     @pydantic.validator("release_date")
     def validate_release_date(cls, release_date: str) -> datetime.date:
         try:
             return datetime.datetime.strptime(release_date, "%Y-%m-%d")
         except ValueError as e:
-            raise ros_exc.MetadataError(
+            raise railos_exc.MetadataError(
                 "Expected 'release_date' in the form 'YYYY-MM-DD'"
             ) from e
 
@@ -104,7 +104,7 @@ class Metadata(pydantic.BaseModel):
         try:
             semver.VersionInfo.parse(version)
         except ValueError as e:
-            raise ros_exc.MetadataError(f"Invalid semantic version '{version}'") from e
+            raise railos_exc.MetadataError(f"Invalid semantic version '{version}'") from e
         return version
 
     def __str__(self) -> str:
@@ -113,7 +113,7 @@ class Metadata(pydantic.BaseModel):
     def write(self, outfile_name: str) -> None:
         """Write to output file"""
         if os.path.splitext(outfile_name) != ".toml":
-            raise ros_exc.IOError(
+            raise railos_exc.IOError(
                 "Invalid filename for metadata file, expected TOML file"
             )
         toml.dump(self.__dict__, open(outfile_name, "w"))

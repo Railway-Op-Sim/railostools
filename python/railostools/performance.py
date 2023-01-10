@@ -12,13 +12,13 @@ import railostools.exceptions as rexc
 class Monitor:
     _logger = logging.getLogger("ROSTools.PerformanceMonitor")
 
-    def __init__(self, ros_log_dir: str, time_out: int = 120) -> None:
+    def __init__(self, railos_log_dir: str, time_out: int = 120) -> None:
         if not os.path.exists(ros_log_dir):
             raise FileNotFoundError(
                 f"Cannot monitor performance output, "
                 f"directory '{ros_log_dir}' does not exist"
             )
-        self._log_dir = ros_log_dir  # RailOS Performance Log directory
+        self._log_dir = railos_log_dir  # RailOS Performance Log directory
         self._async_funcs: List[
             Tuple[Callable, Dict]
         ] = []  # Methods with args to run in sync with monitor

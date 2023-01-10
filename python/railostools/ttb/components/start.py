@@ -2,15 +2,15 @@ import datetime
 
 import pydantic
 
-import railostools.common.coords as ros_coords
-import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.common.coords as railos_coords
+import railostools.ttb.components as railos_comp
+import railostools.ttb.string as railos_ttb_str
 
 
 class Snt(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    rear_element_id: ros_coords.Coordinate
-    front_element_id: ros_coords.Coordinate
+    rear_element_id: railos_coords.Coordinate
+    front_element_id: railos_coords.Coordinate
     under_signaller_control: bool = False
 
     def __str__(self) -> str:
@@ -21,7 +21,7 @@ class Snt(ros_comp.StartType, pydantic.BaseModel):
         ]
         if self.under_signaller_control:
             _elements += "S"
-        return ros_ttb_str.concat(*_elements)
+        return railos_ttb_str.concat(*_elements)
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -35,10 +35,10 @@ class Snt(ros_comp.StartType, pydantic.BaseModel):
 
 class Sns(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    parent_service: ros_comp.Reference
+    parent_service: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(self.time, self.name, f"{self.parent_service}")
+        return railos_ttb_str.concat(self.time, self.name, f"{self.parent_service}")
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -52,10 +52,10 @@ class Sns(ros_comp.StartType, pydantic.BaseModel):
 
 class Sfs(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    splitting_service: ros_comp.Reference
+    splitting_service: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(self.time, self.name, f"{self.splitting_service}")
+        return railos_ttb_str.concat(self.time, self.name, f"{self.splitting_service}")
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -69,10 +69,10 @@ class Sfs(ros_comp.StartType, pydantic.BaseModel):
 
 class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    shuttle_ref: ros_comp.Reference
+    shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(self.time, self.name, f"{self.shuttle_ref}")
+        return railos_ttb_str.concat(self.time, self.name, f"{self.shuttle_ref}")
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -86,12 +86,12 @@ class Sns_fsh(ros_comp.StartType, pydantic.BaseModel):
 
 class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    rear_element_id: ros_coords.Coordinate
-    front_element_id: ros_coords.Coordinate
-    shuttle_ref: ros_comp.Reference
+    rear_element_id: railos_coords.Coordinate
+    front_element_id: railos_coords.Coordinate
+    shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.time,
             self.name,
             f"{self.rear_element_id} {self.front_element_id}",
@@ -110,11 +110,11 @@ class Snt_sh(ros_comp.StartType, pydantic.BaseModel):
 
 class Sns_sh(ros_comp.StartType, pydantic.BaseModel):
     time: datetime.time
-    feeder_ref: ros_comp.Reference
-    linked_shuttle_ref: ros_comp.Reference
+    feeder_ref: railos_comp.Reference
+    linked_shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.time, self.name, f"{self.linked_shuttle_ref}", f"{self.feeder_ref}"
         )
 

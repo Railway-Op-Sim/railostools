@@ -3,9 +3,9 @@ import typing
 
 import pydantic
 
-import railostools.exceptions as ros_exc
-import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.exceptions as railos_exc
+import railostools.ttb.components as railos_comp
+import railostools.ttb.string as railos_ttb_str
 
 
 class Element:
@@ -15,7 +15,7 @@ class Element:
     def __add__(self, other) -> str:
         if not isinstance(other, Element):
             raise ValueError("Can only add timetable elements to an element")
-        return ros_ttb_str.concat(self, other, join_type=Element)
+        return railos_ttb_str.concat(self, other, join_type=Element)
 
 
 class FinishType(Element):
@@ -60,7 +60,7 @@ class Reference(pydantic.BaseModel):
 
     def __iadd__(self, num: int) -> None:
         if isinstance(self.id, str):
-            raise ros_exc.InvalidOperationError(
+            raise railos_exc.InvalidOperationError(
                 f"Cannot increment reference with ID '{self.id}'"
             )
         if self.id + num > 99:
@@ -69,7 +69,7 @@ class Reference(pydantic.BaseModel):
 
     def __isub__(self, num: int) -> None:
         if isinstance(self.id, str):
-            raise ros_exc.InvalidOperationError(
+            raise railos_exc.InvalidOperationError(
                 f"Cannot decrement reference with ID '{self.id}'"
             )
         if self.id - num < 1:
@@ -78,7 +78,7 @@ class Reference(pydantic.BaseModel):
 
 
 class Header(pydantic.BaseModel, Element):
-    reference: ros_comp.Reference
+    reference: railos_comp.Reference
     description: typing.Optional[str]
     start_speed: typing.Optional[pydantic.conint(ge=0)] = None
     max_speed: typing.Optional[pydantic.conint(ge=0)] = None
@@ -103,7 +103,7 @@ class Header(pydantic.BaseModel, Element):
         if self.max_signaller_speed:
             _elements.append(f"{self.max_signaller_speed}")
 
-        return ros_ttb_str.concat(*_elements)
+        return railos_ttb_str.concat(*_elements)
 
 
 class Repeat(pydantic.BaseModel, Element):
@@ -112,7 +112,7 @@ class Repeat(pydantic.BaseModel, Element):
     repeats: pydantic.conint(gt=1)
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(f"{self.mins}", f"{self.digits}", f"{self.repeats}")
+        return railos_ttb_str.concat(f"{self.mins}", f"{self.digits}", f"{self.repeats}")
 
 
 class Service(pydantic.BaseModel):
@@ -140,7 +140,7 @@ class TimetabledService(Service, pydantic.BaseModel):
                 )
             )
         _elements.append(f"{self.finish_type}")
-        return ros_ttb_str.concat(*_elements, join_type=Element)
+        return railos_ttb_str.concat(*_elements, join_type=Element)
 
     class Config:
         arbitrary_types_allowed = True
@@ -151,7 +151,7 @@ class SignallerService(Service, pydantic.BaseModel):
     start_type: StartType
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(f"{self.header}", f"{self.start_type}")
+        return railos_ttb_str.concat(f"{self.header}", f"{self.start_type}")
 
     class Config:
         arbitrary_types_allowed = True

@@ -5,8 +5,8 @@ import typing
 
 import toml
 
-import railostools.common.enumeration as ros_enum
-import railostools.exceptions as ros_exc
+import railostools.common.enumeration as railos_enum
+import railostools.exceptions as railos_exc
 
 
 class Session:
@@ -16,7 +16,7 @@ class Session:
     def __init__(self, railway_op_sim_dir: str) -> None:
         self._ros_loc = railway_op_sim_dir
         if not os.path.exists(os.path.join(self._ros_loc, "railway.exe")):
-            raise ros_exc.ProgramNotFoundError(self._ros_loc)
+            raise railos_exc.ProgramNotFoundError(self._ros_loc)
 
     def _check_for_metadata(self, route: str) -> typing.Dict:
         """Check if metadata is available"""
@@ -62,7 +62,7 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
@@ -73,33 +73,33 @@ class Session:
         except configparser.NoOptionError:
             return False
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
     @property
-    def main_mode(self) -> ros_enum.Level1Mode:
+    def main_mode(self) -> railos_enum.Level1Mode:
         """Return the main program mode"""
         try:
-            return ros_enum.Level1Mode(self._parser.getint("session", "main_mode"))
+            return railos_enum.Level1Mode(self._parser.getint("session", "main_mode"))
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
     @property
-    def operation_mode(self) -> ros_enum.Level2OperMode:
+    def operation_mode(self) -> railos_enum.Level2OperMode:
         """Return the program operation mode"""
         try:
-            return ros_enum.Level2OperMode(
+            return railos_enum.Level2OperMode(
                 self._parser.getint("session", "operation_mode")
             )
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
@@ -113,7 +113,7 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
         if os.path.exists(_file):
@@ -132,6 +132,6 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e

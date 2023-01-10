@@ -3,8 +3,8 @@ import typing
 
 import pydantic
 
-import railostools.ttb.components as ros_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.components as railos_comp
+import railostools.ttb.string as railos_ttb_str
 
 
 class Location(ros_comp.ActionType, pydantic.BaseModel):
@@ -17,7 +17,7 @@ class Location(ros_comp.ActionType, pydantic.BaseModel):
         if self.end_time:
             _elements.append(self.end_time)
         _elements.append(self.name)
-        return ros_ttb_str.concat(*_elements)
+        return railos_ttb_str.concat(*_elements)
 
     @pydantic.validator("time", "end_time")
     def to_string(cls, v: datetime.time):
@@ -29,7 +29,7 @@ class pas(ros_comp.ActionType, pydantic.BaseModel):
     location: str
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.time, self.name, f"{self.location}", join_type=ros_comp.Element
         )
 
@@ -45,10 +45,10 @@ class pas(ros_comp.ActionType, pydantic.BaseModel):
 
 class jbo(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
-    joining_service_ref: ros_comp.Reference
+    joining_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.name, f"{self.joining_service_ref}", join_type=ros_comp.Element
         )
 
@@ -64,10 +64,10 @@ class jbo(ros_comp.ActionType, pydantic.BaseModel):
 
 class fsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
-    new_service_ref: ros_comp.Reference
+    new_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.name, f"{self.new_service_ref}", join_type=ros_comp.Element
         )
 
@@ -83,10 +83,10 @@ class fsp(ros_comp.ActionType, pydantic.BaseModel):
 
 class rsp(ros_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
-    new_service_ref: ros_comp.Reference
+    new_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return ros_ttb_str.concat(
+        return railos_ttb_str.concat(
             self.name, f"{self.new_service_ref}", join_type=ros_comp.Element
         )
 
