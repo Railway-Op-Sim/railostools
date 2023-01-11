@@ -5,9 +5,9 @@ import os.path
 import re
 import typing
 
-import railostools.exceptions as ros_exc
+import railostools.exceptions as railos_exc
 import railostools.ttb.components as ttb_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.ttb.string as railos_ttb_str
 from railostools.ttb.parsing.actions import parse_action
 from railostools.ttb.parsing.components import parse_header, parse_repeat
 from railostools.ttb.parsing.finish import parse_finish
@@ -34,7 +34,7 @@ class TTBParser:
         try:
             parse_action(statement)
             return True
-        except ros_exc.ParsingError as e:
+        except railos_exc.ParsingError as e:
             return False
 
     @property
@@ -43,7 +43,7 @@ class TTBParser:
         _index: int = 0
         while self.is_comment(self._file_lines[_index]):
             if _index >= len(self._file_lines):
-                raise ros_exc.ParsingError("Failed to retrieve timetable start time")
+                raise railos_exc.ParsingError("Failed to retrieve timetable start time")
             _index += 1
         return datetime.datetime.strptime(self._file_lines[_index], "%H:%M").time()
 
@@ -71,7 +71,7 @@ class TTBParser:
             if (
                 _service := [
                     k.strip()
-                    for k in ros_ttb_str.split(line, ttb_comp.Service)
+                    for k in railos_ttb_str.split(line, ttb_comp.Service)
                     if k.strip()
                 ]
             )
@@ -128,7 +128,7 @@ class TTBParser:
                 f"Cannot parse file '{file_name}', file is not a valid timetable file."
             )
         with open(file_name) as in_f:
-            self._file_lines = ros_ttb_str.split(in_f.read(), ttb_comp.Element)
+            self._file_lines = railos_ttb_str.split(in_f.read(), ttb_comp.Element)
 
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:

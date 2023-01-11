@@ -14,7 +14,7 @@ if( NOT DEFINED RAILOSTOOLS_STATIC_LIBRARY )
     set( RAILOSTOOLS_STATIC_LIBRARY OFF )
 endif()
 
-message( STATUS "[ROSTools]" )
+message( STATUS "[RailOSTools]" )
 message( STATUS "\t- Use Static Library: ${RAILOSTOOLS_STATIC_LIBRARY}" )
 message( STATUS "\t- Build Tests: ${RAILOSTOOLS_BUILD_TESTS}" )
 message( STATUS "\t- Test Coverage: ${RAILOSTOOLS_CODE_COVERAGE}" )

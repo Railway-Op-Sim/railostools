@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-namespace ROSTools {
+namespace RailOSTools {
     const std::map<std::string, std::string> COUNTRY_CODES = {
         {"AF", "Afghanistan"},
         {"AX", "Aland Islands"},

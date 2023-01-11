@@ -30,6 +30,6 @@ jobs:
         with:
           file: python/coverage.xml
           flags: unittests
-          name: ROS Tools
+          name: RailOS Tools
           fail_ci_if_error: false
           verbose: true

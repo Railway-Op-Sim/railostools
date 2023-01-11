@@ -5,8 +5,8 @@ import typing
 
 import toml
 
-import railostools.common.enumeration as ros_enum
-import railostools.exceptions as ros_exc
+import railostools.common.enumeration as railos_enum
+import railostools.exceptions as railos_exc
 
 
 class Session:
@@ -14,18 +14,18 @@ class Session:
     _parser = configparser.ConfigParser()
 
     def __init__(self, railway_op_sim_dir: str) -> None:
-        self._ros_loc = railway_op_sim_dir
-        if not os.path.exists(os.path.join(self._ros_loc, "railway.exe")):
-            raise ros_exc.ProgramNotFoundError(self._ros_loc)
+        self._railos_loc = railway_op_sim_dir
+        if not os.path.exists(os.path.join(self._railos_loc, "railway.exe")):
+            raise railos_exc.ProgramNotFoundError(self._railos_loc)
 
     def _check_for_metadata(self, route: str) -> typing.Dict:
         """Check if metadata is available"""
-        if not os.path.exists(os.path.join(self._ros_loc, "Metadata")):
+        if not os.path.exists(os.path.join(self._railos_loc, "Metadata")):
             return {}
 
         _meta_list = [
             os.path.splitext(os.path.basename(i))[0]
-            for i in glob.glob(os.path.join(self._ros_loc, "Metadata", "*.toml"))
+            for i in glob.glob(os.path.join(self._railos_loc, "Metadata", "*.toml"))
         ]
 
         if os.path.splitext(os.path.basename(route))[0] not in _meta_list:
@@ -34,7 +34,7 @@ class Session:
         # By default the metadata file for a route should be the same prefix
         # as the route file
         _candidate_meta_file = os.path.join(
-            self._ros_loc,
+            self._railos_loc,
             "Metadata",
             f"{os.path.splitext(os.path.basename(route))[0]}.toml",
         )
@@ -53,7 +53,7 @@ class Session:
 
     def read(self) -> None:
         """Read current session metadata"""
-        self._parser.read(os.path.join(self._ros_loc, "session.ini"))
+        self._parser.read(os.path.join(self._railos_loc, "session.ini"))
 
     @property
     def railway(self) -> typing.Optional[str]:
@@ -62,7 +62,7 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
@@ -73,33 +73,33 @@ class Session:
         except configparser.NoOptionError:
             return False
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
     @property
-    def main_mode(self) -> ros_enum.Level1Mode:
+    def main_mode(self) -> railos_enum.Level1Mode:
         """Return the main program mode"""
         try:
-            return ros_enum.Level1Mode(self._parser.getint("session", "main_mode"))
+            return railos_enum.Level1Mode(self._parser.getint("session", "main_mode"))
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
     @property
-    def operation_mode(self) -> ros_enum.Level2OperMode:
+    def operation_mode(self) -> railos_enum.Level2OperMode:
         """Return the program operation mode"""
         try:
-            return ros_enum.Level2OperMode(
+            return railos_enum.Level2OperMode(
                 self._parser.getint("session", "operation_mode")
             )
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
 
@@ -113,7 +113,7 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
         if os.path.exists(_file):
@@ -132,6 +132,6 @@ class Session:
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
-            raise ros_exc.SessionINIError(
+            raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
