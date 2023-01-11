@@ -59,6 +59,7 @@ namespace RailOSTools {
             std::vector<std::filesystem::path> img_files() const;
             std::vector<std::filesystem::path> graphic_files() const;
             std::vector<std::string> contributors() const;
+            std::string signal_position() const;
             bool factual() const;
             int difficulty() const;
             int year() const;

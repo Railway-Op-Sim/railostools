@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import typing
+import enum
 
 import pycountry
 import pydantic
@@ -9,6 +10,11 @@ import semver
 import toml
 
 import railostools.exceptions as railos_exc
+
+
+class SignalPosition(str, enum.Enum):
+    LEFT = "left"
+    RIGHT = "right"
 
 
 class Metadata(pydantic.BaseModel):
@@ -65,6 +71,9 @@ class Metadata(pydantic.BaseModel):
     )
     minimum_required: str = pydantic.Field(
         None, description="minimum required RailOS version"
+    )
+    signal_position: SignalPosition = pydantic.Field(
+        None, description="position of signal with respect to track direction"
     )
 
     @pydantic.validator("year")

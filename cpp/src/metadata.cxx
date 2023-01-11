@@ -13,6 +13,10 @@ std::string RailOSTools::Metadata::name() const {
     return retrieve_string_("name");
 }
 
+std::string RailOSTools::Metadata::signal_position() const {
+    return retrieve_string_("signal_position");
+}
+
 std::string RailOSTools::Metadata::author() const {
     return retrieve_string_("author");
 }
