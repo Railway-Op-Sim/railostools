@@ -73,6 +73,6 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${RAILOSTOOLS}-config-version.cmake D
 
 install( EXPORT ${RAILOSTOOLS} DESTINATION "lib/${RAILOSTOOLS}" )
 
-if( NOT RAILOSTOOLS_BUILD_TESTS )
-    add_subdirectory( tests EXCLUDE_FROM_ALL )
+if( RAILOSTOOLS_BUILD_TESTS )
+    add_subdirectory( tests )
 endif()

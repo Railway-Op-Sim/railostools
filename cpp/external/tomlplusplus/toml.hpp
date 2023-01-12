@@ -865,6 +865,7 @@ TOML_DISABLE_WARNINGS;
 #include <cmath>
 #include <iterator>
 #include <limits>
+#include <utility>
 #include <memory>
 #include <string_view>
 #include <string>
