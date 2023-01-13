@@ -59,6 +59,7 @@ namespace RailOSTools {
             std::vector<std::filesystem::path> img_files() const;
             std::vector<std::filesystem::path> graphic_files() const;
             std::vector<std::string> contributors() const;
+            std::string signal_position() const;
             bool factual() const;
             int difficulty() const;
             int year() const;
@@ -93,6 +94,7 @@ namespace RailOSTools {
             void setVersion(const std::string& version);
             void setMinimumRequired(const semver::version& version);
             void setMinimumRequired(const std::string& version="0.1.0");
+            void setSignalPosition(const std::string& position);
     };
 };
 

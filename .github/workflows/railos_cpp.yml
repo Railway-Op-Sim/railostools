@@ -4,19 +4,25 @@ on:
   - pull_request
 jobs:
   build_cxx:
-    name: C++ Library
+    name: C++ Library (${{ matrix.os }} ${{ matrix.compiler.name}})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [{cpp: g++, c: gcc, name: GCC}, {cpp: clang++, c: clang, name: Clang}]
+      fail-fast: true
     steps:
       - uses: actions/checkout@v1
       - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v1.9
-        with:
-          cmake-version: '3.20.x'
+        uses: jwlawson/actions-setup-cmake@v1.13.1
+      - name: Install Clang
+        uses: egor-tensin/setup-clang@v1.4
+        if: ${{ matrix.compiler.cpp == 'clang++' }}
+      - name: Setup N inja
+        uses: ashutoshvarma/setup-ninja@v1.1
       - name: Build Library and Tests
         run: |
-          cmake -Bbuild
-          cmake --build build --target tests
-        working-directory: cpp
+          CC=${{ matrix.compiler.c }} CXX=${{ matrix.compiler.cpp }} cmake -Bbuild -S cpp -G Ninja -DRAILOSTOOLS_BUILD_TESTS=ON -DRAILOSTOOLS_STATIC_LIBRARY=ON
+          cmake --build build
       - name: Run Unit Tests
         run: ./build/tests/run-tests
-        working-directory: cpp

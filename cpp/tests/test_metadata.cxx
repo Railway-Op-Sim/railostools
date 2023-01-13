@@ -70,6 +70,7 @@ TEST(MetadataTest, AssignValues) {
     const std::string display_name_ = "Antwerpen Centraal";
     const std::string country_code_fail_ = "LL";
     const std::string country_code_pass_ = "BE";
+    const std::string signal_position_ = "left";
     const std::string name_ = "Simulation of Antwerp south";
     const date::year_month_day release_date_ = 2021_y/October/9;
     const std::string version_ = "1.0.0";
@@ -90,6 +91,7 @@ TEST(MetadataTest, AssignValues) {
     meta_.setReleaseDate(2021_y/October/9);
     meta_.setName(name_);
     meta_.setVersion(version_);
+    meta_.setSignalPosition(signal_position_);
     ASSERT_EQ(meta_.contributors()[0], cont_name_);
     ASSERT_EQ(meta_.author(), author_name_);
     ASSERT_EQ(meta_.img_files()[0], image_file_);
@@ -111,6 +113,7 @@ TEST(MetadataTest, AssignValues) {
     ASSERT_EQ(meta_.difficulty(), 3);
     ASSERT_EQ(meta_.release_date(), release_date_);
     ASSERT_EQ(meta_.version(), semver::version{version_});
+    ASSERT_EQ(meta_.signal_position(), signal_position_);
     meta_.write(out_file_name_);
     ASSERT_TRUE(std::filesystem::exists(out_file_name_));
     const std::filesystem::path data_dir_(TEST_DATA_DIR);
