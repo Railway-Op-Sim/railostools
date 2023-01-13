@@ -94,6 +94,7 @@ namespace RailOSTools {
             void setVersion(const std::string& version);
             void setMinimumRequired(const semver::version& version);
             void setMinimumRequired(const std::string& version="0.1.0");
+            void setSignalPosition(const std::string& position);
     };
 };
 

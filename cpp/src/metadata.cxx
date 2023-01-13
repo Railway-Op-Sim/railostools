@@ -1,4 +1,5 @@
 #include "railostools/metadata.hxx"
+#include <stdexcept>
 
 std::string RailOSTools::Metadata::retrieve_string_(const std::string& key) const {
     return meta_data_[key].value<std::string>().value_or("");
@@ -216,7 +217,10 @@ date::year_month_day RailOSTools::Metadata::release_date() const {
         throw std::runtime_error("Expected release_date to be in form YYYY-MM-DD");
     }
 
-    return date::year{date_elements_[0]}/date::month{date_elements_[1]}/date::day{date_elements_[2]};
+    const unsigned int month_ = static_cast<unsigned int>(date_elements_[1]);
+    const unsigned int day_ = static_cast<unsigned int>(date_elements_[2]);
+
+    return date::year{date_elements_[0]}/date::month{month_}/date::day{day_};
 }
 
 void RailOSTools::Metadata::setAuthor(const std::string& author) {
@@ -224,6 +228,13 @@ void RailOSTools::Metadata::setAuthor(const std::string& author) {
         throw std::runtime_error("Key 'author' cannot be empty");
     }
     set_key_value_("author", author);
+}
+
+void RailOSTools::Metadata::setSignalPosition(const std::string& position) {
+    if(position != "left" && position != "right") {
+        throw std::runtime_error("Expected either 'left' or 'right' for 'signal_position' key");
+    }
+    set_key_value_("signal_position", position);
 }
 
 void RailOSTools::Metadata::setFactual(bool is_factual) {

@@ -91,6 +91,7 @@ TEST(MetadataTest, AssignValues) {
     meta_.setReleaseDate(2021_y/October/9);
     meta_.setName(name_);
     meta_.setVersion(version_);
+    meta_.setSignalPosition(signal_position_);
     ASSERT_EQ(meta_.contributors()[0], cont_name_);
     ASSERT_EQ(meta_.author(), author_name_);
     ASSERT_EQ(meta_.img_files()[0], image_file_);
