@@ -17,7 +17,7 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.13.1
       - name: Install Clang
         uses: egor-tensin/setup-clang@v1.4
-        if: ${{ matrix.compiler.cpp == 'g++' }}
+        if: ${{ matrix.compiler.cpp == 'clang++' }}
       - name: Setup N inja
         uses: ashutoshvarma/setup-ninja@v1.1
       - name: Build Library and Tests
