@@ -398,4 +398,3 @@ void RailOSTools::Metadata::setMinimumRequired(const std::string& version) {
         throw std::runtime_error("Failed to parse minimum required version "+version);
     }
 }
-

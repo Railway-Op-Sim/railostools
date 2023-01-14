@@ -112,7 +112,9 @@ class Repeat(pydantic.BaseModel, Element):
     repeats: pydantic.conint(gt=1)
 
     def __str__(self) -> str:
-        return railos_ttb_str.concat(f"{self.mins}", f"{self.digits}", f"{self.repeats}")
+        return railos_ttb_str.concat(
+            f"{self.mins}", f"{self.digits}", f"{self.repeats}"
+        )
 
 
 class Service(pydantic.BaseModel):
@@ -134,7 +136,7 @@ class TimetabledService(Service, pydantic.BaseModel):
         _elements = [f"{self.header}", f"{self.start_type}"]
         if self.actions:
             _elements.append(
-               railos_ttb_str.concat(
+                railos_ttb_str.concat(
                     *(self.actions[k] for k, _ in enumerate(self.actions)),
                     join_type=Element,
                 )

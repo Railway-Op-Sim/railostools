@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 
 from railostools.exceptions import RailwayParsingError
 
+
 @dataclasses.dataclass
 class RlyInfoTables:
     signals: pandas.DataFrame
@@ -30,7 +31,9 @@ class RlyParser:
                 f"Cannot parse railway file '{rly_file}', " "file does not exist."
             )
         _key = os.path.splitext(os.path.basename(rly_file))[0]
-        self._rly_data[_key] = self._get_rly_components(open(rly_file, encoding="latin-1").readlines())
+        self._rly_data[_key] = self._get_rly_components(
+            open(rly_file, encoding="latin-1").readlines()
+        )
         self._current_file = rly_file
 
     @property
@@ -59,11 +62,15 @@ class RlyParser:
 
     @property
     def named_locations(self) -> typing.List[str]:
-        return set([
-            n["active_element_name"]
-            for n in self._rly_data[os.path.splitext(os.path.basename(self._current_file))[0]]["active_elements"]
-            if n["active_element_name"]
-        ])
+        return set(
+            [
+                n["active_element_name"]
+                for n in self._rly_data[
+                    os.path.splitext(os.path.basename(self._current_file))[0]
+                ]["active_elements"]
+                if n["active_element_name"]
+            ]
+        )
 
     @property
     def data(self) -> typing.Dict:
@@ -73,7 +80,9 @@ class RlyParser:
 
     @property
     def active_elements(self) -> typing.List[typing.Dict]:
-        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]]["active_elements"]
+        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]][
+            "active_elements"
+        ]
 
     def _make_signal_table(self) -> pandas.DataFrame:
         _df_dict = {col: [] for col in ["position", "signal"]}

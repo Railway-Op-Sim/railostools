@@ -17,11 +17,11 @@ public class MetadataBuilder {
     private static Validator validator;
     private static ValidatorFactory factory;
 
-    public class MetadataValidationError extends Exception {  
-        public MetadataValidationError(String errorMessage) {  
-            super(errorMessage);  
-        }  
-    }  
+    public class MetadataValidationError extends Exception {
+        public MetadataValidationError(String errorMessage) {
+            super(errorMessage);
+        }
+    }
 
     public MetadataBuilder(File file) throws MetadataValidationError {
         factory = Validation.buildDefaultValidatorFactory();

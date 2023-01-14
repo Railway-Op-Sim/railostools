@@ -63,5 +63,5 @@ pub enum Elements {
     UpDiagonalUp,
     UpDiagonalRight,
     DownDiagonalRight,
-    DownDiagonalLeft,  
+    DownDiagonalLeft,
 }

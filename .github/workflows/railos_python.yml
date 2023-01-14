@@ -4,7 +4,7 @@ on:
   - push
   - pull_request
 
-jobs:  
+jobs:
   build_python:
     name: Python Module
     runs-on: ubuntu-latest

@@ -15,19 +15,19 @@ import de.skuzzle.semantic.Version;
 public class Metadata {
     @NotBlank
     public String name;
- 
+
     @NotBlank
     public String author;
- 
+
     public String description;
- 
+
     public String display_name;
- 
+
     @Range(min=1900, max=9999)
     public long year;
- 
+
     public boolean factual;
- 
+
     public long difficulty;
 
     @NotBlank

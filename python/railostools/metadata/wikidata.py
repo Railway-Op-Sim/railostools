@@ -11,6 +11,7 @@ import click
 
 logging.basicConfig()
 
+
 class MetadataExpander:
     def __init__(self, project_dir: str) -> None:
         if not os.path.exists(project_dir):
@@ -58,8 +59,8 @@ class MetadataExpander:
         for crs, loc in self._crs_codes.items():
             if loc == search_str.upper():
                 return crs
-        return None 
-    
+        return None
+
     def _get_wikidata(self, country_code: str) -> typing.Dict:
         _wd_query = wikidspark.query.QueryBuilder()
         _wd_metadata = {}
@@ -77,8 +78,6 @@ class MetadataExpander:
                 self._logger.info(f"Retrieved result: ID={_id}")
         self._metadata["identifiers"] = _wd_metadata
 
-
     def append_metadata(self) -> None:
         with open(self._toml_file, "w") as out_f:
             toml.dump(self._metadata, out_f)
-

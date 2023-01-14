@@ -46,7 +46,9 @@ def parse_Fjo(finish_components: typing.List[str]) -> railos_finish.Fjo:
         ) from e
 
     _joining_srv = railos_parse_comp.parse_reference(finish_components[2])
-    return railos_finish.Fjo(time=finish_components[0], joining_service_ref=_joining_srv)
+    return railos_finish.Fjo(
+        time=finish_components[0], joining_service_ref=_joining_srv
+    )
 
 
 def parse_Fer(finish_components: typing.List[str]) -> railos_finish.Fer:
@@ -66,7 +68,7 @@ def parse_Fer(finish_components: typing.List[str]) -> railos_finish.Fer:
         ) from e
 
     _exit_elements = [
-       railos_coords.coord_from_str(i) for i in finish_components[2].split()
+        railos_coords.coord_from_str(i) for i in finish_components[2].split()
     ]
 
     return railos_finish.Fer(time=finish_components[0], exit_coords=_exit_elements)
@@ -90,7 +92,9 @@ def parse_Frh_sh(finish_components: typing.List[str]) -> railos_finish.Fer:
 
     _linked_ref = railos_parse_comp.parse_reference(finish_components[2])
 
-    return railos_finish.Frh_sh(time=finish_components[0], linked_shuttle_ref=_linked_ref)
+    return railos_finish.Frh_sh(
+        time=finish_components[0], linked_shuttle_ref=_linked_ref
+    )
 
 
 def parse_Fns_sh(finish_components: typing.List[str]) -> railos_finish.Fer:

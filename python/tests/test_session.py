@@ -8,10 +8,11 @@ import railostools.exceptions as railos_exc
 
 SESSION_FILE = os.path.join(os.path.dirname(__file__), "data", "session.ini")
 
+
 @pytest.mark.session
 def test_session_no_ros() -> None:
     with pytest.raises(railos_exc.ProgramNotFoundError):
-       railos_sesh.Session(os.path.dirname(SESSION_FILE))
+        railos_sesh.Session(os.path.dirname(SESSION_FILE))
 
 
 @pytest.mark.session
@@ -24,5 +25,7 @@ def test_session_pass(mocker: pytest_mock.MockerFixture) -> None:
     assert _session.timetable == "Birmingham 0700 Start"
     assert _session.main_mode == railos_enum.Level1Mode(3)
     assert _session.operation_mode == railos_enum.Level2OperMode(3)
-    assert _session.performance_file.split("\\")[-1] == "Log 23-03-2022 18.46.06; Birmingham; Birmingham 0700 Start.txt"
-
+    assert (
+        _session.performance_file.split("\\")[-1]
+        == "Log 23-03-2022 18.46.06; Birmingham; Birmingham 0700 Start.txt"
+    )

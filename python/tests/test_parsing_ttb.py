@@ -2,9 +2,9 @@ import os.path
 
 import pytest
 import railostools.ttb.parsing as railos_parse
-import railostools.ttb.parsing.actions as  railosparse_act
-import railostools.ttb.parsing.finish as  railosparse_finish
-import railostools.ttb.parsing.start as  railosparse_start
+import railostools.ttb.parsing.actions as railosparse_act
+import railostools.ttb.parsing.finish as railosparse_finish
+import railostools.ttb.parsing.start as railosparse_start
 import railostools.ttb.string as railos_ttb_str
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -116,6 +116,6 @@ def test_location() -> None:
 
 @pytest.mark.ttb_parsing
 def test_services_str() -> None:
-   _parser = railos_parse.TTBParser()
-   _parser.parse(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
-   _parser.services_str
+    _parser = railos_parse.TTBParser()
+    _parser.parse(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
+    _parser.services_str

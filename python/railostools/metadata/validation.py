@@ -104,7 +104,9 @@ class Metadata(pydantic.BaseModel):
         try:
             semver.VersionInfo.parse(version)
         except ValueError as e:
-            raise railos_exc.MetadataError(f"Invalid semantic version '{version}'") from e
+            raise railos_exc.MetadataError(
+                f"Invalid semantic version '{version}'"
+            ) from e
         return version
 
     def __str__(self) -> str:

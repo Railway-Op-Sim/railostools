@@ -14,7 +14,10 @@ class Fns(railos_comp.FinishType, pydantic.BaseModel):
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.time, self.name, f"{self.new_service_ref}", join_type=railos_comp.Element
+            self.time,
+            self.name,
+            f"{self.new_service_ref}",
+            join_type=railos_comp.Element,
         )
 
     @pydantic.validator("time")
@@ -55,7 +58,10 @@ class Fer(railos_comp.FinishType, pydantic.BaseModel):
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
-            self.time, self.name, " ".join(self.exit_coords), join_type=railos_comp.Element
+            self.time,
+            self.name,
+            " ".join(self.exit_coords),
+            join_type=railos_comp.Element,
         )
 
     @pydantic.validator("time")
