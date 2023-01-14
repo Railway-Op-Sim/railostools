@@ -27,7 +27,7 @@ std::string RailOSTools::concat(const std::vector<std::string>& components, cons
 }
 
 std::vector<std::string> RailOSTools::split(const std::string& component_str, const ComponentType& split_type) {
-    
+
     std::vector<std::string> components_;
     std::string delimiter_;
 
