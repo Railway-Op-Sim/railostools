@@ -19,7 +19,7 @@ message( STATUS "\t- Use Static Library: ${RAILOSTOOLS_STATIC_LIBRARY}" )
 message( STATUS "\t- Build Tests: ${RAILOSTOOLS_BUILD_TESTS}" )
 message( STATUS "\t- Test Coverage: ${RAILOSTOOLS_CODE_COVERAGE}" )
 
-file( GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
+file( GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx )
 
 set( EXTERNAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
