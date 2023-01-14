@@ -11,7 +11,6 @@ click = "^8.0.4"
 semver = "^2.13.0"
 toml = "^0.10.2"
 pycountry = "^22.3.5"
-opcua = "^0.98.13"
 configparser = "^5.2.0"
 pandas = "^1.4.2"
 wikidspark = { "git" = "https://github.com/artemis-beta/wikidspark.git" }
@@ -20,9 +19,11 @@ wikidspark = { "git" = "https://github.com/artemis-beta/wikidspark.git" }
 pytest-mock = "^3.7.0"
 coverage = "^6.3.2"
 pre-commit = "^2.17.0"
-unimport = "^0.9.5"
 isort = "^5.10.1"
 pytest = "^7.1.2"
+
+[tool.poetry.group.dev.dependencies]
+unimport = "^0.12.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
