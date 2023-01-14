@@ -1,16 +1,18 @@
-# ROSTools
-[![ROSTools](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml/badge.svg?branch=main)](https://github.com/Railway-Op-Sim/rostools/actions/workflows/rostools.yml)[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+# RailOSTools
+[![RailOS Tools C++](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_cpp.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_cpp.yml) [![RailOS Tools Python](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_python.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_python.yml) [![RailOSTools Java](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railsos_java.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railsos_java.yml) [![RailOS Tools Rust](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_rust.yml/badge.svg)](https://github.com/Railway-Op-Sim/railostools/actions/workflows/railos_rust.yml)
 
 *Railway Operation Simulator Toolkit*
 
-ROSTools provides a set of tools for working with Railway Operation Simulator program files.
-The package is both an importable Python3.6+ module and a command line interface.
+RailOSTools provides a set of tools for working with Railway Operation Simulator program files. The repository contains various API language implementations to provide access to Railway Operation Simulator session and file properties
 
-All command line tools are available under the parent `rostools` command:
+## Python
+[![codecov](https://codecov.io/gh/Railway-Op-Sim/rostools/branch/main/graph/badge.svg?token=ZDddjxt8v5)](https://codecov.io/gh/Railway-Op-Sim/rostools)
+
+All command line tools are available under the parent `railostools` command:
 
 ```sh
-$ rostools
-Usage: rostools [OPTIONS] COMMAND [ARGS]...
+$ railostools
+Usage: railostools [OPTIONS] COMMAND [ARGS]...
 
   Python based utilities for Railway Operation Simulator
 
@@ -19,21 +21,21 @@ Options:
   --help              Show this message and exit.
 
 Commands:
-  ttb2json  Extract ROS timetable file to json
+  ttb2json  Extract RailOS timetable file to json
 ```
 
-## Command Line Interface
+### Command Line Interface
 
-### Parsing `.ttb` Files
+#### Parsing `.ttb` Files
 
 The command `ttb2json` converts a `.ttb` file to a JSON file containing the metadata for the services.
 This allows for easier data interpretation within other projects.
 
 ```sh
-$ rostools ttb2json --help
-Usage: rostools ttb2json [OPTIONS] TTB_FILE
+$ railostools ttb2json --help
+Usage: railostools ttb2json [OPTIONS] TTB_FILE
 
-  Extract ROS timetable file to json
+  Extract RailOS timetable file to json
 
 Options:
   --output TEXT  JSON output file
@@ -46,24 +48,24 @@ The command `rly2json` converts a `.rly` file to a JSON file containing the meta
 This allows for easier data interpretation within other projects.
 
 ```sh
-$ rostools rly2json --help
-Usage: rostools rly2json [OPTIONS] RLY_FILE
+$ railostools rly2json --help
+Usage: railostools rly2json [OPTIONS] RLY_FILE
 
-  Extract ROS railway file to json
+  Extract RailOS railway file to json
 
 Options:
   --output TEXT  JSON output file
   --help         Show this message and exit.
 ```
 
-## API
+### API
 
-Features within `rostools` can also be accessed via the dedicated Python API.
+Features within `railostools` can also be accessed via the dedicated Python API.
 
-### The `TTBParser` Class
+#### The `TTBParser` Class
 
 ```python3
-from rostools.ttb import TTBParser
+from railostools.ttb import TTBParser
 
 # Create a parser instance for parsing files
 my_parser = TTBParser()
@@ -79,13 +81,13 @@ print(my_parser.comments)
 print(my_parser.data)
 
 # Save data as JSON file
-my_parser.json('Enoshima_Week_2021.json')
+my_parser.dump('Enoshima_Week_2021.json')
 ```
 
-### The `RlyParser` Class
+#### The `RlyParser` Class
 
 ```python3
-from rostools.rly import RlyParser
+from railostools.rly import RlyParser
 
 # Create a parser instance for parsing files
 my_parser = RlyParser()
@@ -100,34 +102,34 @@ print(f'Number of elements are {my_parser.n_active_elements+my_parser.n_inactive
 print(my_parser.data)
 
 # Save data as JSON file
-my_parser.json('Antwerpen_Centraal.json')
+my_parser.dump('Antwerpen_Centraal.json')
 ```
 
-### Performance Log Monitoring
+#### Performance Log Monitoring
 The performance log parsing module can asynchronously monitor the Railway Operation Simulator logs directory extracting
 contents which can then be processed by applications live. The `Monitor` class is designed to only retrieve data when
 it has been confirmed by file modification time that the log has been updated. These times are also used to fetch the
 latest log during running. The class uses the Python `asyncio` library.
 
 ```python3
-import rostools.performance
+import railostools.performance
 import asyncio
-from rostools.performance import Monitor
+from railostools.performance import Monitor
 
 ROS_LOG_DIR = 'C:\\Program Files (x86)\\RailwayOperationSimulator\\Railway\\Performance\ logs'
 
-# Create a new monitor pointing to the ROS log directory
+# Create a new monitor pointing to the RailOS log directory
 my_monitor = Monitor(ROS_LOG_DIR)
 
 # Create a listener function which will just print the data
 # MUST have 'monitor' as an argument, this is the monitor instance
-async def listener(monitor: rostools.performance.Monitor, user_name: str) -> None:
+async def listener(monitor: railostools.performance.Monitor, user_name: str) -> None:
     # Run until the monitor stops
     while monitor.running:
         print(f"Running for user '{user_name}'")
         print(monitor.data)
         await asyncio.sleep(10)
-    
+
 # Attach listener function to the async loop of the monitor
 # arguments are given as a dictionary
 my_monitor.exec_in_parallel(listener, {'user_name': 'John'})
@@ -135,33 +137,3 @@ my_monitor.exec_in_parallel(listener, {'user_name': 'John'})
 # Finally run the monitor
 my_monitor.run()
 ```
-
-### Discord Launcher (alpha)
-*Instructions currently for developers/testers only*
-
-**NOTE:** This requires a version of ROS with metadata dumping functionality (produces a `session.ini` file)
-
-For those with access to the Railway Operation Simulator Discord Application ID, make the directory `discord_launcher` in the main ROS folder and place a directory `lib` inside it.
-Download the [Discord SDK](https://dl-game-sdk.discordapp.net/2.5.6/discord_game_sdk.zip) and place the file `lib/x86/discord_game_sdk.dll`
-in the `lib` folder you created. Finally create a text file `discord_app_id.txt` containing the application ID in the 
-`discord_launcher` folder.
-
-If you have a binary for the launcher place it in `discord_launcher` and open it, else execute the `discord.py` script from within
-this folder.
-
-## C++ Tools
-
-Included are libraries for C++ including metadata parsing.
-
-### Installation Instructions
-
-- Start by cloning the repository `git clone  https://github.com/Railway-Op-Sim/rostools.git`
-- Go in to `ROSTools/cpp` with `cd ROSTools/cpp`
-- Run `cmake -Bbuild`
-- Run `cmake --build build --target install --config Release`
-
-The tool should now be install at ` C:/Program Files (x86)/rostools/`
-
-
-
-

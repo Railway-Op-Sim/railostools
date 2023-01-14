@@ -571,7 +571,7 @@ class range {
       }
 
     } while (is_logical_or());
-    
+
     return false;
   }
 

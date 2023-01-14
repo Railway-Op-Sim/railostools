@@ -6,12 +6,9 @@ import shutil
 import pytest
 import logging
 
-from rostools.performance import Monitor
+from railostools.performance import Monitor
 
-TEST_LOG_DIR = os.path.join(
-    os.path.dirname(__file__),
-    'test_data'
-)
+TEST_LOG_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -19,14 +16,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 async def add_file(temporary_dir: str, monitor):
     await asyncio.sleep(1)
     shutil.copy(
-        os.path.join(
-            TEST_LOG_DIR,
-            'Log_Antwerpen_Centraal.txt'
-        ),
-        os.path.join(
-            temporary_dir,
-            'Log_Antwerpen_Centraal.txt'
-        )
+        os.path.join(TEST_LOG_DIR, "Log_Antwerpen_Centraal.txt"),
+        os.path.join(temporary_dir, "Log_Antwerpen_Centraal.txt"),
     )
 
 
@@ -43,5 +34,5 @@ def test_performance_monitor():
         m = Monitor(temp_dir)
         assert not m.data
         m.exec_in_parallel(checker)
-        m.exec_in_parallel(add_file, {'temporary_dir': temp_dir})
+        m.exec_in_parallel(add_file, {"temporary_dir": temp_dir})
         m.run()
