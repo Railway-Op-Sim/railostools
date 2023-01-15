@@ -4,8 +4,10 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <optional>
 
 #include "railostools/ttb/string.hxx"
+#include "railostools/validation/numeric.hxx"
 #include "date/date.h"
 
 namespace RailOSTools {
@@ -93,24 +95,24 @@ namespace RailOSTools {
         private:
             const Reference reference_;
             const std::string description_;
-            const int start_speed_;
-            const int max_speed_;
-            const int mass_;
-            const int brake_force_;
-            const int power_;
-            const int max_signaller_speed_;
+            const std::optional<int> start_speed_;
+            const std::optional<int> max_speed_;
+            const std::optional<int> mass_;
+            const std::optional<int> brake_force_;
+            const std::optional<int> power_;
+            const std::optional<int> max_signaller_speed_;
         public:
             Header(
                 const Reference& reference,
                 const std::string& description,
-                int start_speed=-1,
-                int max_speed=-1,
-                int mass=-1,
-                int brake_force=-1,
-                int power=-1,
-                int max_signaller_speed=-1): 
+                std::optional<int> start_speed=std::nullopt,
+                std::optional<int> max_speed=std::nullopt,
+                std::optional<int> mass=std::nullopt,
+                std::optional<int> brake_force=std::nullopt,
+                std::optional<int> power=std::nullopt,
+                std::optional<int> max_signaller_speed=std::nullopt):
                     Element("Header"),
-                    reference_{reference}, 
+                    reference_{reference},
                     description_{description},
                     start_speed_{start_speed},
                     max_speed_{max_speed},
@@ -125,21 +127,40 @@ namespace RailOSTools {
 
                 if(!description_.empty()) elements_.push_back(description_);
 
-                if(max_speed_ > 0) {
-                    std::vector<int> specs_{
-                        start_speed_,
-                        max_speed_,
-                        mass_,
-                        power_
+                if(max_speed_) {
+                    std::vector<std::pair<std::string, std::optional<int>>> specs_{
+                        {"start_speed", start_speed_},
+                        {"max_speed", max_speed_},
+                        {"mass", mass_},
+                        {"power", power_}
                     };
 
-                    for(int spec : specs_) {
-                        if(spec < 0) {
-                            throw std::
+                    for(auto [name, spec] : specs_) {
+                        if(!spec) {
+                            throw std::runtime_error("No value given for '" + name + "'");
                         }
+
+                        // Should not reach this point if the specification is unset
+                        elements_.push_back(std::to_string(spec.value()));
                     }
                 }
+
+                if(max_signaller_speed_) elements_.push_back(std::to_string(max_signaller_speed_.value()));
+
+                return concat(elements_);
             }
+    };
+
+    class Repeat : public Element {
+        private:
+            const int mins_;
+            const int digits_;
+            const int repeats_;
+        public:
+            Repeat(const int mins, const int digits, const int repeats) :
+                mins_{NumericValidator(mins, "mins").gt(1).validate().value()},
+                digits_{NumericValidator(digits, "digits").ge(0).validate().value()},
+                repeats_{NumericValidator(repeats, "repeats").gt(1).validate().value()} {}
     };
 
 };
