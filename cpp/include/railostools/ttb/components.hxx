@@ -40,7 +40,7 @@ namespace RailOSTools {
             const Time time_;
             const bool warning_{false};
         public:
-            ActionType(const Time& time, bool warning=false) : 
+            ActionType(const Time& time, bool warning=false) :
                 Element(std::string{(warning) ? "W" : ""} + "ActionType") {}
     };
 
