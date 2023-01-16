@@ -20,16 +20,16 @@ namespace RailOSTools {
             NumericValidator gt(const T& value) {gt_ = value; return *this;}
             NumericValidator ge(const T& value) {ge_ = value; return *this;}
             std::optional<T> validate() {
-                if(lt_ && lt_.value() >= value_) {
+                if(lt_ && lt_.value() =< value_) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value >= " + std::to_string(lt_.value()));
                 }
-                if(le_ && le_.value() > value_) {
+                if(le_ && le_.value() < value_) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value > " + std::to_string(lt_.value()));
                 }
-                if(gt_ && gt_.value() <= value_) {
+                if(gt_ && gt_.value() >= value_) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value <= " + std::to_string(lt_.value()));
                 }
-                if(ge_ && ge_.value() < value_) {
+                if(ge_ && ge_.value() > value_) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value < " + std::to_string(lt_.value()));
                 }
                 return value_;
