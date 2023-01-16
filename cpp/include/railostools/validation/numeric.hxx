@@ -31,7 +31,7 @@ namespace RailOSTools {
                 if(ge_ && ge_.value() > value) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value < " + std::to_string(lt_.value()));
                 }
-                return value_;
+                return value;
             }
     };
 };

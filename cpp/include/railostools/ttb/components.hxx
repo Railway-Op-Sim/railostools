@@ -158,9 +158,9 @@ namespace RailOSTools {
             const int repeats_;
         public:
             Repeat(const int mins, const int digits, const int repeats) :
-                mins_{NumericValidator(mins, "mins").gt(1).validate().value()},
-                digits_{NumericValidator(digits, "digits").ge(0).validate().value()},
-                repeats_{NumericValidator(repeats, "repeats").gt(1).validate().value()} {}
+                mins_{NumericValidator<int>("mins").gt(1).validate(mins).value()},
+                digits_{NumericValidator<int>("digits").ge(0).validate(digits).value()},
+                repeats_{NumericValidator<int>("repeats").gt(1).validate(repeats).value()} {}
     };
 
 };
