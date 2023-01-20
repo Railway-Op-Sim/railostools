@@ -4,8 +4,8 @@
 
 TEST(ValidationTest, TestNumericValidationInt) {
     RailOSTools::NumericValidator<int> validator("test");
-    ASSERT_EQ(validator.gt(2).lt(12).validate(10.7), 10.7);
-    ASSERT_THROW(validator.ge(0).le(5).validate(1.7), std::runtime_error);
+    ASSERT_EQ(validator.gt(2).lt(12).validate(10), 10);
+    ASSERT_THROW(validator.ge(0).le(5).validate(2), std::runtime_error);
 }
 
 TEST(ValidationTest, TestNumericValidationFloat) {
