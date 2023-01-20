@@ -38,3 +38,4 @@ target_include_directories( ${RAILOSTOOLS_TESTS} PUBLIC ${tomlplusplus_SOURCE_DI
 
 include( GoogleTest )
 gtest_discover_tests( ${RAILOSTOOLS_TESTS} )
+add_test( ${RAILOSTOOLS_TESTS} ${RAILOSTOOLS_TESTS} )

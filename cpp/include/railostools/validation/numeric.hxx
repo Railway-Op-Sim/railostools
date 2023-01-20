@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <string>
+#include <iostream>
 
 namespace RailOSTools {
     template<typename T>
@@ -18,20 +19,20 @@ namespace RailOSTools {
             NumericValidator le(const T& value) {le_ = value; return *this;}
             NumericValidator gt(const T& value) {gt_ = value; return *this;}
             NumericValidator ge(const T& value) {ge_ = value; return *this;}
-            std::optional<T> validate(const T& value) {
-                if(lt_ && lt_.value() <= value) {
+            T validate(const T& value) {
+                if(lt_.has_value() && lt_.value() <= value) {
                     throw std::runtime_error("Validation of '" + label_ + "' failed, value >= " + std::to_string(lt_.value()));
                 }
-                if(le_ && le_.value() < value) {
-                    throw std::runtime_error("Validation of '" + label_ + "' failed, value > " + std::to_string(lt_.value()));
+                if(le_.has_value() && le_.value() < value) {
+                    throw std::runtime_error("Validation of '" + label_ + "' failed, value > " + std::to_string(le_.value()));
                 }
-                if(gt_ && gt_.value() >= value) {
-                    throw std::runtime_error("Validation of '" + label_ + "' failed, value <= " + std::to_string(lt_.value()));
+                if(gt_.has_value() && gt_.value() >= value) {
+                    throw std::runtime_error("Validation of '" + label_ + "' failed, value <= " + std::to_string(gt_.value()));
                 }
-                if(ge_ && ge_.value() > value) {
-                    throw std::runtime_error("Validation of '" + label_ + "' failed, value < " + std::to_string(lt_.value()));
+                if(ge_.has_value() && ge_.value() > value) {
+                    throw std::runtime_error("Validation of '" + label_ + "' failed, value < " + std::to_string(ge_.value()));
                 }
-                return value;
+                return static_cast<T>(value);
             }
     };
 };
