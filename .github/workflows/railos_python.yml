@@ -12,10 +12,10 @@ jobs:
       - uses: actions/checkout@v1
         with:
           submodules: true
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.11'
       - name: Setup Poetry
         run: |
           python -m pip install poetry
@@ -23,7 +23,7 @@ jobs:
         working-directory: python
       - name: Run tests
         run: |
-          python -m poetry run coverage run --source=railostools/ -m pytest -s
+          python -m poetry run coverage run --source=railostools/ -m pytest -n auto
           python -m poetry run coverage xml
         working-directory: python
       - uses: codecov/codecov-action@v2
