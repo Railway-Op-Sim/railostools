@@ -9,7 +9,7 @@ def parse_reference(train_ref: str) -> railos_comp.Reference:
     """Parse a service reference identifier"""
     if len(train_ref) > 8 or len(train_ref) < 4:
         raise railos_exc.ParsingError(
-            f"Length of ervice reference '{train_ref}' " "must be between 4 and 8"
+            f"Length of service reference '{train_ref}' " "must be between 4 and 8"
         )
     _headcode = train_ref[-4:]
     _hc_service = _headcode[:2]

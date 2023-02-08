@@ -60,7 +60,7 @@ class Fer(railos_comp.FinishType, pydantic.BaseModel):
         return railos_ttb_str.concat(
             self.time,
             self.name,
-            " ".join(self.exit_coords),
+            " ".join([str(i) for i in self.exit_coords]),
             join_type=railos_comp.Element,
         )
 

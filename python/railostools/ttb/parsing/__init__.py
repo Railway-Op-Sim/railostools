@@ -25,7 +25,18 @@ class TTBParser:
         return any(
             [
                 statement.startswith("*"),
-                ";" not in statement and len(statement.split()) > 2,
+                ";" not in statement
+                and len(statement.split()) > 2
+                and not re.findall(r"^\d{2}:\d{2}", statement),
+            ]
+        )
+
+    def is_start_time(self, statement: str) -> bool:
+        return all(
+            [
+                re.findall(r"^\d{2}:\d{2}", statement) or False,
+                not self.is_comment(statement),
+                ";" not in statement,
             ]
         )
 
@@ -41,11 +52,13 @@ class TTBParser:
     def start_time(self) -> datetime.time:
         """Retrieves the timetable start time"""
         _index: int = 0
-        while self.is_comment(self._file_lines[_index]):
+        while not self.is_start_time(self._file_lines[_index]):
             if _index >= len(self._file_lines):
-                raise railos_exc.ParsingError("Failed to retrieve timetable start time")
+                raise railos_exc.ParsingError("Failed to find timetable start time")
             _index += 1
-        return datetime.datetime.strptime(self._file_lines[_index], "%H:%M").time()
+        return datetime.datetime.strptime(
+            re.findall(r"^\d{2}:\d{2}", self._file_lines[_index])[0], "%H:%M"
+        ).time()
 
     @property
     def comments(self) -> typing.Dict[int, str]:
