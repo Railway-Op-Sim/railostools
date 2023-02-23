@@ -15,6 +15,12 @@ class RlyInfoTables:
     signals: pandas.DataFrame
 
 
+@dataclasses.dataclass
+class Location:
+    name: str
+    coordinates: typing.List[typing.Tuple[int, int]]
+
+
 class RlyParser:
     _logger = logging.getLogger("RailOSTools.RlyParser")
 
@@ -61,16 +67,26 @@ class RlyParser:
         ]["metadata"]["program_version"]
 
     @property
-    def named_locations(self) -> typing.List[str]:
-        return set(
-            [
-                n["active_element_name"]
-                for n in self._rly_data[
-                    os.path.splitext(os.path.basename(self._current_file))[0]
-                ]["active_elements"]
-                if n["active_element_name"]
-            ]
-        )
+    def named_locations(self) -> typing.Dict[str, Location]:
+        _location_names: typing.Set[str] = {
+            n["active_element_name"]
+            for n in self._rly_data[
+                os.path.splitext(os.path.basename(self._current_file))[0]
+            ]["active_elements"]
+            if n["active_element_name"]
+        }
+        _locations: typing.List[Location] = {
+            location: Location(
+                name=location,
+                coordinates=[
+                    element["position"]
+                    for element in self.active_elements + self.inactive_elements
+                    if element["location_name"] == location
+                ],
+            )
+            for location in _location_names
+        }
+        return _locations
 
     @property
     def data(self) -> typing.Dict:
@@ -82,6 +98,12 @@ class RlyParser:
     def active_elements(self) -> typing.List[typing.Dict]:
         return self.data[os.path.splitext(os.path.basename(self._current_file))[0]][
             "active_elements"
+        ]
+
+    @property
+    def inactive_elements(self) -> typing.List[typing.Dict]:
+        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]][
+            "inactive_elements"
         ]
 
     def _make_signal_table(self) -> pandas.DataFrame:
