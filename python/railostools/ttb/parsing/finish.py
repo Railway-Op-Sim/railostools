@@ -158,13 +158,13 @@ def parse_Frh(finish_components: typing.List[str]) -> railos_finish.Fer:
 
 def parse_finish(finish_str: str) -> railos_comp.StartType:
     PARSE_DICT = {
-        "Fjo": parse_Fjo,
-        "Fer": parse_Fer,
         "Frh-sh": parse_Frh_sh,
         "Fns-sh": parse_Fns_sh,
         "Fns": parse_Fns,
         "F-nshs": parse_F_nshs,
         "Frh": parse_Frh,
+        "Fjo": parse_Fjo,
+        "Fer": parse_Fer,
     }
 
     try:

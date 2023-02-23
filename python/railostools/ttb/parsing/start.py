@@ -153,12 +153,12 @@ def parse_Sns_sh(start_components: typing.List[str]) -> ros_start.Sns_sh:
 
 def parse_start(start_str: str) -> ros_comp.StartType:
     PARSE_DICT = {
-        "Snt": parse_Snt,
-        "Sfs": parse_Sfs,
         "Sns-fsh": parse_Sns_fsh,
         "Snt-sh": parse_Snt_sh,
         "Sns-sh": parse_Sns_sh,
         "Sns": parse_Sns,
+        "Snt": parse_Snt,
+        "Sfs": parse_Sfs,
     }
 
     try:
