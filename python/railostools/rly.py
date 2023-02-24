@@ -8,6 +8,7 @@ import typing
 from typing import Any, Dict, List
 
 from railostools.exceptions import RailwayParsingError
+from railostools.common.enumeration import Elements
 
 
 @dataclasses.dataclass
@@ -16,9 +17,15 @@ class RlyInfoTables:
 
 
 @dataclasses.dataclass
+class MapEntity:
+    coordinate: typing.Tuple[int, int]
+    element_type: typing.Optional[Elements]
+
+
+@dataclasses.dataclass
 class Location:
     name: str
-    coordinates: typing.List[typing.Tuple[int, int]]
+    members: typing.List[MapEntity]
 
 
 class RlyParser:
@@ -75,16 +82,22 @@ class RlyParser:
             ]["active_elements"]
             if n["active_element_name"]
         }
+
         _locations: typing.List[Location] = {
             location: Location(
                 name=location,
-                coordinates=[
-                    element["position"]
+                members=[
+                    MapEntity(
+                        coordinate=element["position"],
+                        element_type=Elements(element["element_id"])
+                        if "element_id" in element
+                        else None,
+                    )
                     for element in self.active_elements + self.inactive_elements
-                    if element["location_name"] == location
                 ],
             )
             for location in _location_names
+            if location != "-1"
         }
         return _locations
 
