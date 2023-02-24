@@ -90,10 +90,11 @@ class RlyParser:
                     MapEntity(
                         coordinate=element["position"],
                         element_type=Elements(element["element_id"])
-                        if "element_id" in element
+                        if element.get("element_id")
                         else None,
                     )
                     for element in self.active_elements + self.inactive_elements
+                    if element.get("location_name") == location
                 ],
             )
             for location in _location_names
