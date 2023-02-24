@@ -125,6 +125,8 @@ CONNECTIONS: typing.Dict[
     railos_enums.Elements.Bridge_Wing_Down_Left_Down_Right: tuple(),
     railos_enums.Elements.Bridge_Wing_Up_Left_Up_Right: tuple(),
     railos_enums.Elements.Bridge_Wing_Up_Left_Down_Left: tuple(),
+    railos_enums.Elements.Concourse: tuple(),
+    railos_enums.Elements.Non_Station_Location: tuple(),
     railos_enums.Elements.Arrow_Horizontal_Left: (4, 6),
     railos_enums.Elements.Arrow_Horizontal_Right: (4, 6),
     railos_enums.Elements.Arrow_Vertical_Down: (2, 8),
