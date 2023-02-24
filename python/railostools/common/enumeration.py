@@ -132,7 +132,7 @@ class Elements(enum.Enum):
     Connection_Down_Left = 94
     Connection_Down_Right = 95
     Concourse = 96
-    Bridge_End_Up_Right_Wing_Down_ = 97
+    Bridge_End_Up_Right_Wing_Down = 97
     Bridge_End_Up_Left_Wing_Down = 98
     Bridge_End_Down_Right_Wing_Up = 99
     Bridge_End_Down_Left_Wing_Up = 100

@@ -3,7 +3,7 @@ import json
 import os
 import tempfile
 
-from railostools.rly import RlyParser
+from railostools.rly.parsing import RlyParser
 
 RLY_FILE = os.path.join(os.path.dirname(__file__), "data", "Antwerpen_Centraal.rly")
 
