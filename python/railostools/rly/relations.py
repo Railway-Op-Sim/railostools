@@ -156,9 +156,36 @@ CONNECTIONS: typing.Dict[
 
 
 def can_connect(
-    element_one: railos_enums.Elements, element_two: railos_enums.Elements
+    element_one_type: railos_enums.Elements,
+    element_two_type: railos_enums.Elements,
+    coord_1: typing.Optional[typing.Tuple[int, int]] = None,
+    coord_2: typing.Optional[typing.Tuple[int, int]] = None,
 ) -> bool:
-    """Return whether two element types form a connection"""
+    """Return whether two element types form a connection.
+
+    If coordinates are provided a comparison is also made to
+    check that the two elements are adjacent.
+
+    Parameters
+    ----------
+    element_one_type: Elements
+        the first map element type
+    element_two_type: Elements
+        the second map element type
+    coord_1: Tuple[int, int], optional
+        the coordinates of element one
+    coord_2: Tuple[int, int], optional
+        the coordinates of element two
+    """
+
+    # Based on the file specfications definition for an elements connection points
+    #      1 ----- 2 ----- 3
+    #      |               |
+    #      4               6
+    #      |               |
+    #      7------ 8 ----- 9
+    #
+
     _neighbour_mapping: typing.Dict[int, int] = {
         1: 9,
         2: 8,
@@ -170,8 +197,37 @@ def can_connect(
         9: 1,
     }
 
+    # Find the join points of the first element
     _permitted_join_positions: typing.List[int] = [
-        _neighbour_mapping[i] for i in CONNECTIONS[element_one]
+        _neighbour_mapping[i] for i in CONNECTIONS[element_one_type]
     ]
 
-    return any(i in CONNECTIONS[element_two] for i in _permitted_join_positions)
+    # Find the join point of the first element that connects to the second
+    _connections: typing.List[int] = [
+        i for i in _permitted_join_positions if i in CONNECTIONS[element_two_type]
+    ]
+
+    if not _connections:
+        return False
+    elif not all([coord_1, coord_2]):
+        return True
+
+    _connects: bool = False
+
+    # There are multiple ways of positioning the two elements so check all
+    for connection in _connections:
+        print(_connections)
+        if connection in {4, 6}:
+            _connects |= (
+                abs(coord_1[0] - coord_2[0]) == 1 and coord_1[1] - coord_2[1] == 0
+            )
+        elif connection in {2, 8}:
+            _connects |= (
+                abs(coord_1[1] - coord_2[1]) == 1 and coord_1[0] - coord_2[0] == 0
+            )
+        elif connection in {1, 9, 3, 7}:
+            _connects |= (
+                abs(coord_1[1] - coord_2[1]) == 1 and abs(coord_1[0] - coord_2[0]) == 1
+            )
+
+    return _connects

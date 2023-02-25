@@ -5,10 +5,12 @@ import os.path
 import dataclasses
 import pandas
 import typing
+import itertools
 from typing import Any, Dict, List
 
 from railostools.exceptions import RailwayParsingError
 from railostools.common.enumeration import Elements
+from railostools.rly.relations import can_connect
 
 
 @dataclasses.dataclass
@@ -17,15 +19,15 @@ class RlyInfoTables:
 
 
 @dataclasses.dataclass
-class MapEntity:
-    coordinate: typing.Tuple[int, int]
-    element_type: typing.Optional[Elements]
+class StartPosition:
+    start_coordinate: typing.Tuple[int, int]
+    end_coordinate: typing.Tuple[int, int]
 
 
 @dataclasses.dataclass
-class Location:
+class TimetableLocation:
     name: str
-    members: typing.List[MapEntity]
+    start_positions: typing.List[StartPosition]
 
 
 class RlyParser:
@@ -74,8 +76,15 @@ class RlyParser:
         ]["metadata"]["program_version"]
 
     @property
-    def timetable_locations(self) -> typing.Dict[str, Location]:
-        """Returns list of timetable locations and coordinates"""
+    def timetable_locations(self) -> typing.Dict[str, TimetableLocation]:
+        """Returns list of timetable locations and coordinates
+
+        NOTE: These are locations which are of size 2, i.e. would have the
+        start and end point within the location region. Track sections outside
+        of the domain of the location cannot be easily identified using this method.
+        """
+
+        # Retrieve timetable location names from data
         _location_names: typing.Set[str] = {
             n["active_element_name"]
             for n in self._rly_data[
@@ -84,23 +93,57 @@ class RlyParser:
             if n["active_element_name"]
         }
 
-        _locations: typing.List[Location] = {
-            location: Location(
-                name=location,
-                members=[
-                    MapEntity(
-                        coordinate=element["position"],
-                        element_type=Elements(element["element_id"])
-                        if element.get("element_id")
-                        else None,
+        # Remove the -1 location if present
+        if "-1" in _location_names:
+            _location_names.remove("-1")
+
+        _locations: typing.Dict[str, TimetableLocation] = {}
+
+        # Iterate through all location names and find the coordinate pairs from which a
+        # timetable could commence
+        for location in _location_names:
+            _locations[location] = TimetableLocation(location, [])
+            _loc_elements: typing.Dict = {"element_types": [], "element_coords": []}
+
+            # Iterate though all elements and collect the data needed for finding
+            # timetable locations
+            for element in self.active_elements + self.inactive_elements:
+                if element.get("active_element_name") != location:
+                    continue
+                if not (element_int := element.get("element_id")):
+                    continue
+                element_type: Elements = Elements(element_int)
+                _loc_elements["element_types"].append(element_type)
+                _loc_elements["element_coords"].append(element["position"])
+
+            # Get every combination of two elements for this location
+            _combos = set(itertools.combinations(range(len(_loc_elements)), 2))
+
+            for indices in _combos:
+                if len(_loc_elements["element_types"]) < 2:
+                    continue
+                _combo_type: typing.Tuple[typing.Tuple[Elements, Elements]] = (
+                    _loc_elements["element_types"][indices[0]],
+                    _loc_elements["element_types"][indices[1]],
+                )
+
+                _combo_coords: typing.Tuple[typing.Tuple[Elements, Elements]] = (
+                    _loc_elements["element_coords"][indices[0]],
+                    _loc_elements["element_coords"][indices[1]],
+                )
+
+                # Check if this combination contains two elements which can
+                # be joined together
+                if can_connect(
+                    element_one_type=_combo_type[0],
+                    element_two_type=_combo_type[1],
+                    coord_1=_combo_coords[0],
+                    coord_2=_combo_coords[1],
+                ):
+                    _locations[location].start_positions.append(
+                        StartPosition(_combo_coords[0], _combo_coords[1])
                     )
-                    for element in self.active_elements + self.inactive_elements
-                    if element.get("active_element_name") == location
-                ],
-            )
-            for location in _location_names
-            if location != "-1"
-        }
+
         return _locations
 
     @property
