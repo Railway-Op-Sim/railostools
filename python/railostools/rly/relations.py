@@ -216,7 +216,6 @@ def can_connect(
 
     # There are multiple ways of positioning the two elements so check all
     for connection in _connections:
-        print(_connections)
         if connection in {4, 6}:
             _connects |= (
                 abs(coord_1[0] - coord_2[0]) == 1 and coord_1[1] - coord_2[1] == 0
