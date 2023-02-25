@@ -74,7 +74,8 @@ class RlyParser:
         ]["metadata"]["program_version"]
 
     @property
-    def named_locations(self) -> typing.Dict[str, Location]:
+    def timetable_locations(self) -> typing.Dict[str, Location]:
+        """Returns list of timetable locations and coordinates"""
         _location_names: typing.Set[str] = {
             n["active_element_name"]
             for n in self._rly_data[
@@ -94,7 +95,7 @@ class RlyParser:
                         else None,
                     )
                     for element in self.active_elements + self.inactive_elements
-                    if element.get("location_name") == location
+                    if element.get("active_element_name") == location
                 ],
             )
             for location in _location_names
