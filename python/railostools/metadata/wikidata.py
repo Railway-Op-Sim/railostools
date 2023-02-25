@@ -1,8 +1,7 @@
 import typing
 import logging
 import wikidspark.query
-import railostools.rly
-import railostools.ttb.components.actions as railosttb_act
+import railostools.rly.parsing
 import json
 import os.path
 import toml
@@ -46,7 +45,7 @@ class MetadataExpander:
 
         self._logger.info(f"Using Railway File '{_rly_file}'")
 
-        rly_data = railostools.rly.RlyParser()
+        rly_data = railostools.rly.parsing.RlyParser()
         rly_data.parse(_rly_file)
         self._locations = rly_data.named_locations
 
