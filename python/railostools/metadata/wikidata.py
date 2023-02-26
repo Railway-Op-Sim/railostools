@@ -56,21 +56,20 @@ class MetadataExpander:
             return json.load(in_file)["crs"]
 
     def _get_crs(self, search_str: str) -> typing.Optional[str]:
-        for crs, loc in self._crs_codes.items():
-            if loc == search_str.upper():
-                return crs
-        return None
+        return next(
+            (crs for crs, loc in self._crs_codes.items() if loc == search_str.upper()),
+            None,
+        )
 
     def _get_wikidata(self, country_code: str) -> typing.Dict:
         _wd_query = wikidspark.query.QueryBuilder()
         _wd_metadata = {}
-        if not country_code == "GB":
+        if country_code != "GB":
             raise ValueError(f"Country code '{country_code}' not yet supported")
         for location in self._locations:
             self._logger.info(f"Searching location '{location}' on WikiData")
             _wd_query._query._clear()
-            _crs = self._get_crs(location)
-            if _crs:
+            if _crs := self._get_crs(location):
                 time.sleep(1)
                 _wd_query.property_equals("P4755", _crs)
                 _id = _wd_query.get().dataframe.iloc[0]["id"]

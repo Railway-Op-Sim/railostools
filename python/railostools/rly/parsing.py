@@ -117,7 +117,9 @@ class RlyParser:
                 _loc_elements["element_coords"].append(element["position"])
 
             # Get every combination of two elements for this location
-            _combos = set(itertools.combinations(range(len(_loc_elements)), 2))
+            _combos = set(
+                itertools.combinations(range(len(_loc_elements["element_types"])), 2)
+            )
 
             for indices in _combos:
                 if len(_loc_elements["element_types"]) < 2:
