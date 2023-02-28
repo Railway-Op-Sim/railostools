@@ -47,7 +47,7 @@ class MetadataExpander:
 
         rly_data = railostools.rly.parsing.RlyParser()
         rly_data.parse(_rly_file)
-        self._locations = rly_data.named_locations
+        self._locations = list(rly_data.timetable_locations.keys())
 
     def _extract_crs_codes(self) -> None:
         _crs_file: str = os.path.join(os.path.dirname(__file__), "tiploc.json")
