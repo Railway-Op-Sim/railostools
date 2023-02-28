@@ -19,6 +19,13 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
         try:
             datetime.strptime(action_components[1], "%H:%M")
         except ValueError as e:
+            if (
+                ":" in action_components[1]
+                and int(action_components[1].split(":")[0]) > 23
+            ):
+                raise NotImplementedError(
+                    f"Time '{action_components[1]}' exceeds 24hr limit"
+                ) from e
             raise ros_exc.ParsingError(
                 "Expected time string for departure time in location "
                 f"but received '{action_components[1]}'"

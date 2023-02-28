@@ -115,7 +115,10 @@ def test_location() -> None:
 
 
 @pytest.mark.ttb_parsing
-def test_services_str() -> None:
+@pytest.mark.parametrize(
+    "file_name", ("Birmingham_0700_Start.ttb", "SouthWestMainLine.ttb")
+)
+def test_services_str(file_name: str) -> None:
     _parser = railos_parse.TTBParser()
-    _parser.parse(os.path.join(TEST_DATA_DIR, "Birmingham_0700_Start.ttb"))
+    _parser.parse(os.path.join(TEST_DATA_DIR, file_name))
     _parser.services_str
