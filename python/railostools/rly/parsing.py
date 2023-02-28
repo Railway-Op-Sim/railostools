@@ -36,7 +36,7 @@ class RlyParser:
     def __init__(self) -> None:
         self._logger.debug("Creating new RlyParser")
         self._rly_data = {}
-        self._start_time: datetime.datetime = None
+        self._start_time: datetime.time = None
         self._current_file = None
 
     def parse(self, rly_file: str) -> None:

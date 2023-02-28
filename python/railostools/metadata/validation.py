@@ -93,7 +93,7 @@ class Metadata(pydantic.BaseModel):
     @pydantic.validator("release_date")
     def validate_release_date(cls, release_date: str) -> datetime.date:
         try:
-            return datetime.datetime.strptime(release_date, "%Y-%m-%d")
+            return datetime.time.strptime(release_date, "%Y-%m-%d")
         except ValueError as e:
             raise railos_exc.MetadataError(
                 "Expected 'release_date' in the form 'YYYY-MM-DD'"

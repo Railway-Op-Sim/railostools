@@ -10,15 +10,17 @@ import railostools.ttb.string as railos_ttb_str
 
 class Fns(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     new_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return railos_ttb_str.concat(
-            self.time,
-            self.name,
-            f"{self.new_service_ref}",
-            join_type=railos_comp.Element,
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
+        return railos_ttb_str.concat(_time_str, self.name, f"{self.new_service_ref}")
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -32,14 +34,18 @@ class Fns(railos_comp.FinishType, pydantic.BaseModel):
 
 class Fjo(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     joining_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
+        )
         return railos_ttb_str.concat(
-            self.time,
-            self.name,
-            f"{self.joining_service_ref}",
-            join_type=railos_comp.Element,
+            _time_str, self.name, f"{self.joining_service_ref}"
         )
 
     @pydantic.validator("time")
@@ -54,14 +60,18 @@ class Fjo(railos_comp.FinishType, pydantic.BaseModel):
 
 class Fer(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     exit_coords: typing.List[railos_coords.Coordinate]
 
     def __str__(self) -> str:
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
+        )
         return railos_ttb_str.concat(
-            self.time,
-            self.name,
-            " ".join([str(i) for i in self.exit_coords]),
-            join_type=railos_comp.Element,
+            _time_str, self.name, " ".join([str(i) for i in self.exit_coords])
         )
 
     @pydantic.validator("time")
@@ -76,15 +86,17 @@ class Fer(railos_comp.FinishType, pydantic.BaseModel):
 
 class Frh_sh(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     linked_shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return railos_ttb_str.concat(
-            self.time,
-            self.name,
-            f"{self.linked_shuttle_ref}",
-            join_type=railos_comp.Element,
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
+        return railos_ttb_str.concat(_time_str, self.name, f"{self.linked_shuttle_ref}")
 
     @pydantic.validator("time")
     def to_string(cls, v):
@@ -98,16 +110,22 @@ class Frh_sh(railos_comp.FinishType, pydantic.BaseModel):
 
 class Fns_sh(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     linked_shuttle_ref: railos_comp.Reference
     finishing_service_ref: railos_comp.Reference
 
     def __str__(self) -> str:
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
+        )
         return railos_ttb_str.concat(
-            self.time,
+            _time_str,
             self.name,
             f"{self.linked_shuttle_ref}",
             f"{self.finishing_service_ref}",
-            join_type=railos_comp.Element,
         )
 
     @pydantic.validator("time")
@@ -122,15 +140,17 @@ class Fns_sh(railos_comp.FinishType, pydantic.BaseModel):
 
 class F_nshs(railos_comp.FinishType, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     linked_shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        return railos_ttb_str.concat(
-            self.time,
-            self.name,
-            f"{self.linked_shuttle_ref}",
-            join_type=railos_comp.Element,
+        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
+        _hour: int = _time.hour + self.time_days * 24
+        _min: int = _time.minute
+        _time_str: str = (
+            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
+        return railos_ttb_str.concat(_time_str, self.name, f"{self.linked_shuttle_ref}")
 
     @pydantic.validator("time")
     def to_string(cls, v):

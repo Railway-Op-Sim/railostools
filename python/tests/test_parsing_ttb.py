@@ -11,107 +11,142 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 @pytest.mark.ttb_parsing
-def test_snt_parse() -> None:
-    TEST_STR = "10:23;Snt;1-34 1-35"
-    railosparse_start.parse_Snt(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_snt_parse(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Snt;1-34 1-35"
+    _result = railosparse_start.parse_Snt(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_sfs_parse() -> None:
-    TEST_STR = "10:23;Sfs;1U03"
-    railosparse_start.parse_Sfs(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_sfs_parse(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Sfs;1U03"
+    _result = railosparse_start.parse_Sfs(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Sns_fsh() -> None:
-    TEST_STR = "10:23;Sns-fsh;1U04"
-    railosparse_start.parse_Sns_fsh(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Sns_fsh(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Sns-fsh;1U04"
+    _result = railosparse_start.parse_Sns_fsh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Snt_sh() -> None:
-    TEST_STR = "10:23;Snt-sh;1-45 1-46;1U04"
-    railosparse_start.parse_Snt_sh(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Snt_sh(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Snt-sh;1-45 1-46;1U04"
+    _result = railosparse_start.parse_Snt_sh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Sns_sh() -> None:
-    TEST_STR = "10:23;Sns-sh;1U02;1U04"
-    railosparse_start.parse_Sns_sh(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Sns_sh(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Sns-sh;1U02;1U04"
+    _result = railosparse_start.parse_Sns_sh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Fns() -> None:
-    TEST_STR = "10:23;Fns;1U03"
-    railosparse_finish.parse_Fns(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Fns(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Fns;1U03"
+    _result = railosparse_finish.parse_Fns(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Fer() -> None:
-    TEST_STR = "10:23;Fer;1-94"
-    railosparse_finish.parse_Fer(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Fer(hour: int) -> None:
+    TEST_STR = f"{hour}:23;Fer;1-94"
+    _result = railosparse_finish.parse_Fer(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Frh() -> None:
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Frh(hour: int) -> None:
     TEST_STR = "Frh"
-    railosparse_finish.parse_Frh(railos_ttb_str.split(TEST_STR))
+    _result = railosparse_finish.parse_Frh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Fjo() -> None:
-    TEST_STR = "10:03;Fjo;1U05"
-    railosparse_finish.parse_Fjo(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Fjo(hour: int) -> None:
+    TEST_STR = f"{hour}:03;Fjo;1U05"
+    _result = railosparse_finish.parse_Fjo(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Frh_sh() -> None:
-    TEST_STR = "10:03;Frh-sh;2U05"
-    railosparse_finish.parse_Frh_sh(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Frh_sh(hour: int) -> None:
+    TEST_STR = f"{hour}:03;Frh-sh;2U05"
+    _result = railosparse_finish.parse_Frh_sh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_Fns_sh() -> None:
-    TEST_STR = "10:03;Frh-sh;2U05;1Z09"
-    railosparse_finish.parse_Fns_sh(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_Fns_sh(hour: int) -> None:
+    TEST_STR = f"{hour}:03;Fns-sh;2U05;1Z09"
+    _result = railosparse_finish.parse_Fns_sh(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_F_nshs() -> None:
-    TEST_STR = "10:03;F-nshs;2U05"
-    railosparse_finish.parse_F_nshs(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_F_nshs(hour: int) -> None:
+    TEST_STR = f"{hour}:03;F-nshs;2U05"
+    _result = railosparse_finish.parse_F_nshs(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_pas() -> None:
-    TEST_STR = "10:03;pas;Great Malvern"
-    railosparse_act.parse_pas(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_pas(hour: int) -> None:
+    TEST_STR = f"{hour}:03;pas;Great Malvern"
+    _result = railosparse_act.parse_pas(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_cdt() -> None:
-    TEST_STR = "10:03;cdt"
-    railosparse_act.parse_cdt(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_cdt(hour: int) -> None:
+    TEST_STR = f"{hour}:03;cdt"
+    _result = railosparse_act.parse_cdt(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_fsp() -> None:
-    TEST_STR = "10:03;fsp;1K98"
-    railosparse_act.parse_fsp(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_fsp(hour: int) -> None:
+    TEST_STR = f"{hour}:03;fsp;1K98"
+    _result = railosparse_act.parse_fsp(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_rsp() -> None:
-    TEST_STR = "10:03;rsp;1K98"
-    railosparse_act.parse_fsp(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_rsp(hour: int) -> None:
+    TEST_STR = f"{hour}:03;rsp;1K98"
+    _result = railosparse_act.parse_rsp(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing
-def test_location() -> None:
-    TEST_STR = "10:11;10:12;Longbridge"
-    railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
-    TEST_STR = "10:11;Longbridge"
-    railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_location(hour: int) -> None:
+    TEST_STR = f"{hour}:11;{hour}:12;Longbridge"
+    _result = railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
+    TEST_STR = f"{hour}:11;Longbridge"
+    _result = railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
 
 
 @pytest.mark.ttb_parsing

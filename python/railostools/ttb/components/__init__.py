@@ -25,6 +25,7 @@ class FinishType(Element):
 
 class ActionType(Element, pydantic.BaseModel):
     time: datetime.time
+    time_days: int = 0
     warning: bool = False
 
     def __str__(self) -> str:
@@ -109,7 +110,7 @@ class Header(pydantic.BaseModel, Element):
 class Repeat(pydantic.BaseModel, Element):
     mins: pydantic.conint(gt=1)
     digits: pydantic.conint(ge=0)
-    repeats: pydantic.conint(gt=1)
+    repeats: pydantic.conint(ge=1)
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(

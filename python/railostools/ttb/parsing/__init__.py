@@ -49,7 +49,7 @@ class TTBParser:
             return False
 
     @property
-    def start_time(self) -> datetime.time:
+    def start_time(self) -> datetime.datetime:
         """Retrieves the timetable start time"""
         _index: int = 0
         while not self.is_start_time(self._file_lines[_index]):
