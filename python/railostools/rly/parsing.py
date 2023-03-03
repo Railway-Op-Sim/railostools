@@ -75,8 +75,41 @@ class RlyParser:
             os.path.splitext(os.path.basename(self._current_file))[0]
         ]["metadata"]["program_version"]
 
+    def get_element_at(
+        self, coordinates: typing.Tuple[int, int]
+    ) -> typing.Optional[Elements]:
+        for element in self.active_elements + self.inactive_elements:
+            if element.get("position") == coordinates:
+                if _id := element.get("element_id"):
+                    return Elements(_id)
+        return None
+
+    def get_element_connected_neighbours(
+        self, coordinates: typing.Tuple[int, int]
+    ) -> typing.List[typing.Tuple[int, int]]:
+        if not (_this_element := self.get_element_at(coordinates)):
+            raise RailwayParsingError(f"No element found at '{coordinates}'")
+        _neighbour_coords = (
+            (coordinates[0], coordinates[1] + 1),
+            (coordinates[0], coordinates[1] - 1),
+            (coordinates[0] + 1, coordinates[1]),
+            (coordinates[0] - 1, coordinates[1]),
+            (coordinates[0] + 1, coordinates[1] + 1),
+            (coordinates[0] - 1, coordinates[1] + 1),
+            (coordinates[0] + 1, coordinates[1] - 1),
+            (coordinates[0] - 1, coordinates[1] - 1),
+        )
+
+        _found_neighbours = [i for i in _neighbour_coords if self.get_element_at(i)]
+
+        return [
+            i
+            for i in _found_neighbours
+            if can_connect(_this_element, self.get_element_at(i), coordinates, i)
+        ]
+
     @property
-    def timetable_locations(self) -> typing.Dict[str, TimetableLocation]:
+    def named_locations(self) -> typing.Dict[str, TimetableLocation]:
         """Returns list of timetable locations and coordinates
 
         NOTE: These are locations which are of size 2, i.e. would have the

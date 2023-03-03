@@ -35,3 +35,10 @@ def test_write(rly_parser: RlyParser):
     with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as out_f:
         rly_parser.dump(out_f)
         assert json.load(open(out_f.name))
+
+
+@pytest.mark.rly_parsing
+def test_found_neighbours(rly_parser: RlyParser):
+    assert sorted(rly_parser.get_element_connected_neighbours((-28, 28))) == sorted(
+        [(-28, 27), (-29, 28), (-28, 29)]
+    )
