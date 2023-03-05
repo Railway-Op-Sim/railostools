@@ -141,6 +141,14 @@ def test_rsp(hour: int) -> None:
 @pytest.mark.ttb_parsing
 @pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
 def test_location(hour: int) -> None:
+    TEST_STR = f"{hour}:03;dsc;This is a new description"
+    _result = railosparse_act.parse_dsc(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
+
+
+@pytest.mark.ttb_parsing
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_dsc(hour: int) -> None:
     TEST_STR = f"{hour}:11;{hour}:12;Longbridge"
     _result = railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
     assert str(_result) == TEST_STR
