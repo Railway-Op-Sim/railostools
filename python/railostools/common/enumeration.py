@@ -36,6 +36,19 @@ class TrackType(enum.Enum):
     LevelCrossing = 15
 
 
+class LevelCrossingState(enum.Enum):
+    RAISED = 0
+    LOWERED = 1
+    IN_MOTION = 2
+
+
+class SignalAspect(enum.Enum):
+    RED = 0
+    YELLOW = 1
+    DOUBLE_YELLOW = 2
+    GREEN = 3
+
+
 class Elements(enum.Enum):
     Horizontal = 1
     Vertical = 2
