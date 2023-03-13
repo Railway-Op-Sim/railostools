@@ -5,6 +5,8 @@ import os.path
 import re
 import typing
 
+logging.basicConfig()
+
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as ttb_comp
 import railostools.ttb.string as railos_ttb_str
@@ -19,6 +21,7 @@ class TTBParser:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
         self._data: typing.Optional[ttb_comp.Timetable] = None
         self._file_lines: typing.List[str] = []
+        self._current_file: typing.Optional[str] = None
 
     def is_comment(self, statement: str) -> bool:
         """Returns if a given statement is a comment"""
@@ -52,6 +55,10 @@ class TTBParser:
     def start_time(self) -> datetime.datetime:
         """Retrieves the timetable start time"""
         _index: int = 0
+
+        if not self._file_lines:
+            raise railos_exc.ParsingError("Cannot parse empty file.")
+
         while not self.is_start_time(self._file_lines[_index]):
             if _index >= len(self._file_lines):
                 raise railos_exc.ParsingError("Failed to find timetable start time")
@@ -140,8 +147,13 @@ class TTBParser:
             raise AssertionError(
                 f"Cannot parse file '{file_name}', file is not a valid timetable file."
             )
+
         with open(file_name) as in_f:
             self._file_lines = railos_ttb_str.split(in_f.read(), ttb_comp.Element)
+            self._file_lines = [i for i in self._file_lines if i]
+
+        self._logger.info(f"Parsing input file '{file_name}'")
+        self._current_file = file_name
 
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
@@ -151,6 +163,12 @@ class TTBParser:
         self._data = ttb_comp.Timetable(
             start_time=self.start_time, services=_services, comments=self.comments
         )
+
+        self._logger.info("Parsing successful, timetable is valid.")
+
+    @property
+    def data(self) -> typing.Dict[str, typing.Any]:
+        return self._data
 
     def json(self, output_file) -> None:
         """Dump metadata to a JSON file"""

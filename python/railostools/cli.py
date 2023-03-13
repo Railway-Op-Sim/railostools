@@ -2,11 +2,13 @@ import logging
 import os
 
 import click
+import json
 
 from railostools.metadata.validation import validate
-from railostools.rly import RlyParser
+from railostools.rly.parsing import RlyParser
 from railostools.ttb.parsing import TTBParser
 from railostools.metadata.wikidata import MetadataExpander
+import railostools.exceptions as railos_exc
 
 logging.basicConfig()
 
@@ -15,7 +17,9 @@ logging.basicConfig()
 @click.option("--debug/--normal", help="Run in debug mode", default=False)
 def railostools(debug: bool = False) -> None:
     """Python based utilities for Railway Operation Simulator"""
-    logging.getLogger("RailOSTools").setLevel(logging.DEBUG if debug else logging.INFO)
+    logging.getLogger("RailOSTools").setLevel(
+        logging.DEBUG if debug else logging.WARNING
+    )
 
 
 @railostools.command()
@@ -38,7 +42,8 @@ def ttb2json(ttb_file: str, output: str = "") -> None:
 
 @railostools.command()
 @click.argument("input_file")
-def validate(input_file: str):
+@click.option("--dump/--silent", help="Write out JSON to stdout", default=False)
+def validate(input_file: str, dump: bool):
     """Validate Railway Operation Simulator file"""
     if not os.path.exists(input_file):
         raise FileNotFoundError(
@@ -47,11 +52,31 @@ def validate(input_file: str):
     if os.path.splitext(input_file)[1] == ".toml":
         validate(input_file)
     elif os.path.splitext(input_file)[1] == ".ttb":
-        with TTBParser(input_file):
-            pass
+        try:
+            TTBParser().parse(input_file)
+        except railos_exc.ParsingError as e:
+            click.secho(
+                f"Failed to parse file '{input_file}' with error: {e.args[0]}", fg="red"
+            )
+            raise click.Abort from e
+        click.secho(
+            f"Validation successful, file '{input_file}' passed all TTB file checks.",
+            fg="green",
+        )
     elif os.path.splitext(input_file)[1] in [".rly"]:
-        raise NotImplementedError(
-            f"Validation of files of type '{os.path.splitext(input_file)[1]}' is not yet implemented"
+        try:
+            _parser = RlyParser()
+            _parser.parse(input_file)
+            if dump:
+                click.echo(json.dumps(_parser.data, indent=2))
+        except railos_exc.ParsingError as e:
+            click.secho(
+                f"Failed to parse file '{input_file}' with error: {e.args[0]}", fg="red"
+            )
+            raise click.Abort from e
+        click.secho(
+            f"Validation successful, file '{input_file}' passed all RLY file checks.",
+            fg="green",
         )
     else:
         raise TypeError(

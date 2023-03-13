@@ -11,6 +11,7 @@ from typing import Any, Dict, List
 from railostools.exceptions import RailwayParsingError
 from railostools.common.enumeration import Elements
 from railostools.rly.relations import can_connect
+import railostools.exceptions as railos_exc
 
 
 @dataclasses.dataclass
@@ -45,11 +46,21 @@ class RlyParser:
             raise FileNotFoundError(
                 f"Cannot parse railway file '{rly_file}', " "file does not exist."
             )
+
+        if not open(rly_file).readlines():
+            raise railos_exc.ParsingError("Cannot parse empty file.")
+
         _key = os.path.splitext(os.path.basename(rly_file))[0]
         self._rly_data[_key] = self._get_rly_components(
             open(rly_file, encoding="latin-1").readlines()
         )
+
+        if not self._rly_data[_key]:
+            raise railos_exc.ParsingError("Failed to retrieve data from file.")
+
         self._current_file = rly_file
+
+        self._logger.info("Parsing successful, railway is valid.")
 
     @property
     def n_active_elements(self) -> int:
@@ -245,20 +256,24 @@ class RlyParser:
         }
 
     def _parse_inactive_element(self, inactive_elem: List[str]) -> Dict:
-        inactive_elem = [i.strip() for i in inactive_elem]
-        return {
-            "element_id": int(inactive_elem[1]),
-            "position": (int(inactive_elem[2]), int(inactive_elem[3])),
-            "location_name": inactive_elem[4] or None,
-        }
+        if inactive_elem := [i.strip() for i in inactive_elem]:
+            return {
+                "element_id": int(inactive_elem[1]),
+                "position": (int(inactive_elem[2]), int(inactive_elem[3])),
+                "location_name": inactive_elem[4] or None,
+            }
+        else:
+            raise railos_exc.ParsingError("No inactive elements were found.")
 
     def _parse_metadata(self, metadata: List[str]) -> Dict:
-        metadata = [i.strip() for i in metadata]
-        return {
-            "program_version": metadata[0],
-            "home_position": (int(metadata[1]), int(metadata[2])),
-            "n_active_elements": int(metadata[3]),
-        }
+        if metadata := [i.strip() for i in metadata]:
+            return {
+                "program_version": metadata[0],
+                "home_position": (int(metadata[1]), int(metadata[2])),
+                "n_active_elements": int(metadata[3]),
+            }
+        else:
+            raise railos_exc.ParsingError("Failed to retrieve railway metadata.")
 
     def _get_rly_components(self, railway_file_data: str) -> Dict[str, Any]:
         self._logger.debug("Retrieving components from extracted railway file data")
