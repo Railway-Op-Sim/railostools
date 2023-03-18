@@ -11,11 +11,16 @@ import railostools.exceptions as railos_exc
 
 class Session:
     SESSION_FILE = "session.ini"
+    RAILSOS_BINARIES: typing.List[str] = ["railway.exe", "RailOS64.exe", "RailOS32.exe"]
     _parser = configparser.ConfigParser()
 
     def __init__(self, railway_op_sim_dir: str) -> None:
         self._railos_loc = railway_op_sim_dir
-        if not os.path.exists(os.path.join(self._railos_loc, "railway.exe")):
+        if not any(
+            os.path.exists(
+                os.path.join(self._railos_loc, b) for b in self.RAILOS_BINARIES
+            )
+        ):
             raise railos_exc.ProgramNotFoundError(self._railos_loc)
 
     def _check_for_metadata(self, route: str) -> typing.Dict:
