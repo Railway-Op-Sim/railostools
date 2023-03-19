@@ -1,6 +1,13 @@
 import typing
 import logging
-import wikidspark.query
+
+try:
+    import wikidspark.query
+except ImportError:
+    raise ImportError(
+        "Wikidata functionality is unavailable, the [wikidata] optional extra must be installed."
+    )
+
 import railostools.rly.parsing
 import json
 import os.path
