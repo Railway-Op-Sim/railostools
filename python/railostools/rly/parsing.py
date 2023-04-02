@@ -8,6 +8,7 @@ import pydantic
 import semver
 import typing
 import igraph
+import functools
 import itertools
 import tqdm
 import matplotlib.pyplot as plt
@@ -194,7 +195,7 @@ class RlyParser:
             if can_connect(_this_element, self.get_element_at(i), coordinates, i)
         ]
 
-    @property
+    @functools.cached_property
     def named_locations(self) -> typing.Dict[str, TimetableLocation]:
         """Returns list of timetable locations and coordinates
 
@@ -281,6 +282,10 @@ class RlyParser:
     def inactive_elements(self) -> typing.List[InactiveElement]:
         return self.data[os.path.splitext(os.path.basename(self._current_file))[0]].inactive_elements
 
+    @property
+    def nodes(self) -> igraph.Graph:
+        return self._node_map[os.path.splitext(os.path.basename(self._current_file))[0]]
+
     def _make_signal_table(self) -> pandas.DataFrame:
         _df_dict = {col: [] for col in ["position", "signal"]}
         for element in self.active_elements:
@@ -313,7 +318,6 @@ class RlyParser:
 
     def _parse_text(self, text_elem: typing.List[str]) -> Text:
         text_elem = [i.strip() for i in text_elem]
-        print(text_elem)
         return Text(
             n_items=int(text_elem[0]),
             position=(int(text_elem[2]), int(text_elem[3])),
@@ -426,11 +430,14 @@ class RlyParser:
         """Plot the node map for the railway"""
         if not self._node_map:
             raise RailwayParsingError("No file parsed yet.")
+
         if not map_key:
-            map_key = list(self._node_map.keys())[0]
+            _map = self.nodes
+        else:
+            _map = self._node_map[map_key]
 
         _figure, _axis = plt.subplots()
-        igraph.plot(self._node_map[map_key], layout=self._node_map[map_key].layout("auto"), target=_axis)
+        igraph.plot(_map, layout=_map.layout("auto"), target=_axis)
         _figure.savefig(target_file)
 
     def dump(self, output_file) -> None:
