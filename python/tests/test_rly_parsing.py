@@ -46,4 +46,7 @@ def test_found_neighbours(rly_parser: RlyParser):
 
 @pytest.mark.rly_parsing
 def test_plot_nodes(rly_parser: RlyParser):
-    rly_parser._build_node_tree()
+    with tempfile.TemporaryDirectory() as temp_d:
+        graph_file_name: str = os.path.join(temp_d, "temporary_graph.pdf")
+        rly_parser.plot(graph_file_name)
+        assert os.path.exists(graph_file_name)
