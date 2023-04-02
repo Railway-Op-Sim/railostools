@@ -101,14 +101,14 @@ def parse_fsp(action_components: typing.List[str]) -> ros_act.fsp:
 
 
 def parse_dsc(action_components: typing.List[str]) -> ros_act.fsp:
-    """Parse a fsp statement"""
+    """Parse a dsc statement"""
     if len(action_components) != 3:
         raise ros_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'dsc' statement"
         )
 
-    _description = ros_parse_comp.parse_reference(action_components[2])
+    _description = action_components[2]
 
     _time_str, _time_days = adjust_above_24hr(
         action_components[0],

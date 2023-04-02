@@ -2,7 +2,6 @@ import os.path
 import pytest
 
 import railostools.metadata.validation as railos_meta_valid
-import railostools.metadata.wikidata as railos_meta_wiki
 
 TEST_METADATA = os.path.join(
     os.path.dirname(__file__), "data", "Antwerpen_Centraal.toml"
@@ -17,4 +16,8 @@ def test_check_file() -> None:
 
 @pytest.mark.metadata
 def test_extra_metadata() -> None:
+    try:
+        import railostools.metadata.wikidata as railos_meta_wiki
+    except ImportError:
+        pytest.skip("Missing extra dependencies")
     railos_meta_wiki.MetadataExpander(TEST_PROJECT)
