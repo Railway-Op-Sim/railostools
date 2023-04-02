@@ -42,3 +42,8 @@ def test_found_neighbours(rly_parser: RlyParser):
     assert sorted(rly_parser.get_element_connected_neighbours((-28, 28))) == sorted(
         [(-28, 27), (-29, 28), (-28, 29)]
     )
+
+
+@pytest.mark.rly_parsing
+def test_plot_nodes(rly_parser: RlyParser):
+    rly_parser._build_node_tree()
