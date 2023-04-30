@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import typing
+import datetime
 
 import railostools.exceptions as rexc
 import railostools.performance.components as ros_perf_comp
@@ -166,7 +167,7 @@ class Monitor:
 class PerformanceLogParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self._data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = None
+        self.data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = None
         self._file_lines: typing.List[str] = []
         self._current_file: typing.Optional[str] = None
 
@@ -201,7 +202,7 @@ class PerformanceLogParser:
                 _location = _line_no_action.replace(_offset_str, "").strip()
                 _file_data.append(
                     ros_perf_comp.ServiceEvent(
-                        due=time_str,
+                        time=time_str,
                         actual_offset=_offset,
                         headcode=_head_code,
                         action=tt_event_type,
@@ -210,12 +211,41 @@ class PerformanceLogParser:
                 )
         return _file_data
 
+    def _parse_score(self, lines: typing.List[str]) -> typing.Tuple[int | None, str | None]:
+        _line_str: str = "\n".join(lines)
+        _score_line_re = re.findall(r'Overall score: (\d+)%', _line_str)
+        _score_rating_re = re.findall(r'Overall rating: (\w+)', _line_str)
+
+        _score: int | None = _score_line_re[0] if _score_line_re else None
+        _rating: str | None = _score_rating_re[0] if _score_rating_re else None
+
+        return _score, _rating
+
+    @property
+    def simulation_time_coverage(self) -> int:
+        """Duration of player simulation in seconds
+
+        Note this is the timetable event duration not the actual time spent by the player
+        within RailOS (it does not include delays/early finishes)
+        """
+
+        if not self.data:
+            return 0
+
+        _first_time: datetime.datetime = datetime.datetime.combine(datetime.date.today(), self.data[0].time)
+        _last_time: datetime.time = datetime.datetime.combine(datetime.date.today(), self.data[-1].time)
+        _interval: datetime.timedelta = _last_time - _first_time
+
+        return _interval.seconds
+
     def parse(self, log_file: str) -> None:
         if not os.path.exists(log_file):
             raise FileNotFoundError(f"Cannot parse performance log '{log_file}', file not found")
 
         with open(log_file) as in_f:
             self._file_lines = in_f.readlines()
+
+        self.score, self.rating = self._parse_score(self._file_lines)
 
         _file_data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = []
         _line_time = re.compile(r'^\d{2}:\d{2}:\d{2}')
@@ -250,4 +280,4 @@ class PerformanceLogParser:
                 )
             else:
                 _file_data += self._parse_timetable_performance_even(_time_str, line)
-        self._file_data = _file_data
+        self.data = _file_data

@@ -27,7 +27,7 @@ class ClockAdjustment(pydantic.BaseModel):
     speed: typing.Optional[ClockSpeed]=None
 
 class ServiceEvent(pydantic.BaseModel):
-    due: datetime.time
+    time: datetime.time
     actual_offset: int
     headcode: str
     action: TimetableLogEvent
