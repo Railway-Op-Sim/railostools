@@ -162,7 +162,7 @@ class SignallerService(Service, pydantic.BaseModel):
 
 class Timetable(pydantic.BaseModel):
     start_time: datetime.time
-    services: typing.Dict[str, Service]
+    services: typing.Dict[str, TimetabledService]
     comments: typing.Optional[typing.Dict[int, str]] = None
 
     @pydantic.validator("start_time")

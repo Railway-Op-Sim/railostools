@@ -8,10 +8,7 @@ import pydantic
 import semver
 import typing
 import igraph
-<<<<<<< HEAD
-=======
 import functools
->>>>>>> artemis-beta/python/node-graphing
 import itertools
 import tqdm
 import matplotlib.pyplot as plt
@@ -47,7 +44,7 @@ class TimetableLocation:
 
 
 class RlyElement(pydantic.BaseModel):
-    element_id: int
+    element_id: Elements
     position: pydantic.conlist(pydantic.conint(), max_items=2, min_items=2)
     location_name: typing.Optional[str] = None
 
@@ -164,6 +161,51 @@ class RlyParser:
         return self._rly_data[
             os.path.splitext(os.path.basename(self._current_file))[0]
         ].metadata.program_version
+
+    @property
+    def n_signals(self) -> int:
+        return self.tables.signals.size
+
+    @property
+    def n_level_crossings(self) -> int:
+        return len([i for i in self.active_elements if i.element_id == Elements.Level_Crossing])
+
+    @property
+    def n_stations(self) -> int:
+        return len(self.named_locations)
+
+    @property
+    def n_points(self) -> int:
+        _points: typing.List[ActiveElement] = [
+            i for i in self.active_elements
+            if i.element_id in (
+                Elements.Junction_Right_Up_RightAngle,
+                Elements.Junction_Left_Up_RightAngle,
+                Elements.Junction_Right_Down_RightAngle,
+                Elements.Junction_Left_Down_RightAngle,
+                Elements.Junction_Up_Left_RightAngle,
+                Elements.Junction_Up_Right_RightAngle,
+                Elements.Junction_Down_Left_RightAngle,
+                Elements.Junction_Down_Right_RightAngle,
+                Elements.Junction_Right_Up_45Angle,
+                Elements.Junction_Left_Up_45Angle,
+                Elements.Junction_Right_Down_45Angle,
+                Elements.Junction_Left_Down_45Angle,
+                Elements.Junction_Up_Left_45Angle,
+                Elements.Junction_Up_Right_45Angle,
+                Elements.Junction_Down_Left_45Angle,
+                Elements.Junction_Down_Right_45Angle,
+                Elements.Junction_DiagonalDown_Up_45Angle,
+                Elements.Junction_DiagonalUp_Up_45Angle,
+                Elements.Junction_DiagonalUp_Down_45Angle,
+                Elements.Junction_DiagonalDown_Down_45Angle,
+                Elements.Junction_DiagonalDown_Left_45Angle,
+                Elements.Junction_DiagonalUp_Right_45Angle,
+                Elements.Junction_DiagonalUp_Left_45Angle,
+                Elements.Junction_DiagonalDown_Right_45Angle
+            )
+        ]
+        return len(_points)
 
     def get_element_at(
         self, coordinates: typing.Tuple[int, int]
@@ -292,10 +334,10 @@ class RlyParser:
     def _make_signal_table(self) -> pandas.DataFrame:
         _df_dict = {col: [] for col in ["position", "signal"]}
         for element in self.active_elements:
-            if not element["signal"]:
+            if not element.signal:
                 continue
             for key in _df_dict:
-                _df_dict[key].append(element[key])
+                _df_dict[key].append(getattr(element, key))
         return pandas.DataFrame.from_dict(_df_dict)
 
     @property
