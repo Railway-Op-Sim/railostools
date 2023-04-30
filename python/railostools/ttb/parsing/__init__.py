@@ -157,6 +157,7 @@ class TTBParser:
 
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
+            print(service)
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv
 

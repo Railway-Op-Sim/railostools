@@ -42,14 +42,14 @@ class LevelCrossingState(enum.Enum):
     IN_MOTION = 2
 
 
-class SignalAspect(enum.Enum):
+class SignalAspect(enum.IntEnum):
     RED = 0
     YELLOW = 1
     DOUBLE_YELLOW = 2
     GREEN = 3
 
 
-class Elements(enum.Enum):
+class Elements(enum.IntEnum):
     Horizontal = 1
     Vertical = 2
     Up_Right = 3

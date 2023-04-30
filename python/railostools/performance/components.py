@@ -32,3 +32,4 @@ class ServiceEvent(pydantic.BaseModel):
     headcode: str
     action: TimetableLogEvent
     location: typing.Optional[str]
+    error: bool = False

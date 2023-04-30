@@ -188,6 +188,8 @@ class PerformanceLogParser:
                     _offset_str = f"{_offset} minutes early"
                 elif _min_search := re.findall(r'(\d+) minutes late', line):
                     _offset = int(_min_search[0])
+                if (_error := "ERROR" in line):
+                    line = line.replace(" ERROR", "")
                 _head_code_re = re.findall(r"\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s", line)
                 _head_code: str = _head_code_re[0]
                 _line_no_action: str = line.replace(tt_event_type.value, "")
@@ -206,7 +208,8 @@ class PerformanceLogParser:
                         actual_offset=_offset,
                         headcode=_head_code,
                         action=tt_event_type,
-                        location=_location
+                        location=_location,
+                        error=_error
                     )
                 )
         return _file_data
@@ -216,7 +219,7 @@ class PerformanceLogParser:
         _score_line_re = re.findall(r'Overall score: (\d+)%', _line_str)
         _score_rating_re = re.findall(r'Overall rating: (\w+)', _line_str)
 
-        _score: int | None = _score_line_re[0] if _score_line_re else None
+        _score: int | None = int(_score_line_re[0]) if _score_line_re else None
         _rating: str | None = _score_rating_re[0] if _score_rating_re else None
 
         return _score, _rating
