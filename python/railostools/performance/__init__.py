@@ -4,9 +4,10 @@ import inspect
 import logging
 import os
 import re
-from typing import Callable, Dict, List, Tuple
+import typing
 
 import railostools.exceptions as rexc
+import railostools.performance.components as ros_perf_comp
 
 
 class Monitor:
@@ -19,16 +20,16 @@ class Monitor:
                 f"directory '{railos_log_dir}' does not exist"
             )
         self._log_dir = railos_log_dir  # RailOS Performance Log directory
-        self._async_funcs: List[
-            Tuple[Callable, Dict]
+        self._async_funcs: typing.List[
+            typing.Tuple[typing.Callable, typing.Dict]
         ] = []  # Methods with args to run in sync with monitor
-        self._time_out = time_out  # Time limit for listening
+        self._time_out = time_out  # Time limit for typing.Listening
         self._data = {}  # Parsed log data
         self._is_running = False  # Status of monitor
         self._wait_interval: int = 5  # Wait period
         self._latest = ""  # Raw data of latest full log line
 
-    async def _process_lines(self, file_lines: List[str]) -> None:
+    async def _process_lines(self, file_lines: typing.List[str]) -> None:
         _is_ttb_perf = re.compile(
             r"\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]",
             re.IGNORECASE,
@@ -137,14 +138,14 @@ class Monitor:
         return self._latest
 
     @property
-    def data(self) -> Dict:
+    def data(self) -> typing.Dict:
         return self._data
 
     def stop(self) -> None:
         """Force stop the monitor from running"""
         self._is_running = False
 
-    def exec_in_parallel(self, function: Callable, args: Dict = None) -> None:
+    def exec_in_parallel(self, function: typing.Callable, args: typing.Dict = None) -> None:
         if not args:
             args = {}
 
@@ -160,3 +161,93 @@ class Monitor:
 
     def run(self) -> None:
         asyncio.run(self._async_main())
+
+
+class PerformanceLogParser:
+    def __init__(self) -> None:
+        self._logger = logging.getLogger("RailOSTools.TTBParser")
+        self._data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = None
+        self._file_lines: typing.List[str] = []
+        self._current_file: typing.Optional[str] = None
+
+    def _parse_timetable_performance_even(self, time_str: str, line: str) -> ros_perf_comp.TimetableLogEvent:
+        _file_data: typing.List[ros_perf_comp.TimetableLogEvent] = []
+        for tt_event_type in ros_perf_comp.TimetableLogEvent.__members__.values():
+            if tt_event_type.value in line:
+                _offset = 0
+                _offset_str = "on time"
+                if "1 minute early" in line:
+                    _offset = -1
+                    _offset_str = "1 minute early"
+                elif "1 minute late" in line:
+                    _offset = 1
+                    _offset_str = "1 minute late"
+                elif _min_search := re.findall(r'(\d+) minutes early', line):
+                    _offset = -1 * int(_min_search[0])
+                    _offset_str = f"{_offset} minutes early"
+                elif _min_search := re.findall(r'(\d+) minutes late', line):
+                    _offset = int(_min_search[0])
+                _head_code_re = re.findall(r"\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s", line)
+                _head_code: str = _head_code_re[0]
+                _line_no_action: str = line.replace(tt_event_type.value, "")
+                _line_no_action = _line_no_action.replace("to", "")
+                _line_no_action = _line_no_action.replace("from", "")
+                _line_no_action = _line_no_action.replace(_head_code, "")
+                _line_no_action = _line_no_action.replace(time_str, "")
+                if _line_no_action[-1] == ",":
+                    _line_no_action = _line_no_action[:-1]
+                if _line_no_action[0] == ":":
+                    _line_no_action = _line_no_action[1:]
+                _location = _line_no_action.replace(_offset_str, "").strip()
+                _file_data.append(
+                    ros_perf_comp.ServiceEvent(
+                        due=time_str,
+                        actual_offset=_offset,
+                        headcode=_head_code,
+                        action=tt_event_type,
+                        location=_location
+                    )
+                )
+        return _file_data
+
+    def parse(self, log_file: str) -> None:
+        if not os.path.exists(log_file):
+            raise FileNotFoundError(f"Cannot parse performance log '{log_file}', file not found")
+
+        with open(log_file) as in_f:
+            self._file_lines = in_f.readlines()
+
+        _file_data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = []
+        _line_time = re.compile(r'^\d{2}:\d{2}:\d{2}')
+
+        for line in self._file_lines:
+            if not (_time_re := _line_time.findall(line)):
+                continue
+            _time_str: str = _time_re[0]
+            _clock_increment: int | None = None
+
+            if "clock speed" in line:
+                for speed in ros_perf_comp.ClockSpeed.__members__.values():
+                    if speed.value in line:
+                        _file_data.append(
+                            ros_perf_comp.ClockAdjustment(
+                                time=_time_str,
+                                speed=speed
+                            )
+                        )
+            elif "clock incremeted" in line:
+                _increment_min = re.findall(r'(\d+)m')
+                _increment_hr = re.findall(r'(\d+)h')
+                if _increment_min:
+                    _clock_increment = int(_increment_min[0])
+                elif _increment_hr:
+                    _clock_increment = int(_increment_min[0]) * 60
+                _file_data.append(
+                    ros_perf_comp.ClockAdjustment(
+                        time=_time_str,
+                        offset=_clock_increment
+                    )
+                )
+            else:
+                _file_data += self._parse_timetable_performance_even(_time_str, line)
+        self._file_data = _file_data
