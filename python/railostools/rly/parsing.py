@@ -11,6 +11,7 @@ import igraph
 import functools
 import itertools
 import tqdm
+import re
 import matplotlib.pyplot as plt
 
 from railostools.exceptions import RailwayParsingError
@@ -138,6 +139,12 @@ class RlyParser:
 
         self._logger.info("Parsing successful, railway is valid.")
 
+    def keys(self):
+        return self._rly_data.keys()
+
+    def __getitem__(self, item) -> RlyData:
+        return self._rly_data[item]
+
     @property
     def n_active_elements(self) -> int:
         if not self._current_file:
@@ -240,7 +247,7 @@ class RlyParser:
             if can_connect(_this_element, self.get_element_at(i), coordinates, i)
         ]
 
-    @functools.cached_property
+    @property
     def named_locations(self) -> typing.Dict[str, TimetableLocation]:
         """Returns list of timetable locations and coordinates
 
@@ -388,8 +395,9 @@ class RlyParser:
 
     def _parse_metadata(self, metadata: typing.List[str]) -> Metadata:
         if metadata := [i.strip() for i in metadata]:
+            _prog_version_re = re.findall(r'(v\d+\.\d+\.\d+)', metadata[0])
             return Metadata(
-                program_version=metadata[0],
+                program_version=_prog_version_re[0],
                 home_position=(int(metadata[1]), int(metadata[2])),
                 n_active_elements=int(metadata[3]),
             )

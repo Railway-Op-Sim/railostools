@@ -4,6 +4,7 @@ import logging
 import os.path
 import re
 import typing
+import numpy
 
 logging.basicConfig()
 
@@ -19,9 +20,12 @@ from railostools.ttb.parsing.start import parse_start
 class TTBParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self._data: typing.Optional[ttb_comp.Timetable] = None
+        self._data: typing.Optional[typing.Dict[str, ttb_comp.Timetable]] = {}
         self._file_lines: typing.List[str] = []
         self._current_file: typing.Optional[str] = None
+
+    def __getitem__(self, item) -> ttb_comp.Timetable:
+        return self._data[item]
 
     def is_comment(self, statement: str) -> bool:
         """Returns if a given statement is a comment"""
@@ -48,8 +52,25 @@ class TTBParser:
         try:
             parse_action(statement)
             return True
-        except railos_exc.ParsingError as e:
+        except railos_exc.ParsingError:
             return False
+
+    @property
+    def average_service_density(self) -> float:
+        _times = []
+        for service in self.data.services.values():
+            _datetimes = [
+                datetime.datetime.strptime(action.time, "%H:%M")
+                for action in service.actions.values()
+            ]
+            _times.extend(
+                (time.hour * 60 + time.minute) * 60
+                + time.second
+                for time in _datetimes
+            )
+        _times = numpy.array(_times)
+        _binned_times: numpy.ndarray = numpy.bincount(_times).mean()
+        return _binned_times
 
     @property
     def start_time(self) -> datetime.datetime:
@@ -98,6 +119,9 @@ class TTBParser:
         )
         return _service_list
 
+    def keys(self):
+        return self._data.keys()
+
     def _parse_service(self, service_components: typing.List[str]) -> ttb_comp.Service:
         """Parse a single service from the components"""
         _header = parse_header(service_components[0])
@@ -123,6 +147,11 @@ class TTBParser:
             _index += 1
             if _index >= len(service_components):
                 break
+
+        if _index >= len(service_components):
+            raise railos_exc.ParsingError(
+                f"Failed to determine the finish type of service '{_header}'"
+            )
 
         _finish_type = parse_finish(service_components[_index])
 
@@ -157,19 +186,20 @@ class TTBParser:
 
         _services: typing.Dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
-            print(service)
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv
 
-        self._data = ttb_comp.Timetable(
+        _key: str = os.path.splitext(os.path.basename(file_name))[0]
+
+        self._data[_key] = ttb_comp.Timetable(
             start_time=self.start_time, services=_services, comments=self.comments
         )
 
         self._logger.info("Parsing successful, timetable is valid.")
 
     @property
-    def data(self) -> typing.Dict[str, typing.Any]:
-        return self._data
+    def data(self) -> ttb_comp.Timetable:
+        return self._data[os.path.splitext(os.path.basename(self._current_file))[0]]
 
     def json(self, output_file) -> None:
         """Dump metadata to a JSON file"""

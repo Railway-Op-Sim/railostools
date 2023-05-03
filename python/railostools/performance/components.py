@@ -33,3 +33,4 @@ class ServiceEvent(pydantic.BaseModel):
     action: TimetableLogEvent
     location: typing.Optional[str]
     error: bool = False
+    time_days: int=0

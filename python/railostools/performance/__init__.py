@@ -6,6 +6,7 @@ import os
 import re
 import typing
 import datetime
+import pydantic
 
 import railostools.exceptions as rexc
 import railostools.performance.components as ros_perf_comp
@@ -167,12 +168,22 @@ class Monitor:
 class PerformanceLogParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self.data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = None
+        self.data: typing.Dict[str, typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent]] = {}
         self._file_lines: typing.List[str] = []
         self._current_file: typing.Optional[str] = None
 
+    def __getitem__(self, item: str) -> typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent]:
+        return self.data[item]
+
+    def keys(self):
+        return self.data.keys()
+
     def _parse_timetable_performance_even(self, time_str: str, line: str) -> ros_perf_comp.TimetableLogEvent:
         _file_data: typing.List[ros_perf_comp.TimetableLogEvent] = []
+        _hours_orig: int = int(time_str.split(":")[0])
+        _days: int = _hours_orig // 24
+        _hours = _hours_orig - _days * 24
+        time_str = time_str.replace(f"{_hours_orig}:", f"{_hours}:")
         for tt_event_type in ros_perf_comp.TimetableLogEvent.__members__.values():
             if tt_event_type.value in line:
                 _offset = 0
@@ -202,16 +213,26 @@ class PerformanceLogParser:
                 if _line_no_action[0] == ":":
                     _line_no_action = _line_no_action[1:]
                 _location = _line_no_action.replace(_offset_str, "").strip()
-                _file_data.append(
-                    ros_perf_comp.ServiceEvent(
-                        time=time_str,
-                        actual_offset=_offset,
-                        headcode=_head_code,
-                        action=tt_event_type,
-                        location=_location,
-                        error=_error
+                try:
+                    _file_data.append(
+                        ros_perf_comp.ServiceEvent(
+                            time=time_str,
+                            actual_offset=_offset,
+                            headcode=_head_code,
+                            action=tt_event_type,
+                            location=_location,
+                            error=_error,
+                            time_days=_days
+                        )
                     )
-                )
+                except pydantic.ValidationError as e:
+                    self._logger.error(
+                        f"Failed to validate entry with data: time={time_str}, "
+                        f"actual_offset={_offset}, headcode={_head_code}, "
+                        f"action={tt_event_type}, location={_location}, "
+                        f"error={_error}"
+                    )
+                    raise e
         return _file_data
 
     def _parse_score(self, lines: typing.List[str]) -> typing.Tuple[int | None, str | None]:
@@ -235,8 +256,9 @@ class PerformanceLogParser:
         if not self.data:
             return 0
 
-        _first_time: datetime.datetime = datetime.datetime.combine(datetime.date.today(), self.data[0].time)
-        _last_time: datetime.time = datetime.datetime.combine(datetime.date.today(), self.data[-1].time)
+        _key: str = os.path.splitext(os.path.basename(self._current_file))[0]
+        _first_time: datetime.datetime = datetime.datetime.combine(datetime.date.today(), self.data[_key][0].time)
+        _last_time: datetime.time = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=self.data[_key][-1].time_days), self.data[_key][-1].time)
         _interval: datetime.timedelta = _last_time - _first_time
 
         return _interval.seconds
@@ -248,6 +270,8 @@ class PerformanceLogParser:
         with open(log_file) as in_f:
             self._file_lines = in_f.readlines()
 
+        self._current_file = log_file
+
         self.score, self.rating = self._parse_score(self._file_lines)
 
         _file_data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = []
@@ -257,6 +281,10 @@ class PerformanceLogParser:
             if not (_time_re := _line_time.findall(line)):
                 continue
             _time_str: str = _time_re[0]
+            _hours_orig: int = int(_time_str.split(":")[0])
+            _days: int = _hours_orig // 24
+            _hours = _hours_orig - _days * 24
+            _time_str = _time_str.replace(f"{_hours_orig}:", f"{_hours}:")
             _clock_increment: int | None = None
 
             if "clock speed" in line:
@@ -283,4 +311,5 @@ class PerformanceLogParser:
                 )
             else:
                 _file_data += self._parse_timetable_performance_even(_time_str, line)
-        self.data = _file_data
+        _key: str = os.path.splitext(os.path.basename(log_file))[0]
+        self.data[_key] = _file_data
