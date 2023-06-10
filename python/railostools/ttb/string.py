@@ -8,6 +8,8 @@ def concat(*args, join_type=None) -> str:
         return ""
     if (join_type is ros_comp.Element) or isinstance(args[0], ros_comp.Element):
         return "\0".join(str(i) for i in args)
+    elif join_type is ros_comp.Service:
+        return ",".join(str(i) for i in args)
     else:
         return ";".join(str(i) for i in args)
 

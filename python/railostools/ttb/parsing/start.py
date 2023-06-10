@@ -26,8 +26,8 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
 
     _start_pos_r, _start_pos_f = start_components[2].split()
 
-    _rear_element = ros_coords.coord_from_str(_start_pos_r)
-    _front_element = ros_coords.coord_from_str(_start_pos_f)
+    _rear_element = ros_coords.Coordinate.from_string(_start_pos_r)
+    _front_element = ros_coords.Coordinate.from_string(_start_pos_f)
 
     if abs(_rear_element - _front_element) > 1:
         raise ros_exc.ParsingError(
@@ -108,8 +108,8 @@ def parse_Snt_sh(start_components: typing.List[str]) -> ros_start.Snt_sh:
     )
     _start_pos_r, _start_pos_f = start_components[2].split()
 
-    _rear_element = ros_coords.coord_from_str(_start_pos_r)
-    _front_element = ros_coords.coord_from_str(_start_pos_f)
+    _rear_element = ros_coords.Coordinate.from_string(_start_pos_r)
+    _front_element = ros_coords.Coordinate.from_string(_start_pos_f)
 
     _shuttle_srv = ros_parse_comp.parse_reference(start_components[3])
 

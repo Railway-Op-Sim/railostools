@@ -1,5 +1,6 @@
 import datetime
 import typing
+import re
 
 import pydantic
 
@@ -41,6 +42,7 @@ class ActionType(Element, pydantic.BaseModel):
 
 
 class StartType(Element):
+    time: datetime.time
     def __str__(self) -> str:
         return super().__str__()
 
@@ -76,6 +78,21 @@ class Reference(pydantic.BaseModel):
         if self.id - num < 1:
             raise ValueError("ID must be between 0 and 99")
         self.id -= num
+
+    @classmethod
+    def from_string(cls, headcode: str) -> "Reference":
+        _id_re = re.compile(r'\d{2}$')
+        _srv_re = re.compile(r'(.{2})\d{2}$')
+        _pfx_re = re.compile(r'(.+).{2}\d{2}$')
+
+        if not (_id_ls := _id_re.findall(headcode)) or not (_srv_ls := _srv_re.findall(headcode)):
+            raise ValueError("Invalid headcode string")
+
+        _id: int = int(_id_ls[0])
+        _srv: str = _srv_ls[0]
+
+        _prefix = _pfx_ls[0] if (_pfx_ls := _pfx_re.findall(headcode)) else None
+        return Reference(prefix=_prefix, id=_id, service=_srv)
 
 
 class Header(pydantic.BaseModel, Element):
@@ -165,6 +182,7 @@ class Timetable(pydantic.BaseModel):
     services: typing.Dict[str, TimetabledService]
     comments: typing.Optional[typing.Dict[int, str]] = None
 
-    @pydantic.validator("start_time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    def __str__(self) -> str:
+        _start_time: str = self.start_time.strftime("%H:%M")
+        _services: str = railos_ttb_str.concat(*self.services.values(), join_type=Service)
+        return railos_ttb_str.concat(_start_time, _services, join_type=Element)

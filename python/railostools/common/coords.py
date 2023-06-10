@@ -32,14 +32,17 @@ class Coordinate(pydantic.BaseModel):
     def __add__(self, other):
         return Coordinate(X=self.X + other.X, Y=self.Y + other.Y)
 
+    def is_neighbour(self, other: "Coordinate") -> bool:
+        return any((abs(self.X - other.X) == 1, abs(self.Y - other.Y) == 1))
 
-def coord_from_str(coordinate_str: str) -> Coordinate:
-    """Convert an RailOS coordinate string to a coordinate object"""
-    _coord_regex = re.compile(r"^N*\d+\-N*\d+$")
+    @classmethod
+    def from_string(cls, coordinate: str) -> "Coordinate":
+        """Convert an RailOS coordinate string to a coordinate object"""
+        _coord_regex = re.compile(r"^N*\d+\-N*\d+$")
 
-    if not _coord_regex.findall(coordinate_str):
-        raise railos_exc.ParsingError(f"Invalid coordinate '{coordinate_str}'")
+        if not _coord_regex.findall(coordinate):
+            raise railos_exc.ParsingError(f"Invalid coordinate '{coordinate}'")
 
-    _coord = coordinate_str.split("-")
-    _args = dict(zip(("X", "Y"), (int(i.replace("N", "-")) for i in _coord)))
-    return Coordinate(**_args)
+        _coord = coordinate.split("-")
+        _args = dict(zip(("X", "Y"), (int(i.replace("N", "-")) for i in _coord)))
+        return Coordinate(**_args)

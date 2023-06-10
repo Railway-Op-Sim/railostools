@@ -15,9 +15,8 @@ class Snt(railos_comp.StartType, pydantic.BaseModel):
     under_signaller_control: bool = False
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
@@ -30,13 +29,19 @@ class Snt(railos_comp.StartType, pydantic.BaseModel):
             _elements += "S"
         return railos_ttb_str.concat(*_elements)
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
-
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
         vals["name"] = "Snt"
+        return vals
+
+    @pydantic.root_validator
+    def neighbour_coords(cls, vals):
+        _front_coord = vals["front_element_id"]
+        _rear_coord = vals["rear_element_id"]
+        if not _front_coord.is_neighbour(_rear_coord):
+            raise AssertionError(
+                f"Front and rear element IDs [{_front_coord}, {_rear_coord}] must be neighbouring coordinates"
+            )
         return vals
 
 
@@ -46,17 +51,13 @@ class Sns(railos_comp.StartType, pydantic.BaseModel):
     parent_service: railos_comp.Reference
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.parent_service}")
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
@@ -70,17 +71,13 @@ class Sfs(railos_comp.StartType, pydantic.BaseModel):
     splitting_service: railos_comp.Reference
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.splitting_service}")
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
@@ -94,17 +91,13 @@ class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
     shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.shuttle_ref}")
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
@@ -120,9 +113,8 @@ class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
     shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
@@ -133,9 +125,6 @@ class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
             f"{self.shuttle_ref}",
         )
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
@@ -150,9 +139,8 @@ class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
     linked_shuttle_ref: railos_comp.Reference
 
     def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
+        _hour: int = self.time.hour + self.time_days * 24
+        _min: int = self.time.minute
         _time_str: str = (
             f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
         )
@@ -160,9 +148,6 @@ class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
             _time_str, self.name, f"{self.linked_shuttle_ref}", f"{self.feeder_ref}"
         )
 
-    @pydantic.validator("time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
 
     @pydantic.root_validator
     def add_name_as_field(cls, vals):
