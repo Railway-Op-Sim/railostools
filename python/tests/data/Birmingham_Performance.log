@@ -1,0 +1,226 @@
+07:00:00: 0X00 entered railway at Saltley Depot, track element 99-19, on time
+07:00:00: 1S14 entered railway at Coventry Link, track element 149-23, on time
+07:00:00: 1A21 entered railway at Wolverhampton Link, track element N89-13, on time
+07:00:00: 2K14 created at Tyseley on time
+07:00:00: 2J15 created at Jewellery Quarter on time
+07:00:00: 2V31 created at track element N19-29, on time
+07:00:00: 2M66 created at Birmingham New Street on time
+07:00:00: 2T16 created at Birmingham New Street on time
+07:00:00: 5P49 entered railway at Soho Depot, track element N19-23, on time
+07:00:00: 2P49 created at Wylde Green on time
+07:00:00: 2P48 created at Birmingham New Street on time
+07:00:00: 7G44 entered railway at Nuneaton Link, track element 149-1, on time
+07:00:30 WARNING: 1A21 passed Galton Br. Approach (W) on time
+07:00:50 WARNING: 2V31 passed Kings Norton Approach (NE) 2 minutes early
+07:01:00: 2K14 departed from Tyseley on time
+07:01:00: 2J15 departed from Jewellery Quarter on time
+07:01:00: 2P49 departed from Wylde Green on time
+07:01:00: 2P48 departed from Birmingham New Street on time
+07:01:35 WARNING: 2J15 passed Snow Hill Approach (W) on time
+07:02:00: 1A23 entered railway at Wolverhampton Link, track element N89-13, on time
+07:02:00: 2G17 entered railway at Stafford Link, track element N89-1, on time
+07:02:23 WARNING: 1A21 passed New Street Approach (NW) on time
+07:02:30 WARNING: 1A23 passed Galton Br. Approach (W) on time
+07:02:40: 2G17 arrived at Bescot Stadium on time
+07:02:42: 2K14 arrived at Small Heath on time
+07:02:52: 2P49 arrived at Sutton Coldfield on time
+07:02:54: 5P49 arrived at Soho Down Through Siding on time
+07:03:10: 2G17 departed from Bescot Stadium on time
+07:03:12: 2K14 departed from Small Heath on time
+07:03:14: 2J15 arrived at Snow Hill 1 minute early
+07:03:22: 2P49 departed from Sutton Coldfield on time
+07:03:24: 5P49 changed direction at Soho Down Through Siding 1 minute late
+07:03:58: 2P48 arrived at Five Ways on time
+07:04:00: 2F32 entered railway at Worcester Link, track element N89-38, on time
+07:04:00: 5P49 departed from Soho Down Through Siding on time
+07:04:09: 2V31 left railway at Worcester Link, track element N89-39, on time
+07:04:28: 2P48 departed from Five Ways 1 minute late
+07:04:57: 1A21 arrived at Birmingham New Street 3 minutes early
+07:05:00: 2M68 entered railway at Coventry Link, track element 149-23, on time
+07:05:15: 2G17 arrived at Tame Bridge Parkway on time
+07:05:29: 2K14 arrived at Moor Street 1 minute early
+07:05:47: 2P49 arrived at Four Oaks on time
+07:05:51 WARNING: 1A23 passed New Street Approach (NW) on time
+07:05:56 WARNING: 1S14 passed New Street Approach (NE) 3 minutes late
+07:06:00: 2G17 departed from Tame Bridge Parkway on time
+07:06:04: 2M68 arrived at Marston Green on time
+07:06:17: 2P49 changed direction at Four Oaks 1 minute late
+07:06:35: 2M68 departed from Marston Green on time
+07:06:47: 2P49 became new service 2P48 at Four Oaks on time
+07:06:49: 2P48 arrived at University 1 minute late
+07:07:00: 2K14 departed from Moor Street on time
+07:07:00: 2J15 departed from Snow Hill on time
+07:07:00: 2M66 departed from Birmingham New Street on time
+07:07:17: 2P48 departed from Four Oaks on time
+07:07:19: 2P48 departed from University 2 minutes late
+07:07:21 WARNING: 2K14 passed Snow Hill Approach (E) on time
+07:07:32 WARNING: 2F32 passed Kings Norton Approach (W) 2 minutes late
+07:07:42 WARNING: 2G17 passed Perry Barr Jn. Approach (W) on time
+07:08:00: 2M67 entered railway at Wolverhampton Link, track element N89-13, on time
+07:08:11: 2J15 arrived at Moor Street 1 minute early
+07:08:45: 2P48 arrived at Selly Oak on time
+07:08:50: 2M68 arrived at Lea Hall 1 minute late
+07:08:58 WARNING: 2M66 passed Soho Jn. Approach (E) 2 minutes early
+07:09:07: 2M67 arrived at Sandwell & Dudley on time
+07:09:14: 2G17 arrived at Hamstead on time
+07:09:15: 2P48 departed from Selly Oak 1 minute late
+07:09:16: 2K14 arrived at Snow Hill on time
+07:09:20: 2M68 departed from Lea Hall 2 minutes late
+07:09:26: 7G44 passed Washwood Heath Down 10 minutes early
+07:09:32: 1S14 arrived at Birmingham New Street 1 minute late
+07:09:37: 2M67 departed from Sandwell & Dudley on time
+07:10:00: 2J15 departed from Moor Street on time
+07:10:00: 2G17 departed from Hamstead on time
+07:10:02: 1S14 split from rear to 1S16 at Birmingham New Street 1 minute late
+07:10:02: 1S16 created at Birmingham New Street 1 minute late
+07:10:16 WARNING: 2M67 passed Galton Br. Approach (W) on time
+07:10:19 WARNING: 2P48 passed Kings Norton Approach (NE) 1 minute late
+07:10:21: 1A23 arrived at Birmingham New Street on time
+07:10:35 WARNING: 2F32 passed New Street Approach (SW) 3 minutes late
+07:10:57: 2P48 arrived at Bournville on time
+07:11:00: 2K14 departed from Snow Hill on time
+07:11:00: 1A23 joined by 1A21 at Birmingham New Street on time
+07:11:02: 2P48 arrived at Sutton Coldfield 2 minutes late
+07:11:13: 2M68 arrived at Stechford 2 minutes late
+07:11:27: 2P48 departed from Bournville 1 minute late
+07:11:32: 2P48 departed from Sutton Coldfield 2 minutes late
+07:11:37: 2M67 arrived at Smethwick Galton Bridge on time
+07:11:43: 2M68 departed from Stechford 2 minutes late
+07:11:52: 2M66 arrived at Smethwick Rolfe Street 2 minutes early
+07:12:00: 2T16 departed from Birmingham New Street on time
+07:12:08: 2M67 departed from Smethwick Galton Bridge on time
+07:12:08: 2G17 arrived at Perry Barr on time
+07:12:18: 2J15 arrived at Small Heath 1 minute early
+07:12:39: 2K14 arrived at Jewellery Quarter on time
+07:13:00: 1S14 departed from Birmingham New Street on time
+07:13:00: 2G17 departed from Perry Barr on time
+07:13:09: 2K14 departed from Jewellery Quarter on time
+07:13:16: 2P48 arrived at Kings Norton 1 minute late
+07:13:20: 2F32 arrived at Birmingham New Street 3 minutes late
+07:13:25: 2P48 arrived at Wylde Green 1 minute late
+07:13:37: 2M67 arrived at Smethwick Rolfe Street on time
+07:13:46: 2P48 departed from Kings Norton 1 minute late
+07:13:50: 2F32 departed from Birmingham New Street on time
+07:13:55: 2P48 departed from Wylde Green 1 minute late
+07:13:56: 2T16 arrived at Duddeston 2 minutes early
+07:14:00: 2J15 departed from Small Heath on time
+07:14:00: 2M66 departed from Smethwick Rolfe Street on time
+07:14:02: 2M68 arrived at Adderley Park 3 minutes late
+07:14:07: 2M67 departed from Smethwick Rolfe Street on time
+07:14:31: 5P49 arrived at Birmingham New Street 4 minutes late
+07:14:32: 2M68 departed from Adderley Park 3 minutes late
+07:14:40: 2G17 arrived at Witton on time
+07:15:00: 1A23 departed from Birmingham New Street on time
+07:15:00: 1S16 departed from Birmingham New Street on time
+07:15:01: 5P49 became new service 2P49 at Birmingham New Street 4 minutes late
+07:15:10 WARNING: 2M68 passed New Street Approach (NE) 3 minutes late
+07:15:10: 2G17 departed from Witton on time
+07:15:14: 2P48 arrived at Kings Norton Loop on time
+07:15:27: 2P48 arrived at Chester Road 1 minute late
+07:15:28: 2M66 arrived at Smethwick Galton Bridge on time
+07:15:31: 2P49 departed from Birmingham New Street on time
+07:15:38 WARNING: 2G17 passed Aston Jn. Approach (W) on time
+07:15:42: 2J15 arrived at Tyseley on time
+07:15:44: 2P48 changed direction at Kings Norton Loop on time
+07:15:57: 2P48 departed from Chester Road 1 minute late
+07:16:00: 2M66 departed from Smethwick Galton Bridge on time
+07:16:00: 2T16 departed from Duddeston on time
+07:16:12: 2J15 departed from Tyseley on time
+07:17:04: 2P48 arrived at Erdington 1 minute late
+07:17:34: 2P48 departed from Erdington 1 minute late
+07:17:42: 2T16 arrived at Aston 1 minute early
+07:17:58: 7G44 arrived at Small Heath Up Goods Loop 22 minutes early
+07:18:00: 2M66 arrived at Sandwell & Dudley on time
+07:18:19 WARNING: 2P48 passed Aston Jn. Approach (N) 1 minute late
+07:18:28: 7G44 terminated at Small Heath Up Goods Loop
+07:18:30: 2M66 departed from Sandwell & Dudley on time
+07:18:32: 2P49 arrived at Duddeston 1 minute late
+07:19:00: 2V33 entered railway at Derby Link, track element 149-N2, on time
+07:19:00: 2T16 departed from Aston on time
+07:19:02: 2P49 departed from Duddeston 2 minutes late
+07:19:14 WARNING: 2M67 passed New Street Approach (NW) 3 minutes late
+07:19:20: 2M66 left railway at Wolverhampton Link, track element N89-14, on time
+07:19:21: 2G17 arrived at Aston 1 minute late
+07:19:24: 2P48 arrived at Gravelly Hill on time
+07:19:51: 2G17 departed from Aston 1 minute late
+07:19:54: 2P48 departed from Gravelly Hill on time
+07:19:54: 1A23 left railway at Coventry Link, track element 149-22, 3 minutes early
+07:20:00: 2G08 entered railway at Leamington Link, track element 149-32, on time
+07:20:00: 2M70 entered railway at Coventry Link, track element 149-23, on time
+07:20:30 SPAD RISK:  Signals reset ahead of train, at position 79-22
+07:20:38: 2T16 arrived at Witton on time
+07:21:04: 2M70 arrived at Marston Green on time
+07:21:08: 2T16 departed from Witton on time
+07:21:34: 2M70 departed from Marston Green on time
+07:21:38: 2G17 arrived at Duddeston on time
+07:21:44: 2J15 left railway at Leamington Link, track element 149-31, 4 minutes late
+07:22:00: 2J15 entered railway at Kidderminster Link, track element N89-19, on time
+07:22:08: 2G17 departed from Duddeston 1 minute late
+07:22:08 WARNING: 2T16 passed Perry Barr Jn. Approach (E) on time
+07:22:43: 2T16 arrived at Perry Barr on time
+07:22:43: 2J15 arrived at Langley Green on time
+07:22:46: 2P49 arrived at Aston 2 minutes late
+07:22:46: 2M67 arrived at Birmingham New Street 4 minutes late
+07:22:53: 1S14 left railway at Wolverhampton Link, track element N89-14, 1 minute late
+07:23:00: 2M69 entered railway at Wolverhampton Link, track element N89-13, on time
+07:23:03: 2F32 left railway at Derby Link, track element 149-N3, 4 minutes late
+07:23:13: 2T16 departed from Perry Barr on time
+07:23:13: 2J15 departed from Langley Green on time
+07:23:16: 2P49 departed from Aston 3 minutes late
+07:23:16: 2M67 departed from Birmingham New Street 1 minute late
+07:23:50: 2M70 arrived at Lea Hall 1 minute late
+07:23:52 WARNING: 2J15 passed Smethwick Approach (W) on time
+07:24:00: 2P48 departed from Kings Norton Loop on time
+07:24:07: 2M69 arrived at Sandwell & Dudley on time
+07:24:20: 2M70 departed from Lea Hall 2 minutes late
+07:24:21: 2G08 arrived at Moor Street on time
+07:24:37: 2M69 departed from Sandwell & Dudley on time
+07:25:00: 3L27 entered railway at Freightliner Terminal, track element 94-19, on time
+07:25:01: 2M68 arrived at Birmingham New Street 7 minutes late
+07:25:16 WARNING: 2M69 passed Galton Br. Approach (W) on time
+07:25:20: 2T16 arrived at Hamstead on time
+07:25:24: 2G17 arrived at Birmingham New Street 2 minutes early
+07:25:31: 2M68 departed from Birmingham New Street 3 minutes late
+07:26:00: 2T16 departed from Hamstead on time
+07:26:00: 2G08 departed from Moor Street on time
+07:26:12: 2M70 arrived at Stechford 2 minutes late
+07:26:21 WARNING: 2G08 passed Snow Hill Approach (E) on time
+07:26:26: 2J15 arrived at Smethwick Galton Bridge 1 minute late
+07:26:30: 2P48 arrived at Kings Norton on time
+07:26:35: 2P48 arrived at Aston 4 minutes late
+07:26:37: 2M69 arrived at Smethwick Galton Bridge on time
+07:26:42: 2M70 departed from Stechford 2 minutes late
+07:26:56: 2J15 departed from Smethwick Galton Bridge 1 minute late
+07:27:00: 2P48 became new service 2P49 at Kings Norton 1 minute late
+07:27:03: 2M67 arrived at Adderley Park 1 minute late
+07:27:04: 1S16 left railway at Wolverhampton Link, track element N89-14, 4 minutes late
+07:27:05: 2P48 departed from Aston 5 minutes late
+
+
+***************************************
+
+Performance summary:
+34 on-time arrivals
+22 late arrivals (average 2.0 min)
+10 early arrivals (average 3.6 min)
+13 on-time passes
+7 late passes (average 2.3 min)
+3 early passes (average 4.7 min)
+45 on-time departures
+22 late departures (average 1.8 min)
+0 missed stops
+0 other missed events
+0 unexpected train exits
+0 incorrect train exits
+9 locations that trains failed to reach (average lateness 3.4 min)
+1 SPAD risk
+0 SPADs
+0 derailments
+0 crashed trains
+
+***************************************
+
+Overall score: 75%
+Overall rating: Fair
+
+***************************************
