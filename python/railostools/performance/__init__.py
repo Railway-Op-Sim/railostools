@@ -201,7 +201,7 @@ class PerformanceLogParser:
                     _offset = int(_min_search[0])
                 if (_error := "ERROR" in line):
                     line = line.replace(" ERROR", "")
-                _head_code_re = re.findall(r"\d{2}:\d{2}:\d{2}:\s([A-Z0-9]+)\s", line)
+                _head_code_re = re.findall(r"\d{2}:\d{2}:\d{2}[ WARNING]*:\s([A-Z0-9]+)\s", line)
                 _head_code: str = _head_code_re[0]
                 _line_no_action: str = line.replace(tt_event_type.value, "")
                 _line_no_action = _line_no_action.replace("to", "")

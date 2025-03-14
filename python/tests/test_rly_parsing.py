@@ -16,19 +16,10 @@ def rly_parser():
 
 
 @pytest.mark.rly_parsing
-def test_parse_time(rly_parser: RlyParser):
+def test_parse_result(rly_parser: RlyParser):
     assert rly_parser.program_version == "v2.9.2"
-
-
-@pytest.mark.rly_parsing
-def test_parse_time(rly_parser: RlyParser):
     assert rly_parser.n_active_elements == 1274
-
-
-@pytest.mark.rly_parsing
-def test_parse_time(rly_parser: RlyParser):
     assert rly_parser.n_inactive_elements == 200
-
 
 @pytest.mark.rly_parsing
 def test_write(rly_parser: RlyParser):

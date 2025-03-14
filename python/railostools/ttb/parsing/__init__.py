@@ -4,6 +4,7 @@ import logging
 import os.path
 import re
 import typing
+import io
 import numpy
 
 logging.basicConfig()
@@ -20,7 +21,7 @@ from railostools.ttb.parsing.start import parse_start
 class TTBParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self._data: typing.Optional[typing.Dict[str, ttb_comp.Timetable]] = {}
+        self._data: dict[str, ttb_comp.Timetable] = {}
         self._file_lines: typing.List[str] = []
         self._current_file: typing.Optional[str] = None
 
@@ -199,16 +200,20 @@ class TTBParser:
 
     @property
     def data(self) -> ttb_comp.Timetable:
-        return self._data[os.path.splitext(os.path.basename(self._current_file))[0]]
+        if not self._current_file:
+            raise RuntimeError("Could not identify current file")
 
-    def json(self, output_file) -> None:
+        _key: str = os.path.splitext(os.path.basename(self._current_file))[0]
+        return self._data[_key]
+
+    def json(self, output_file: io.TextIOWrapper | str) -> None:
         """Dump metadata to a JSON file"""
 
         if isinstance(output_file, str):
             with open(output_file, "w") as out_f:
-                json.dump(self._data.dict(), out_f, indent=2)
+                json.dump(self._data, out_f, indent=2)
         else:
-            _out_str = json.dumps(self._data.dict(), indent=2)
+            _out_str = json.dumps(self._data, indent=2)
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")

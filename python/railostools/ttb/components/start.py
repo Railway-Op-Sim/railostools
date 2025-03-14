@@ -8,6 +8,8 @@ import railostools.ttb.string as railos_ttb_str
 
 
 class Snt(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     rear_element_id: railos_coords.Coordinate
@@ -30,17 +32,21 @@ class Snt(railos_comp.StartType, pydantic.BaseModel):
             _elements += "S"
         return railos_ttb_str.concat(*_elements)
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Snt"
+        vals.name = "Snt"
         return vals
 
 
 class Sns(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     parent_service: railos_comp.Reference
@@ -54,17 +60,20 @@ class Sns(railos_comp.StartType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.parent_service}")
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Sns"
+        vals.name = "Sns"
         return vals
 
 
 class Sfs(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     splitting_service: railos_comp.Reference
@@ -78,17 +87,21 @@ class Sfs(railos_comp.StartType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.splitting_service}")
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Sfs"
+        vals.name = "Sfs"
         return vals
 
 
 class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     shuttle_ref: railos_comp.Reference
@@ -102,17 +115,21 @@ class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.shuttle_ref}")
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Sns-fsh"
+        vals.name = "Sns-fsh"
         return vals
 
 
 class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     rear_element_id: railos_coords.Coordinate
@@ -133,17 +150,21 @@ class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
             f"{self.shuttle_ref}",
         )
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Snt-sh"
+        vals.name = "Snt-sh"
         return vals
 
 
 class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     feeder_ref: railos_comp.Reference
@@ -160,11 +181,13 @@ class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
             _time_str, self.name, f"{self.linked_shuttle_ref}", f"{self.feeder_ref}"
         )
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "Sns-sh"
+        vals.name = "Sns-sh"
         return vals

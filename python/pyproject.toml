@@ -1,51 +1,66 @@
-[tool.poetry]
+[project]
 name = "railostools"
-version = "1.1.5"
+version = "1.2.0"
 description = "API and CLI for interaction with Railway Operation Simulator"
-authors = ["Kristian Zarębski <krizar312@gmail.com>"]
+authors = [
+    {name = "Kristian Zarębski",email = "krizar312@gmail.com"}
+]
+license = {text = "GPL-v3.0"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "toml (>=0.10.2,<0.11.0)",
+    "pycountry (>=24.6.1,<25.0.0)",
+    "configparser (>=7.2.0,<8.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "tqdm (>=4.67.1,<5.0.0)",
+    "pydantic (>=2.10.6,<3.0.0)",
+    "click (>=8.1.8,<9.0.0)",
+    "semver (>=3.0.4,<4.0.0)",
+    "igraph (>=0.11.8,<0.12.0)"
+]
 
-[tool.poetry.dependencies]
-python = "^3.9,<3.12"
-pydantic = "^1.9.0"
-click = "^8.0.4"
-semver = "^2.13.0"
-toml = "^0.10.2"
-pycountry = "^22.3.5"
-configparser = "^5.2.0"
-pandas = "^1.4.2"
-wikidspark = { "git" = "https://github.com/artemis-beta/wikidspark.git", optional = true }
-igraph = "^0.10.4"
-matplotlib = "^3.7.1"
-tqdm = "^4.65.0"
-
-[tool.poetry.extras]
-wikidata = ["wikidspark"]
-
-[tool.poetry.group.dev.dependencies]
-unimport = "^0.12.3"
-pytest-mock = "^3.7.0"
-coverage = "^6.3.2"
-pre-commit = "^2.17.0"
-isort = "^5.10.1"
-pytest = "^7.1.2"
-pytest-xdist = "^3.1.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]
-railostools = 'railostools.cli:railostools'
+[tool.poetry.group.dev.dependencies]
+pytest-mock = "^3.14.0"
+coverage = "^7.6.12"
+pre-commit = "^4.1.0"
+pytest = "^8.3.5"
+pytest-xdist = "^3.6.1"
+ruff = "^0.11.0"
+
+[tool.ruff]
+lint.extend-select = ["C901", "T201"]
+lint.mccabe.max-complexity = 11
+
+[tool.pytest.ini_options]
+markers = [
+    "ttb_strings: timetable string tests",
+    "ttb_parsing: tests smaller parsing operations in timetables",
+    "metadata: tests for metadata parsing",
+    "session: tests for the session data parsing",
+    "rly_parsing: tests parsing of rly file",
+    "perflog: performance log parser tests",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py38, py39, py310, py311
+envlist = py310, py311, py312, py313
 [gh-actions]
 python =
-    3.8: py38
-    3.9: py39
     3.10: py310
     3.11: py311
+    3.12: py312
+    3.13: py313
 [testenv]
 """
+

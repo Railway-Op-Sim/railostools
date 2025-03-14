@@ -31,6 +31,6 @@ class ServiceEvent(pydantic.BaseModel):
     actual_offset: int
     headcode: str
     action: TimetableLogEvent
-    location: typing.Optional[str]
+    location: typing.Optional[str] = None
     error: bool = False
     time_days: int=0

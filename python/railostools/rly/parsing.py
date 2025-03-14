@@ -8,7 +8,6 @@ import pydantic
 import semver
 import typing
 import igraph
-import functools
 import itertools
 import tqdm
 import re
@@ -18,6 +17,9 @@ from railostools.exceptions import RailwayParsingError
 from railostools.common.enumeration import Elements
 from railostools.rly.relations import can_connect
 import railostools.exceptions as railos_exc
+from pydantic import Field
+from typing import List
+from typing_extensions import Annotated
 
 
 def coordinate_to_position_identifier(position: typing.Tuple[int, int]) -> str:
@@ -46,7 +48,7 @@ class TimetableLocation:
 
 class RlyElement(pydantic.BaseModel):
     element_id: Elements
-    position: pydantic.conlist(pydantic.conint(), max_items=2, min_items=2)
+    position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
     location_name: typing.Optional[str] = None
 
     @property
@@ -59,11 +61,11 @@ class InactiveElement(RlyElement):
 
 
 class ActiveElement(RlyElement):
-    length: typing.Tuple[pydantic.conint(ge=0), pydantic.conint(ge=0) | None]
-    speed_limit: typing.Tuple[pydantic.conint(ge=0), pydantic.conint(ge=0) | None]
+    length: typing.Tuple[Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None]
+    speed_limit: typing.Tuple[Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None]
     active_element_name: typing.Optional[str] = None
     signal: typing.Optional[str] = None
-    neighbours: typing.List["ActiveElement"] = []
+    neighbours: pydantic.SerializeAsAny[list["ActiveElement"]] = []
 
 
 class Font(pydantic.BaseModel):
@@ -75,18 +77,18 @@ class Font(pydantic.BaseModel):
 
 
 class Text(pydantic.BaseModel):
-    position: pydantic.conlist(pydantic.conint(), max_items=2, min_items=2)
+    position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
     text_string: str
     font: Font
 
 
 class Metadata(pydantic.BaseModel):
     program_version: str
-    home_position: pydantic.conlist(pydantic.conint(), max_items=2, min_items=2)
+    home_position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
     n_active_elements: int
     n_inactive_elements: typing.Optional[int] = None
 
-    @pydantic.validator("program_version", check_fields=False)
+    @pydantic.field_validator("program_version", check_fields=False)
     def validate_version(cls, version: str) -> str:
         try:
             semver.VersionInfo.parse(version.replace("v", ""))
@@ -500,7 +502,7 @@ class RlyParser:
             with open(output_file, "w") as out_f:
                 json.dump(self._rly_data, out_f, indent=2)
         else:
-            _out_str = json.dumps({k: v.dict() for k, v in self._rly_data.items()}, indent=2)
+            _out_str = json.dumps({k: v.model_dump_json() for k, v in self._rly_data.items()}, indent=2)
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")

@@ -6,6 +6,8 @@ import pydantic
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
 import railostools.ttb.string as railos_ttb_str
+from pydantic import Field, StringConstraints, ConfigDict
+from typing_extensions import Annotated
 
 
 class Element:
@@ -25,13 +27,12 @@ class FinishType(Element):
 
 class ActionType(Element, pydantic.BaseModel):
     time: datetime.time
-    time_days: int = 0
     warning: bool = False
 
     def __str__(self) -> str:
         return f'{"W" if self.warning else ""}{super().__str__()}'
 
-    @pydantic.root_validator(pre=True)
+    @pydantic.model_validator(mode="before")
     def check_for_warning(cls, vals: typing.Dict) -> typing.Dict:
         _time = vals["time"]
         if isinstance(_time, str) and _time.upper().startswith("W"):
@@ -46,10 +47,10 @@ class StartType(Element):
 
 
 class Reference(pydantic.BaseModel):
-    prefix: typing.Optional[pydantic.constr(max_length=4)] = None
-    service: pydantic.constr(max_length=2, min_length=2)
+    prefix: typing.Optional[Annotated[str, StringConstraints(max_length=4)]] = None
+    service: Annotated[str, StringConstraints(max_length=2, min_length=2)]
     id: typing.Union[
-        pydantic.conint(ge=0, lt=100), pydantic.constr(min_length=2, max_length=2)
+        Annotated[int, Field(ge=0, lt=100)], Annotated[str, StringConstraints(min_length=2, max_length=2)]
     ]
 
     def __str__(self) -> str:
@@ -80,13 +81,13 @@ class Reference(pydantic.BaseModel):
 
 class Header(pydantic.BaseModel, Element):
     reference: railos_comp.Reference
-    description: typing.Optional[str]
-    start_speed: typing.Optional[pydantic.conint(ge=0)] = None
-    max_speed: typing.Optional[pydantic.conint(ge=0)] = None
-    mass: typing.Optional[pydantic.conint(ge=0)] = None
-    brake_force: typing.Optional[pydantic.conint(ge=0)] = None
-    power: typing.Optional[pydantic.conint(ge=0)] = None
-    max_signaller_speed: typing.Optional[pydantic.conint(ge=0)] = None
+    description: typing.Optional[str] = None
+    start_speed: typing.Optional[Annotated[int, Field(ge=0)]] = None
+    max_speed: typing.Optional[Annotated[int, Field(ge=0)]] = None
+    mass: typing.Optional[Annotated[int, Field(ge=0)]] = None
+    brake_force: typing.Optional[Annotated[int, Field(ge=0)]] = None
+    power: typing.Optional[Annotated[int, Field(ge=0)]] = None
+    max_signaller_speed: typing.Optional[Annotated[int, Field(ge=0)]] = None
 
     def __str__(self) -> str:
         _elements = [
@@ -108,9 +109,9 @@ class Header(pydantic.BaseModel, Element):
 
 
 class Repeat(pydantic.BaseModel, Element):
-    mins: pydantic.conint(gt=1)
-    digits: pydantic.conint(ge=0)
-    repeats: pydantic.conint(ge=1)
+    mins: Annotated[int, Field(gt=1)]
+    digits: Annotated[int, Field(ge=0)]
+    repeats: Annotated[int, Field(ge=1)]
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(
@@ -121,17 +122,16 @@ class Repeat(pydantic.BaseModel, Element):
 class Service(pydantic.BaseModel):
     header: Header
     start_type: StartType
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-class TimetabledService(Service, pydantic.BaseModel):
+class TimetabledService(Service):
     header: Header
     start_type: StartType
     finish_type: FinishType
     actions: typing.Optional[typing.Dict[int, ActionType]] = {}
     repeats: typing.Optional[Repeat] = None
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def __str__(self) -> str:
         _elements = [f"{self.header}", f"{self.start_type}"]
@@ -145,26 +145,21 @@ class TimetabledService(Service, pydantic.BaseModel):
         _elements.append(f"{self.finish_type}")
         return railos_ttb_str.concat(*_elements, join_type=Element)
 
-    class Config:
-        arbitrary_types_allowed = True
 
-
-class SignallerService(Service, pydantic.BaseModel):
+class SignallerService(Service):
     header: Header
     start_type: StartType
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def __str__(self) -> str:
         return railos_ttb_str.concat(f"{self.header}", f"{self.start_type}")
 
-    class Config:
-        arbitrary_types_allowed = True
-
 
 class Timetable(pydantic.BaseModel):
     start_time: datetime.time
-    services: typing.Dict[str, TimetabledService]
+    services: typing.Dict[str, TimetabledService | SignallerService]
     comments: typing.Optional[typing.Dict[int, str]] = None
 
-    @pydantic.validator("start_time")
+    @pydantic.field_validator("start_time")
     def to_string(cls, v):
         return v.strftime("%H:%M")

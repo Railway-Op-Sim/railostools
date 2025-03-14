@@ -10,6 +10,7 @@ import semver
 import toml
 
 import railostools.exceptions as railos_exc
+from pydantic import ConfigDict
 
 
 class SignalPosition(str, enum.Enum):
@@ -75,15 +76,16 @@ class Metadata(pydantic.BaseModel):
     signal_position: SignalPosition = pydantic.Field(
         None, description="position of signal with respect to track direction"
     )
+    model_config = ConfigDict(extra="forbid")
 
-    @pydantic.validator("year")
+    @pydantic.field_validator("year")
     def validate_year(cls, year) -> typing.Optional[int]:
         if not year:
             return year
         if year < 1700:
             raise railos_exc.MetadataError("Expected year value to be > 1700")
 
-    @pydantic.validator("difficulty")
+    @pydantic.field_validator("difficulty")
     def validate_difficulty(cls, difficulty) -> typing.Optional[int]:
         if not difficulty:
             return difficulty
@@ -91,7 +93,7 @@ class Metadata(pydantic.BaseModel):
             raise railos_exc.MetadataError("Difficulty must be in range [1, 5]")
         return difficulty
 
-    @pydantic.validator("country_code")
+    @pydantic.field_validator("country_code")
     def validate_country_code(cls, country_code) -> str:
         country_code = country_code.upper()
         _alpha_2 = [i.alpha_2 for i in pycountry.countries]
@@ -99,7 +101,7 @@ class Metadata(pydantic.BaseModel):
             return country_code
         raise railos_exc.MetadataError(f"Invalid country code '{country_code}'")
 
-    @pydantic.validator("release_date")
+    @pydantic.field_validator("release_date")
     def validate_release_date(cls, release_date: str) -> datetime.date:
         try:
             return datetime.time.strptime(release_date, "%Y-%m-%d")
@@ -108,7 +110,7 @@ class Metadata(pydantic.BaseModel):
                 "Expected 'release_date' in the form 'YYYY-MM-DD'"
             ) from e
 
-    @pydantic.validator("version", "minimum_required", check_fields=False)
+    @pydantic.field_validator("version", "minimum_required", check_fields=False)
     def validate_version(cls, version: str) -> str:
         try:
             semver.VersionInfo.parse(version)
@@ -128,9 +130,6 @@ class Metadata(pydantic.BaseModel):
                 "Invalid filename for metadata file, expected TOML file"
             )
         toml.dump(self.__dict__, open(outfile_name, "w"))
-
-    class Config:
-        extra = "forbid"
 
 
 def validate(input_file: str) -> None:

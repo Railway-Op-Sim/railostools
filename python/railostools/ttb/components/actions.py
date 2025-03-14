@@ -9,7 +9,7 @@ import railostools.ttb.string as railos_ttb_str
 
 class Location(railos_comp.ActionType, pydantic.BaseModel):
     time: datetime.time
-    end_time: typing.Optional[datetime.time]
+    end_time: typing.Optional[datetime.time] = None
     time_days: int = 0
     end_time_days: typing.Optional[int] = 0
     name: str
@@ -39,12 +39,14 @@ class Location(railos_comp.ActionType, pydantic.BaseModel):
         _elements.append(self.name)
         return railos_ttb_str.concat(*_elements)
 
-    @pydantic.validator("time", "end_time")
+    @pydantic.field_validator("time", "end_time")
     def to_string(cls, v: datetime.time):
         return v.strftime("%H:%M") if v else v
 
 
 class dsc(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     description: str
@@ -58,17 +60,21 @@ class dsc(railos_comp.ActionType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.description}")
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "dsc"
+        vals.name = "dsc"
         return vals
 
 
 class pas(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     location: str
@@ -82,17 +88,21 @@ class pas(railos_comp.ActionType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.location}")
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "pas"
+        vals.name = "pas"
         return vals
 
 
 class jbo(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     joining_service_ref: railos_comp.Reference
@@ -108,17 +118,21 @@ class jbo(railos_comp.ActionType, pydantic.BaseModel):
             _time_str, self.name, f"{self.joining_service_ref}"
         )
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "jbo"
+        vals.name = "jbo"
         return vals
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
 
 class fsp(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     new_service_ref: railos_comp.Reference
@@ -132,17 +146,21 @@ class fsp(railos_comp.ActionType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.new_service_ref}")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "fsp"
+        vals.name = "fsp"
         return vals
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
 
 class rsp(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
     new_service_ref: railos_comp.Reference
@@ -156,17 +174,21 @@ class rsp(railos_comp.ActionType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name, f"{self.new_service_ref}")
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "rsp"
+        vals.name = "rsp"
         return vals
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
 
 
 class cdt(railos_comp.ActionType, pydantic.BaseModel):
+    name: str | None = pydantic.Field(None)
+    model_config = pydantic.ConfigDict(validate_default=True)
     time: datetime.time
     time_days: int = 0
 
@@ -179,11 +201,13 @@ class cdt(railos_comp.ActionType, pydantic.BaseModel):
         )
         return railos_ttb_str.concat(_time_str, self.name)
 
-    @pydantic.root_validator
+    @pydantic.model_validator(mode="after")
+    @classmethod
     def add_name_as_field(cls, vals):
-        vals["name"] = "cdt"
+        vals.name = "cdt"
         return vals
 
-    @pydantic.validator("time")
+    @pydantic.field_validator("time")
+    @classmethod
     def to_string(cls, v):
         return v.strftime("%H:%M")
