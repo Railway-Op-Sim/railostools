@@ -28,6 +28,7 @@ def coordinate_to_position_identifier(position: typing.Tuple[int, int]) -> str:
         f"-{'N' if position[1] < 0 else ''}{abs(position[1])}"
     )
 
+
 @dataclasses.dataclass
 class RlyInfoTables:
     signals: pandas.DataFrame
@@ -45,10 +46,11 @@ class TimetableLocation:
     start_positions: typing.List[StartPosition]
 
 
-
 class RlyElement(pydantic.BaseModel):
     element_id: Elements
-    position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
+    position: Annotated[
+        List[Annotated[int, Field()]], Field(max_length=2, min_length=2)
+    ]
     location_name: typing.Optional[str] = None
 
     @property
@@ -61,8 +63,12 @@ class InactiveElement(RlyElement):
 
 
 class ActiveElement(RlyElement):
-    length: typing.Tuple[Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None]
-    speed_limit: typing.Tuple[Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None]
+    length: typing.Tuple[
+        Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None
+    ]
+    speed_limit: typing.Tuple[
+        Annotated[int, Field(ge=0)], Annotated[int, Field(ge=0)] | None
+    ]
     active_element_name: typing.Optional[str] = None
     signal: typing.Optional[str] = None
     neighbours: pydantic.SerializeAsAny[list["ActiveElement"]] = []
@@ -77,14 +83,18 @@ class Font(pydantic.BaseModel):
 
 
 class Text(pydantic.BaseModel):
-    position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
+    position: Annotated[
+        List[Annotated[int, Field()]], Field(max_length=2, min_length=2)
+    ]
     text_string: str
     font: Font
 
 
 class Metadata(pydantic.BaseModel):
     program_version: str
-    home_position: Annotated[List[Annotated[int, Field()]], Field(max_length=2, min_length=2)]
+    home_position: Annotated[
+        List[Annotated[int, Field()]], Field(max_length=2, min_length=2)
+    ]
     n_active_elements: int
     n_inactive_elements: typing.Optional[int] = None
 
@@ -103,7 +113,7 @@ class RlyData(pydantic.BaseModel):
     active_elements: typing.List[ActiveElement]
     inactive_elements: typing.List[InactiveElement]
     metadata: Metadata
-    text: typing.Optional[typing.List[Text]]=None
+    text: typing.Optional[typing.List[Text]] = None
 
 
 class RlyParser:
@@ -120,7 +130,7 @@ class RlyParser:
         self._logger.info(f"Parsing RLY file '{rly_file}'")
         if not os.path.exists(rly_file):
             raise FileNotFoundError(
-                f"Cannot parse railway file '{rly_file}', " "file does not exist."
+                f"Cannot parse railway file '{rly_file}', file does not exist."
             )
 
         if not open(rly_file).readlines():
@@ -177,7 +187,9 @@ class RlyParser:
 
     @property
     def n_level_crossings(self) -> int:
-        return len([i for i in self.active_elements if i.element_id == Elements.Level_Crossing])
+        return len(
+            [i for i in self.active_elements if i.element_id == Elements.Level_Crossing]
+        )
 
     @property
     def n_stations(self) -> int:
@@ -186,8 +198,10 @@ class RlyParser:
     @property
     def n_points(self) -> int:
         _points: typing.List[ActiveElement] = [
-            i for i in self.active_elements
-            if i.element_id in (
+            i
+            for i in self.active_elements
+            if i.element_id
+            in (
                 Elements.Junction_Right_Up_RightAngle,
                 Elements.Junction_Left_Up_RightAngle,
                 Elements.Junction_Right_Down_RightAngle,
@@ -211,7 +225,7 @@ class RlyParser:
                 Elements.Junction_DiagonalDown_Left_45Angle,
                 Elements.Junction_DiagonalUp_Right_45Angle,
                 Elements.Junction_DiagonalUp_Left_45Angle,
-                Elements.Junction_DiagonalDown_Right_45Angle
+                Elements.Junction_DiagonalDown_Right_45Angle,
             )
         ]
         return len(_points)
@@ -330,11 +344,15 @@ class RlyParser:
 
     @property
     def active_elements(self) -> typing.List[ActiveElement]:
-        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]].active_elements
+        return self.data[
+            os.path.splitext(os.path.basename(self._current_file))[0]
+        ].active_elements
 
     @property
     def inactive_elements(self) -> typing.List[InactiveElement]:
-        return self.data[os.path.splitext(os.path.basename(self._current_file))[0]].inactive_elements
+        return self.data[
+            os.path.splitext(os.path.basename(self._current_file))[0]
+        ].inactive_elements
 
     @property
     def nodes(self) -> igraph.Graph:
@@ -385,7 +403,9 @@ class RlyParser:
             ),
         )
 
-    def _parse_inactive_element(self, inactive_elem: typing.List[str]) -> InactiveElement:
+    def _parse_inactive_element(
+        self, inactive_elem: typing.List[str]
+    ) -> InactiveElement:
         if inactive_elem := [i.strip() for i in inactive_elem]:
             return InactiveElement(
                 element_id=int(inactive_elem[1]),
@@ -397,7 +417,7 @@ class RlyParser:
 
     def _parse_metadata(self, metadata: typing.List[str]) -> Metadata:
         if metadata := [i.strip() for i in metadata]:
-            _prog_version_re = re.findall(r'(v\d+\.\d+\.\d+)', metadata[0])
+            _prog_version_re = re.findall(r"(v\d+\.\d+\.\d+)", metadata[0])
             return Metadata(
                 program_version=_prog_version_re[0],
                 home_position=(int(metadata[1]), int(metadata[2])),
@@ -421,7 +441,9 @@ class RlyParser:
             "2": "2AT",
             "*": None,
         }
-        _data_dict: typing.Dict[str, typing.Union[Text, ActiveElement, InactiveElement, Metadata]] = {}
+        _data_dict: typing.Dict[
+            str, typing.Union[Text, ActiveElement, InactiveElement, Metadata]
+        ] = {}
         _key = "metadata"
         _part = []
         _counter = 0
@@ -473,15 +495,26 @@ class RlyParser:
         _node_graph = igraph.Graph()
         for element in tqdm.tqdm(self.active_elements):
             for coordinate in element.neighbours:
-                _coord_str: typing.Tuple[str, str] = (element.position_id, coordinate_to_position_identifier(coordinate))
+                _coord_str: typing.Tuple[str, str] = (
+                    element.position_id,
+                    coordinate_to_position_identifier(coordinate),
+                )
                 _rev_coord_str: typing.Tuple[str, str] = tuple(reversed(_coord_str))
-                if _coord_str not in _node_connections and _rev_coord_str not in _node_connections:
+                if (
+                    _coord_str not in _node_connections
+                    and _rev_coord_str not in _node_connections
+                ):
                     _node_connections.append(_coord_str)
-            _node_graph.add_vertex(element.position_id, x=element.position[0], y=element.position[1], label="")
+            _node_graph.add_vertex(
+                element.position_id,
+                x=element.position[0],
+                y=element.position[1],
+                label="",
+            )
         _node_graph.add_edges(_node_connections)
         return _node_graph
 
-    def plot(self, target_file: str, map_key: typing.Optional[str]=None) -> None:
+    def plot(self, target_file: str, map_key: typing.Optional[str] = None) -> None:
         """Plot the node map for the railway"""
         if not self._node_map:
             raise RailwayParsingError("No file parsed yet.")
@@ -502,7 +535,9 @@ class RlyParser:
             with open(output_file, "w") as out_f:
                 json.dump(self._rly_data, out_f, indent=2)
         else:
-            _out_str = json.dumps({k: v.model_dump_json() for k, v in self._rly_data.items()}, indent=2)
+            _out_str = json.dumps(
+                {k: v.model_dump_json() for k, v in self._rly_data.items()}, indent=2
+            )
             output_file.write(_out_str)
 
         self._logger.info(f"SUCCESS: Output written to '{output_file}")

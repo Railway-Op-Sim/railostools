@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 3.20 )
-set( CMAKE_CXX_STANDARD 17 )
+set( CMAKE_CXX_STANDARD 23 )
 set( CMAKE_CXX_STANDARD_REQUIRED True )
 
 option( RAILOSTOOLS_BUILD_TESTS "Build Unit Tests" OFF )
@@ -74,5 +74,6 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${RAILOSTOOLS}-config-version.cmake D
 install( EXPORT ${RAILOSTOOLS} DESTINATION "lib/${RAILOSTOOLS}" )
 
 if( RAILOSTOOLS_BUILD_TESTS )
+    enable_testing()
     add_subdirectory( tests )
 endif()
