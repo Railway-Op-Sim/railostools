@@ -1,6 +1,6 @@
 [project]
 name = "railostools"
-version = "0.6.1"
+version = "1.2.1"
 description = "API and CLI for interaction with Railway Operation Simulator"
 authors = [
     {name = "Kristian Zarębski",email = "krizar312@gmail.com"}
