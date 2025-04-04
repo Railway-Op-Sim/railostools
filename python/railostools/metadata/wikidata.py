@@ -14,7 +14,6 @@ import os.path
 import toml
 import glob
 import time
-import click
 
 logging.basicConfig()
 

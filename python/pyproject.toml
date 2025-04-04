@@ -1,6 +1,6 @@
 [project]
 name = "railostools"
-version = "1.2.0"
+version = "0.6.1"
 description = "API and CLI for interaction with Railway Operation Simulator"
 authors = [
     {name = "Kristian Zarębski",email = "krizar312@gmail.com"}
@@ -21,18 +21,18 @@ dependencies = [
     "igraph (>=0.11.8,<0.12.0)"
 ]
 
+[project.scripts]
+railostools = "railostools.cli:railostools"
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.group.dev.dependencies]
-pytest-mock = "^3.14.0"
-coverage = "^7.6.12"
-pre-commit = "^4.1.0"
-pytest = "^8.3.5"
-pytest-xdist = "^3.6.1"
-ruff = "^0.11.0"
+[dependency-groups]
+dev = [
+    "coverage>=7.8.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-mock>=3.14.0",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.11.4",
+]
 
 [tool.ruff]
 lint.extend-select = ["C901", "T201"]
@@ -64,3 +64,6 @@ python =
 [testenv]
 """
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

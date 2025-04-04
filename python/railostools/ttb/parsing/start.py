@@ -1,5 +1,4 @@
 import typing
-from datetime import datetime
 
 import railostools.common.coords as ros_coords
 import railostools.exceptions as ros_exc

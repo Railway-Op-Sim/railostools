@@ -105,6 +105,7 @@ def rly2json(rly_file: str, output: str):
 @railostools.command("metadata-expand")
 @click.argument("project_directory")
 def metadata_expander(project_directory: str) -> None:
+    """Expand metadata for a Railway Operation Simulator project using Wikidata"""
     logging.getLogger().setLevel(logging.INFO)
-    _expander = MetadataExpander(project_directory, "GB")
+    _expander = MetadataExpander(project_directory)
     _expander.append_metadata()

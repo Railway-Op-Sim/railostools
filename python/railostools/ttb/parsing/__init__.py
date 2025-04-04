@@ -1,3 +1,11 @@
+"""
+RailOSTools TTB Parser
+======================
+
+This module provides a parser for Railway Operation Simulator (RailOS) timetable files.
+It includes functionality to parse TTB files, extract timetable data, and convert it to JSON format.
+"""
+
 import datetime
 import json
 import logging
@@ -19,7 +27,9 @@ from railostools.ttb.parsing.start import parse_start
 
 
 class TTBParser:
+    """Parser for Railway Operation Simulator timetable files"""
     def __init__(self) -> None:
+        """Initializes the TTBParser class"""
         self._logger = logging.getLogger("RailOSTools.TTBParser")
         self._data: dict[str, ttb_comp.Timetable] = {}
         self._file_lines: typing.List[str] = []
@@ -40,11 +50,11 @@ class TTBParser:
         )
 
     def is_start_time(self, statement: str) -> bool:
+        """Returns if a statement is a start time statement"""
         return all(
             [
-                re.findall(r"^\d{2}:\d{2}", statement) or False,
+                re.findall(r"^\d{2}:\d{2}(?:;START)?", statement) or False,
                 not self.is_comment(statement),
-                ";" not in statement,
             ]
         )
 
@@ -58,6 +68,7 @@ class TTBParser:
 
     @property
     def average_service_density(self) -> float:
+        """Calculates the average service density of the timetable"""
         _times = []
         for service in self.data.services.values():
             _datetimes = [
@@ -82,7 +93,7 @@ class TTBParser:
             raise railos_exc.ParsingError("Cannot parse empty file.")
 
         while not self.is_start_time(self._file_lines[_index]):
-            if _index >= len(self._file_lines):
+            if _index >= len(self._file_lines) - 1:
                 raise railos_exc.ParsingError("Failed to find timetable start time")
             _index += 1
         return datetime.datetime.strptime(
@@ -104,7 +115,7 @@ class TTBParser:
         _non_comment_lines = [
             i
             for i in self._file_lines
-            if i not in _comments.values() and not re.findall(r"^\d{2}:\d{2}$", i)
+            if i not in _comments.values() and not re.findall(r"^\d{2}:\d{2}(?:;START)?$", i)
         ]
 
         _service_list.extend(
@@ -121,6 +132,7 @@ class TTBParser:
         return _service_list
 
     def keys(self):
+        """Retrieve all timetable keys"""
         return self._data.keys()
 
     def _parse_service(self, service_components: typing.List[str]) -> ttb_comp.Service:
@@ -170,6 +182,7 @@ class TTBParser:
         )
 
     def parse(self, file_name: str) -> None:
+        """Parse a TTB file and extract timetable data"""
         if not os.path.exists(file_name):
             raise FileNotFoundError(f"Cannot parse file '{file_name}', file not found.")
 
@@ -200,6 +213,7 @@ class TTBParser:
 
     @property
     def data(self) -> ttb_comp.Timetable:
+        """Retrieve the parsed timetable data"""
         if not self._current_file:
             raise RuntimeError("Could not identify current file")
 
