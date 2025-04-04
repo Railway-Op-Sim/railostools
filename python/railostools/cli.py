@@ -7,7 +7,6 @@ import json
 from railostools.metadata.validation import validate
 from railostools.rly.parsing import RlyParser
 from railostools.ttb.parsing import TTBParser
-from railostools.metadata.wikidata import MetadataExpander
 import railostools.exceptions as railos_exc
 
 logging.basicConfig()
@@ -106,6 +105,7 @@ def rly2json(rly_file: str, output: str):
 @click.argument("project_directory")
 def metadata_expander(project_directory: str) -> None:
     """Expand metadata for a Railway Operation Simulator project using Wikidata"""
+    from railostools.metadata.wikidata import MetadataExpander
     logging.getLogger().setLevel(logging.INFO)
     _expander = MetadataExpander(project_directory)
     _expander.append_metadata()
