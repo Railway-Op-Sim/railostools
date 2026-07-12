@@ -1,18 +1,15 @@
-import typing
-
-import railostools.common.coords as ros_coords
-import railostools.exceptions as ros_exc
-import railostools.ttb.components as ros_comp
-import railostools.ttb.components.start as ros_start
-import railostools.ttb.parsing.components as ros_parse_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.common.coords as railos_coords
+import railostools.exceptions as railos_exc
+import railostools.ttb.components as railos_comp
+import railostools.ttb.components.start as railos_start
+import railostools.ttb.parsing.components as railos_parse_comp
 from railostools.ttb.parsing.time import adjust_above_24hr
 
 
-def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
+def parse_Snt(start_components: list[str]) -> railos_start.Snt:
     """Parse an Snt type string"""
     if len(start_components) not in (3, 4):
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected either 3 or 4 items in components "
             f"'{start_components}' for start type 'Snt', "
             f"but received {len(start_components)}"
@@ -25,20 +22,20 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
 
     _start_pos_r, _start_pos_f = start_components[2].split()
 
-    _rear_element = ros_coords.coord_from_str(_start_pos_r)
-    _front_element = ros_coords.coord_from_str(_start_pos_f)
+    _rear_element = railos_coords.coord_from_str(_start_pos_r)
+    _front_element = railos_coords.coord_from_str(_start_pos_f)
 
     if abs(_rear_element - _front_element) > 1:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             f"Rear and front elements [{_rear_element}, {_front_element}] must be adjacent"
         )
 
     if len(start_components) == 4 and start_components[-1] != "S":
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             f"Invalid end term '{start_components[-1]}' "
             "for start type 'Snt', permitted value is 'S' for signaller control"
         )
-    return ros_start.Snt(
+    return railos_start.Snt(
         time=_time_str,
         time_days=_time_days,
         rear_element_id=_rear_element,
@@ -47,9 +44,9 @@ def parse_Snt(start_components: typing.List[str]) -> ros_start.Snt:
     )
 
 
-def parse_Sns(start_components: typing.List[str]) -> ros_start.Sfs:
+def parse_Sns(start_components: list[str]) -> railos_start.Sfs:
     if len(start_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{start_components}' for start type 'Sns'"
         )
@@ -57,15 +54,15 @@ def parse_Sns(start_components: typing.List[str]) -> ros_start.Sfs:
         start_components[0],
         "Expected time string for 'Sns'" f"but received '{start_components[0]}'",
     )
-    _parent_srv = ros_parse_comp.parse_reference(start_components[2])
-    return ros_start.Sns(
+    _parent_srv = railos_parse_comp.parse_reference(start_components[2])
+    return railos_start.Sns(
         time=_time_str, time_days=_time_days, parent_service=_parent_srv
     )
 
 
-def parse_Sfs(start_components: typing.List[str]) -> ros_start.Sfs:
+def parse_Sfs(start_components: list[str]) -> railos_start.Sfs:
     if len(start_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{start_components}' for start type 'Sfs'"
         )
@@ -73,15 +70,15 @@ def parse_Sfs(start_components: typing.List[str]) -> ros_start.Sfs:
         start_components[0],
         "Expected time string for 'Sfs'" f"but received '{start_components[0]}'",
     )
-    _split_srv = ros_parse_comp.parse_reference(start_components[2])
-    return ros_start.Sfs(
+    _split_srv = railos_parse_comp.parse_reference(start_components[2])
+    return railos_start.Sfs(
         time=_time_str, time_days=_time_days, splitting_service=_split_srv
     )
 
 
-def parse_Sns_fsh(start_components: typing.List[str]) -> ros_start.Sns_fsh:
+def parse_Sns_fsh(start_components: list[str]) -> railos_start.Sns_fsh:
     if len(start_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{start_components}' for start type 'Sns-fsh'"
         )
@@ -89,15 +86,15 @@ def parse_Sns_fsh(start_components: typing.List[str]) -> ros_start.Sns_fsh:
         start_components[0],
         "Expected time string for 'Sns-fsh'" f"but received '{start_components[0]}'",
     )
-    _split_srv = ros_parse_comp.parse_reference(start_components[2])
-    return ros_start.Sns_fsh(
+    _split_srv = railos_parse_comp.parse_reference(start_components[2])
+    return railos_start.Sns_fsh(
         time=_time_str, time_days=_time_days, shuttle_ref=_split_srv
     )
 
 
-def parse_Snt_sh(start_components: typing.List[str]) -> ros_start.Snt_sh:
+def parse_Snt_sh(start_components: list[str]) -> railos_start.Snt_sh:
     if len(start_components) != 4:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 4 items in components "
             f"'{start_components}' for start type 'Snt-sh'"
         )
@@ -107,12 +104,12 @@ def parse_Snt_sh(start_components: typing.List[str]) -> ros_start.Snt_sh:
     )
     _start_pos_r, _start_pos_f = start_components[2].split()
 
-    _rear_element = ros_coords.coord_from_str(_start_pos_r)
-    _front_element = ros_coords.coord_from_str(_start_pos_f)
+    _rear_element = railos_coords.coord_from_str(_start_pos_r)
+    _front_element = railos_coords.coord_from_str(_start_pos_f)
 
-    _shuttle_srv = ros_parse_comp.parse_reference(start_components[3])
+    _shuttle_srv = railos_parse_comp.parse_reference(start_components[3])
 
-    return ros_start.Snt_sh(
+    return railos_start.Snt_sh(
         time=_time_str,
         time_days=_time_days,
         rear_element_id=_rear_element,
@@ -121,9 +118,9 @@ def parse_Snt_sh(start_components: typing.List[str]) -> ros_start.Snt_sh:
     )
 
 
-def parse_Sns_sh(start_components: typing.List[str]) -> ros_start.Sns_sh:
+def parse_Sns_sh(start_components: list[str]) -> railos_start.Sns_sh:
     if len(start_components) != 4:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 4 items in components "
             f"'{start_components}' for start type 'Sns-sh'"
         )
@@ -132,10 +129,10 @@ def parse_Sns_sh(start_components: typing.List[str]) -> ros_start.Sns_sh:
         "Expected time string for 'Sns-sh'" f"but received '{start_components[0]}'",
     )
 
-    _feeder_srv = ros_parse_comp.parse_reference(start_components[3])
-    _linked_srv = ros_parse_comp.parse_reference(start_components[2])
+    _feeder_srv = railos_parse_comp.parse_reference(start_components[3])
+    _linked_srv = railos_parse_comp.parse_reference(start_components[2])
 
-    return ros_start.Sns_sh(
+    return railos_start.Sns_sh(
         time=_time_str,
         time_days=_time_days,
         feeder_ref=_feeder_srv,
@@ -143,7 +140,7 @@ def parse_Sns_sh(start_components: typing.List[str]) -> ros_start.Sns_sh:
     )
 
 
-def parse_start(start_str: str) -> ros_comp.StartType:
+def parse_start(start_str: str) -> railos_comp.StartType:
     PARSE_DICT = {
         "Sns-fsh": parse_Sns_fsh,
         "Snt-sh": parse_Snt_sh,
@@ -154,9 +151,9 @@ def parse_start(start_str: str) -> ros_comp.StartType:
     }
 
     try:
-        _components = ros_ttb_str.split(start_str)
+        _components = railos_comp.split(start_str)
     except IndexError as e:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             f"Failed to extract ttb components from '{start_str}'"
         ) from e
 
@@ -164,4 +161,4 @@ def parse_start(start_str: str) -> ros_comp.StartType:
         if start_type in start_str:
             return parser(_components)
 
-    raise ros_exc.ParsingError(f"Failed to determine start type for '{start_str}'")
+    raise railos_exc.ParsingError(f"Failed to determine start type for '{start_str}'")

@@ -5,7 +5,7 @@ import railostools.ttb.parsing as railos_parse
 import railostools.ttb.parsing.actions as railosparse_act
 import railostools.ttb.parsing.finish as railosparse_finish
 import railostools.ttb.parsing.start as railosparse_start
-import railostools.ttb.string as railos_ttb_str
+import railostools.ttb.components as railos_ttb_str
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -140,7 +140,7 @@ def test_rsp(hour: int) -> None:
 
 @pytest.mark.ttb_parsing
 @pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
-def test_location(hour: int) -> None:
+def test_dsc(hour: int) -> None:
     TEST_STR = f"{hour}:03;dsc;This is a new description"
     _result = railosparse_act.parse_dsc(railos_ttb_str.split(TEST_STR))
     assert str(_result) == TEST_STR
@@ -148,8 +148,17 @@ def test_location(hour: int) -> None:
 
 @pytest.mark.ttb_parsing
 @pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
-def test_dsc(hour: int) -> None:
+def test_cms(hour: int) -> None:
+    TEST_STR = f"{hour}:03;cms;200"
+    _result = railosparse_act.parse_cms(railos_ttb_str.split(TEST_STR))
+    assert str(_result) == TEST_STR
+
+
+@pytest.mark.ttb_parsing
+@pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
+def test_location(hour: int) -> None:
     TEST_STR = f"{hour}:11;{hour}:12;Longbridge"
+    print(TEST_STR)
     _result = railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
     assert str(_result) == TEST_STR
     TEST_STR = f"{hour}:11;Longbridge"

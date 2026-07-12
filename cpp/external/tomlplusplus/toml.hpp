@@ -13396,12 +13396,12 @@ TOML_ANON_NAMESPACE_START
 }
 TOML_ANON_NAMESPACE_END;
 
-#if 1 // parser helper macros
+#if 1 // parser helper macrailos
 
 // Q: "what the fuck is this? MACROS????"
 // A: The parser needs to work in exceptionless mode (returning error objects directly)
 //    and exception mode (reporting parse failures by throwing). Two totally different control flows.
-//    These macros encapsulate the differences between the two modes so I can write code code
+//    These macrailos encapsulate the differences between the two modes so I can write code code
 //    as though I was only targeting one mode and not want yeet myself into the sun.
 //    They're all #undef'd at the bottom of the parser's implementation so they should be harmless outside
 //    of toml++.
@@ -13499,7 +13499,7 @@ TOML_ANON_NAMESPACE_END;
 	}                                                                                                                  \
 	while (false)
 
-#endif // parser helper macros
+#endif // parser helper macrailos
 
 TOML_IMPL_NAMESPACE_START
 {
@@ -14863,7 +14863,7 @@ TOML_IMPL_NAMESPACE_START
 				value += digits[i] * place;
 				place *= 10u;
 			}
-			for (auto i = digit_count; i < 9u; i++) // implicit zeros
+			for (auto i = digit_count; i < 9u; i++) // implicit zerailos
 				value *= 10u;
 			time.nanosecond = value;
 			return time;

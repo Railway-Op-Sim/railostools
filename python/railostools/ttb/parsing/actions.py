@@ -1,17 +1,14 @@
-import typing
-
-import railostools.exceptions as ros_exc
-import railostools.ttb.components as ros_comp
-import railostools.ttb.components.actions as ros_act
-import railostools.ttb.parsing.components as ros_parse_comp
-import railostools.ttb.string as ros_ttb_str
+import railostools.exceptions as railos_exc
+import railostools.ttb.components as railos_comp
+import railostools.ttb.components.actions as railos_act
+import railostools.ttb.parsing.components as railos_parse_comp
 from railostools.ttb.parsing.time import adjust_above_24hr
 
 
-def parse_location(action_components: typing.List[str]) -> ros_act.Location:
+def parse_location(action_components: list[str]) -> railos_act.Location:
     """Parse a calling point string"""
     if len(action_components) not in (2, 3):
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 2 or 3 items in components " f"'{action_components}' for location"
         )
 
@@ -20,8 +17,8 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
         "Expected time string for arrival time in location "
         f"but received '{action_components[0]}'",
     )
-    _end_time: typing.Optional[str] = None
-    _end_days: typing.Optional[int] = None
+    _end_time: str | None = None
+    _end_days: int | None = None
 
     if len(action_components) == 3:
         _end_time, _end_days = adjust_above_24hr(
@@ -33,19 +30,19 @@ def parse_location(action_components: typing.List[str]) -> ros_act.Location:
     else:
         _location = action_components[1]
 
-    return ros_act.Location(
+    return railos_act.Location(
         time=_start_time,
         end_time=_end_time,
         time_days=_start_days,
-        end_days=_end_days,
-        name=_location,
+        end_time_days=_end_days or 0,
+        location=_location,
     )
 
 
-def parse_pas(action_components: typing.List[str]) -> ros_act.Location:
+def parse_pas(action_components: list[str]) -> railos_act.Location:
     """Parse a pas statement"""
     if len(action_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'pas' statement"
         )
@@ -55,15 +52,15 @@ def parse_pas(action_components: typing.List[str]) -> ros_act.Location:
         "Expected time string for 'pas'" f"but received '{action_components[0]}'",
     )
 
-    return ros_act.pas(
+    return railos_act.pas(
         time=_time_str, time_days=_time_days, location=action_components[2]
     )
 
 
-def parse_jbo(action_components: typing.List[str]) -> ros_act.Location:
+def parse_jbo(action_components: list[str]) -> railos_act.Location:
     """Parse a jbo statement"""
     if len(action_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'jbo' statement"
         )
@@ -73,35 +70,37 @@ def parse_jbo(action_components: typing.List[str]) -> ros_act.Location:
         "Expected time string for 'jbo'" f"but received '{action_components[0]}'",
     )
 
-    _joined_ref = ros_parse_comp.parse_reference(action_components[2])
+    _joined_ref = railos_parse_comp.parse_reference(action_components[2])
 
-    return ros_act.jbo(
+    return railos_act.jbo(
         time=_time_str, time_days=_time_days, joining_service_ref=_joined_ref
     )
 
 
-def parse_fsp(action_components: typing.List[str]) -> ros_act.fsp:
+def parse_fsp(action_components: list[str]) -> railos_act.fsp:
     """Parse a fsp statement"""
     if len(action_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'fsp' statement"
         )
 
-    _new_serv = ros_parse_comp.parse_reference(action_components[2])
+    _new_serv = railos_parse_comp.parse_reference(action_components[2])
 
     _time_str, _time_days = adjust_above_24hr(
         action_components[0],
         "Expected time string for 'fsp'" f"but received '{action_components[0]}'",
     )
 
-    return ros_act.fsp(time=_time_str, time_days=_time_days, new_service_ref=_new_serv)
+    return railos_act.fsp(
+        time=_time_str, time_days=_time_days, new_service_ref=_new_serv
+    )
 
 
-def parse_dsc(action_components: typing.List[str]) -> ros_act.fsp:
+def parse_dsc(action_components: list[str]) -> railos_act.fsp:
     """Parse a dsc statement"""
     if len(action_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'dsc' statement"
         )
@@ -113,31 +112,55 @@ def parse_dsc(action_components: typing.List[str]) -> ros_act.fsp:
         "Expected time string for 'dsc'" f"but received '{action_components[0]}'",
     )
 
-    return ros_act.dsc(time=_time_str, time_days=_time_days, description=_description)
+    return railos_act.dsc(
+        time=_time_str, time_days=_time_days, description=_description
+    )
 
 
-def parse_rsp(action_components: typing.List[str]) -> ros_act.rsp:
+def parse_cms(action_components: list[str]) -> railos_act.fsp:
+    """Parse a cms statement"""
+    if len(action_components) != 3:
+        raise railos_exc.ParsingError(
+            "Expected 3 items in components "
+            f"'{action_components}' for 'cms' statement"
+        )
+
+    _new_max_speed = action_components[2]
+
+    _time_str, _time_days = adjust_above_24hr(
+        action_components[0],
+        "Expected time string for 'dsc'" f"but received '{action_components[0]}'",
+    )
+
+    return railos_act.cms(
+        time=_time_str, time_days=_time_days, new_speed=_new_max_speed
+    )
+
+
+def parse_rsp(action_components: list[str]) -> railos_act.rsp:
     """Parse an rsp statement"""
     if len(action_components) != 3:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 3 items in components "
             f"'{action_components}' for 'rsp' statement"
         )
 
-    _new_serv = ros_parse_comp.parse_reference(action_components[2])
+    _new_serv = railos_parse_comp.parse_reference(action_components[2])
 
     _time_str, _time_days = adjust_above_24hr(
         action_components[0],
         "Expected time string for 'rsp'" f"but received '{action_components[0]}'",
     )
 
-    return ros_act.rsp(time=_time_str, time_days=_time_days, new_service_ref=_new_serv)
+    return railos_act.rsp(
+        time=_time_str, time_days=_time_days, new_service_ref=_new_serv
+    )
 
 
-def parse_cdt(action_components: typing.List[str]) -> ros_act.fsp:
+def parse_cdt(action_components: list[str]) -> railos_act.fsp:
     """Parse a cdt statement"""
     if len(action_components) != 2:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             "Expected 2 items in components "
             f"'{action_components}' for 'cdt' statement"
         )
@@ -147,10 +170,10 @@ def parse_cdt(action_components: typing.List[str]) -> ros_act.fsp:
         "Expected time string for 'cdt'" f"but received '{action_components[0]}'",
     )
 
-    return ros_act.cdt(time=_time_str, time_days=_time_days)
+    return railos_act.cdt(time=_time_str, time_days=_time_days)
 
 
-def parse_action(action_str: str) -> ros_comp.ActionType:
+def parse_action(action_str: str) -> railos_comp.ActionType:
     PARSE_DICT = {
         "pas": parse_pas,
         "jbo": parse_jbo,
@@ -160,9 +183,9 @@ def parse_action(action_str: str) -> ros_comp.ActionType:
     }
 
     try:
-        _components = ros_ttb_str.split(action_str)
+        _components = railos_comp.split(action_str)
     except IndexError as e:
-        raise ros_exc.ParsingError(
+        raise railos_exc.ParsingError(
             f"Failed to extract ttb components from '{action_str}'"
         ) from e
 

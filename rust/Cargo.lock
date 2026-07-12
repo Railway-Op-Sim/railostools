@@ -98,7 +98,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
 
 [[package]]
-name = "crossbeam-utils"
+name = "crailossbeam-utils"
 version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0bf124c720b7686e3c2663cf54062ab0f68a88af2fb6a030e87e30bf721fcb38"
@@ -244,7 +244,7 @@ version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fabbf1ead8a5bcbc20f5f8b939ee3f5b0f6f281b6ad3468b84656b658b455259"
 dependencies = [
- "phf_macros",
+ "phf_macrailos",
  "phf_shared",
  "proc-macro-hack",
 ]
@@ -260,7 +260,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "phf_macros"
+name = "phf_macrailos"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58fdf3184dd560f160dd73922bea2d5cd6e8f064bf4b13110abd81b03697b4e0"
@@ -418,7 +418,7 @@ dependencies = [
  "base64",
  "blake2b_simd",
  "constant_time_eq",
- "crossbeam-utils",
+ "crailossbeam-utils",
 ]
 
 [[package]]

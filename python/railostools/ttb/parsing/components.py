@@ -2,7 +2,6 @@ import re
 
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
-import railostools.ttb.string as railos_ttb_str
 
 
 def parse_reference(train_ref: str) -> railos_comp.Reference:
@@ -26,7 +25,7 @@ def parse_reference(train_ref: str) -> railos_comp.Reference:
 
 def parse_header(header_str: str) -> railos_comp.Header:
     """Parse a service header"""
-    _components = railos_ttb_str.split(header_str)
+    _components = railos_comp.split(header_str)
     if len(_components) not in (1, 2, 7, 8):
         raise railos_exc.ParsingError(
             "Expected 1, 2, 7 or 8 items in components "
@@ -60,7 +59,7 @@ def parse_repeat(repeat_str: str) -> railos_comp.Repeat:
     if not re.findall(r"^R;", repeat_str):
         raise railos_exc.ParsingError(f"Invalid repeat statement '{repeat_str}'")
 
-    _components = railos_ttb_str.split(repeat_str)
+    _components = railos_comp.split(repeat_str)
 
     if len(_components) != 4:
         raise railos_exc.ParsingError(

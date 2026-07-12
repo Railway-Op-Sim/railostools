@@ -1,3 +1,4 @@
+import datetime
 import pytest
 
 import railostools.common.coords as railos_coords
@@ -10,7 +11,7 @@ import railostools.ttb.components.actions as railos_act
 @pytest.mark.ttb_strings
 def test_element_str():
     _start_service = railos_start.Snt(
-        time="11:45",
+        time=datetime.datetime.strptime("11:45", "%H:%M").time(),
         rear_element_id=railos_coords.Coordinate(X=10, Y=-10),
         front_element_id=railos_coords.Coordinate(X=10, Y=-11),
     )
@@ -31,14 +32,16 @@ def test_service_str():
             power=2002,
         ),
         start_type=railos_start.Snt(
-            time="11:23",
+            time=datetime.datetime.strptime("11:23", "%H:%M").time(),
             rear_element_id=railos_coords.Coordinate(X=10, Y=23),
             front_element_id=railos_coords.Coordinate(X=10, Y=24),
         ),
         finish_type=railos_end.Frh(),
         actions={
             0: railos_act.Location(
-                name="Liverpool South Parkway", time="11:34", end_time="11:35"
+                location="Liverpool South Parkway",
+                time=datetime.datetime.strptime("11:34", "%H:%M").time(),
+                end_time=datetime.datetime.strptime("11:35", "%H:%M").time(),
             )
         },
     )
@@ -66,7 +69,9 @@ def test_dictify():
         ),
         actions={
             0: railos_act.Location(
-                name="Liverpool South Parkway", time="11:34", end_time="11:35"
+                location="Liverpool South Parkway",
+                time=datetime.datetime.strptime("11:34", "%H:%M").time(),
+                end_time=datetime.datetime.strptime("11:35", "%H:%M").time(),
             )
         },
     )

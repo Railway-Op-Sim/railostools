@@ -18,8 +18,8 @@ CONNECTIONS: typing.Dict[
     railos_enums.Elements.Junction_Up_Right_RightAngle: (2, 6, 8),
     railos_enums.Elements.Junction_Down_Left_RightAngle: (2, 4, 8),
     railos_enums.Elements.Junction_Down_Right_RightAngle: (2, 6, 8),
-    railos_enums.Elements.Crossing_Horizontal_Vertical: (2, 4, 6, 8),
-    railos_enums.Elements.Crossing_DiagonalUp_DiagonalDown: (1, 3, 7, 9),
+    railos_enums.Elements.Crailossing_Horizontal_Vertical: (2, 4, 6, 8),
+    railos_enums.Elements.Crailossing_DiagonalUp_DiagonalDown: (1, 3, 7, 9),
     railos_enums.Elements.DiagonalUp: (3, 7),
     railos_enums.Elements.DiagonalDown: (1, 9),
     railos_enums.Elements.DiagonalUp_Right: (6, 7),
@@ -46,10 +46,10 @@ CONNECTIONS: typing.Dict[
     railos_enums.Elements.Junction_DiagonalUp_Right_45Angle: (3, 6, 7),
     railos_enums.Elements.Junction_DiagonalUp_Left_45Angle: (3, 4, 7),
     railos_enums.Elements.Junction_DiagonalDown_Right_45Angle: (1, 6, 9),
-    railos_enums.Elements.Crossing_DiagonalDown_Vertical: (1, 2, 8, 9),
-    railos_enums.Elements.Crossing_DiagonalUp_Vertical: (2, 3, 7, 8),
-    railos_enums.Elements.Crossing_DiagonalUp_Horizontal: (3, 4, 6, 7),
-    railos_enums.Elements.Crossing_DiagonalDown_Horizontal: (1, 4, 6, 9),
+    railos_enums.Elements.Crailossing_DiagonalDown_Vertical: (1, 2, 8, 9),
+    railos_enums.Elements.Crailossing_DiagonalUp_Vertical: (2, 3, 7, 8),
+    railos_enums.Elements.Crailossing_DiagonalUp_Horizontal: (3, 4, 6, 7),
+    railos_enums.Elements.Crailossing_DiagonalDown_Horizontal: (1, 4, 6, 9),
     railos_enums.Elements.Vertical_Over_Horizontal: (2, 4, 6, 8),
     railos_enums.Elements.Horizontal_Over_Vertical: (2, 4, 6, 8),
     railos_enums.Elements.DiagonalUp_Over_Right_Down: (1, 3, 7, 9),
@@ -149,7 +149,7 @@ CONNECTIONS: typing.Dict[
     railos_enums.Elements.Arrow_Up_Left: (1, 9),
     railos_enums.Elements.Arrow_Down_Left: (3, 7),
     railos_enums.Elements.Arrow_Down_Right: (1, 9),
-    railos_enums.Elements.Level_Crossing: tuple(),
+    railos_enums.Elements.Level_Crailossing: tuple(),
     railos_enums.Elements.Underpass_Vertical: (4, 6),
     railos_enums.Elements.Underpass_Horizontal: (2, 8),
 }
@@ -198,12 +198,12 @@ def can_connect(
     }
 
     # Find the join points of the first element
-    _permitted_join_positions: typing.List[int] = [
+    _permitted_join_positions: list[int] = [
         _neighbour_mapping[i] for i in CONNECTIONS[element_one_type]
     ]
 
     # Find the join point of the first element that connects to the second
-    _connections: typing.List[int] = [
+    _connections: list[int] = [
         i for i in _permitted_join_positions if i in CONNECTIONS[element_two_type]
     ]
 

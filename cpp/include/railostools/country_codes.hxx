@@ -55,7 +55,7 @@ namespace RailOSTools {
         {"CX", "Christmas Island"},
         {"CC", "Cocos (Keeling) Islands"},
         {"CO", "Colombia"},
-        {"KM", "Comoros"},
+        {"KM", "Comorailos"},
         {"CG", "Congo"},
         {"CD", "Congo, the Democratic Republic of the"},
         {"CK", "Cook Islands"},

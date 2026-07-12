@@ -6,6 +6,8 @@ This module provides a parser for Railway Operation Simulator (RailOS) timetable
 It includes functionality to parse TTB files, extract timetable data, and convert it to JSON format.
 """
 
+from tkinter import W
+
 import datetime
 import json
 import logging
@@ -19,7 +21,6 @@ logging.basicConfig()
 
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as ttb_comp
-import railostools.ttb.string as railos_ttb_str
 from railostools.ttb.parsing.actions import parse_action
 from railostools.ttb.parsing.components import parse_header, parse_repeat
 from railostools.ttb.parsing.finish import parse_finish
@@ -28,12 +29,13 @@ from railostools.ttb.parsing.start import parse_start
 
 class TTBParser:
     """Parser for Railway Operation Simulator timetable files"""
+
     def __init__(self) -> None:
         """Initializes the TTBParser class"""
         self._logger = logging.getLogger("RailOSTools.TTBParser")
         self._data: dict[str, ttb_comp.Timetable] = {}
-        self._file_lines: typing.List[str] = []
-        self._current_file: typing.Optional[str] = None
+        self._file_lines: list[str] = []
+        self._current_file: str | None = None
 
     def __getitem__(self, item) -> ttb_comp.Timetable:
         return self._data[item]
@@ -76,9 +78,7 @@ class TTBParser:
                 for action in service.actions.values()
             ]
             _times.extend(
-                (time.hour * 60 + time.minute) * 60
-                + time.second
-                for time in _datetimes
+                (time.hour * 60 + time.minute) * 60 + time.second for time in _datetimes
             )
         _times = numpy.array(_times)
         _binned_times: numpy.ndarray = numpy.bincount(_times).mean()
@@ -108,14 +108,15 @@ class TTBParser:
         } or None
 
     @property
-    def services_str(self) -> typing.List[typing.List[str]]:
+    def services_str(self) -> list[list[str]]:
         """Retrieve individual service strings"""
         _service_list = []
         _comments = self.comments or {}
         _non_comment_lines = [
             i
             for i in self._file_lines
-            if i not in _comments.values() and not re.findall(r"^\d{2}:\d{2}(?:;START)?$", i)
+            if i not in _comments.values()
+            and not re.findall(r"^\d{2}:\d{2}(?:;START)?$", i)
         ]
 
         _service_list.extend(
@@ -124,7 +125,7 @@ class TTBParser:
             if (
                 _service := [
                     k.strip()
-                    for k in railos_ttb_str.split(line, ttb_comp.Service)
+                    for k in ttb_comp.split(line, ttb_comp.Service)
                     if k.strip()
                 ]
             )
@@ -135,7 +136,7 @@ class TTBParser:
         """Retrieve all timetable keys"""
         return self._data.keys()
 
-    def _parse_service(self, service_components: typing.List[str]) -> ttb_comp.Service:
+    def _parse_service(self, service_components: list[str]) -> ttb_comp.Service:
         """Parse a single service from the components"""
         _header = parse_header(service_components[0])
         _start_type = parse_start(service_components[1])
@@ -192,7 +193,7 @@ class TTBParser:
             )
 
         with open(file_name) as in_f:
-            self._file_lines = railos_ttb_str.split(in_f.read(), ttb_comp.Element)
+            self._file_lines = ttb_comp.split(in_f.read(), ttb_comp.Element)
             self._file_lines = [i for i in self._file_lines if i]
 
         self._logger.info(f"Parsing input file '{file_name}'")

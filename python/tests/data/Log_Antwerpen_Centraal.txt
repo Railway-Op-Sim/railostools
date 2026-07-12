@@ -50,7 +50,7 @@ Performance summary:
 2 early exits (average 1.5 min)
 11 on-time departures
 0 late departures
-2.2 excess minutes of level crossing barrier down time
+2.2 excess minutes of level crailossing barrier down time
 0 missed stops
 0 other missed events
 0 unexpected train exits

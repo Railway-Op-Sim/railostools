@@ -43,7 +43,7 @@ class StartPosition:
 @dataclasses.dataclass
 class TimetableLocation:
     name: str
-    start_positions: typing.List[StartPosition]
+    start_positions: list[StartPosition]
 
 
 class RlyElement(pydantic.BaseModel):
@@ -110,10 +110,10 @@ class Metadata(pydantic.BaseModel):
 
 
 class RlyData(pydantic.BaseModel):
-    active_elements: typing.List[ActiveElement]
-    inactive_elements: typing.List[InactiveElement]
+    active_elements: list[ActiveElement]
+    inactive_elements: list[InactiveElement]
     metadata: Metadata
-    text: typing.Optional[typing.List[Text]] = None
+    text: typing.Optional[list[Text]] = None
 
 
 class RlyParser:
@@ -186,9 +186,13 @@ class RlyParser:
         return self.tables.signals.size
 
     @property
-    def n_level_crossings(self) -> int:
+    def n_level_crailossings(self) -> int:
         return len(
-            [i for i in self.active_elements if i.element_id == Elements.Level_Crossing]
+            [
+                i
+                for i in self.active_elements
+                if i.element_id == Elements.Level_Crailossing
+            ]
         )
 
     @property
@@ -197,7 +201,7 @@ class RlyParser:
 
     @property
     def n_points(self) -> int:
-        _points: typing.List[ActiveElement] = [
+        _points: list[ActiveElement] = [
             i
             for i in self.active_elements
             if i.element_id
@@ -241,7 +245,7 @@ class RlyParser:
 
     def get_element_connected_neighbours(
         self, coordinates: typing.Tuple[int, int]
-    ) -> typing.List[typing.Tuple[int, int]]:
+    ) -> list[typing.Tuple[int, int]]:
         if not (_this_element := self.get_element_at(coordinates)):
             raise RailwayParsingError(f"No element found at '{coordinates}'")
         _neighbour_coords = (
@@ -343,13 +347,13 @@ class RlyParser:
         return self._rly_data
 
     @property
-    def active_elements(self) -> typing.List[ActiveElement]:
+    def active_elements(self) -> list[ActiveElement]:
         return self.data[
             os.path.splitext(os.path.basename(self._current_file))[0]
         ].active_elements
 
     @property
-    def inactive_elements(self) -> typing.List[InactiveElement]:
+    def inactive_elements(self) -> list[InactiveElement]:
         return self.data[
             os.path.splitext(os.path.basename(self._current_file))[0]
         ].inactive_elements
@@ -371,8 +375,8 @@ class RlyParser:
     def tables(self) -> RlyInfoTables:
         return RlyInfoTables(signals=self._make_signal_table())
 
-    def _parse_active_element(self, active_elem: typing.List[str]) -> ActiveElement:
-        active_elem: typing.List[str] = [i.strip() for i in active_elem]
+    def _parse_active_element(self, active_elem: list[str]) -> ActiveElement:
+        active_elem: list[str] = [i.strip() for i in active_elem]
         return ActiveElement(
             element_id=int(active_elem[1]),
             position=(int(active_elem[2]), int(active_elem[3])),
@@ -388,7 +392,7 @@ class RlyParser:
             active_element_name=active_elem[9] or None,
         )
 
-    def _parse_text(self, text_elem: typing.List[str]) -> Text:
+    def _parse_text(self, text_elem: list[str]) -> Text:
         text_elem = [i.strip() for i in text_elem]
         return Text(
             n_items=int(text_elem[0]),
@@ -403,9 +407,7 @@ class RlyParser:
             ),
         )
 
-    def _parse_inactive_element(
-        self, inactive_elem: typing.List[str]
-    ) -> InactiveElement:
+    def _parse_inactive_element(self, inactive_elem: list[str]) -> InactiveElement:
         if inactive_elem := [i.strip() for i in inactive_elem]:
             return InactiveElement(
                 element_id=int(inactive_elem[1]),
@@ -415,7 +417,7 @@ class RlyParser:
         else:
             raise railos_exc.ParsingError("No inactive elements were found.")
 
-    def _parse_metadata(self, metadata: typing.List[str]) -> Metadata:
+    def _parse_metadata(self, metadata: list[str]) -> Metadata:
         if metadata := [i.strip() for i in metadata]:
             _prog_version_re = re.findall(r"(v\d+\.\d+\.\d+)", metadata[0])
             return Metadata(
@@ -491,7 +493,7 @@ class RlyParser:
             element.neighbours = self.get_element_connected_neighbours(element.position)
 
     def _build_node_map(self) -> igraph.Graph:
-        _node_connections: typing.List[typing.Tuple[int, int]] = []
+        _node_connections: list[typing.Tuple[int, int]] = []
         _node_graph = igraph.Graph()
         for element in tqdm.tqdm(self.active_elements):
             for coordinate in element.neighbours:

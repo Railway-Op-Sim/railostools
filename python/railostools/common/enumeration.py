@@ -19,7 +19,7 @@ class Level2OperMode(enum.Enum):
 
 class TrackType(enum.Enum):
     Simple = 0
-    Crossover = 1
+    Crailossover = 1
     Points = 2
     Buffers = 3
     Bridge = 4
@@ -27,16 +27,16 @@ class TrackType(enum.Enum):
     Continuation = 6
     Platform = 7
     GapJump = 8
-    FootCrossing = 9
+    FootCrailossing = 9
     Unused = 10
     Concourse = 11
     Parapet = 12
     NamedNonStationLocation = 13
     Erase = 14
-    LevelCrossing = 15
+    LevelCrailossing = 15
 
 
-class LevelCrossingState(enum.Enum):
+class LevelCrailossingState(enum.Enum):
     RAISED = 0
     LOWERED = 1
     IN_MOTION = 2
@@ -64,8 +64,8 @@ class Elements(enum.IntEnum):
     Junction_Up_Right_RightAngle = 12
     Junction_Down_Left_RightAngle = 13
     Junction_Down_Right_RightAngle = 14
-    Crossing_Horizontal_Vertical = 15
-    Crossing_DiagonalUp_DiagonalDown = 16
+    Crailossing_Horizontal_Vertical = 15
+    Crailossing_DiagonalUp_DiagonalDown = 16
     DiagonalUp = 18
     DiagonalDown = 19
     DiagonalUp_Right = 20
@@ -92,10 +92,10 @@ class Elements(enum.IntEnum):
     Junction_DiagonalUp_Right_45Angle = 41
     Junction_DiagonalUp_Left_45Angle = 42
     Junction_DiagonalDown_Right_45Angle = 43
-    Crossing_DiagonalDown_Vertical = 44
-    Crossing_DiagonalUp_Vertical = 45
-    Crossing_DiagonalUp_Horizontal = 46
-    Crossing_DiagonalDown_Horizontal = 47
+    Crailossing_DiagonalDown_Vertical = 44
+    Crailossing_DiagonalUp_Vertical = 45
+    Crailossing_DiagonalUp_Horizontal = 46
+    Crailossing_DiagonalDown_Horizontal = 47
     Vertical_Over_Horizontal = 48
     Horizontal_Over_Vertical = 49
     DiagonalUp_Over_Right_Down = 50
@@ -191,6 +191,6 @@ class Elements(enum.IntEnum):
     Arrow_Up_Left = 141
     Arrow_Down_Left = 142
     Arrow_Down_Right = 143
-    Level_Crossing = 144
+    Level_Crailossing = 144
     Underpass_Vertical = 145
     Underpass_Horizontal = 146

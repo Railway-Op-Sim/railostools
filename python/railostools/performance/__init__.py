@@ -9,11 +9,11 @@ import datetime
 import pydantic
 
 import railostools.exceptions as rexc
-import railostools.performance.components as ros_perf_comp
+import railostools.performance.components as railos_perf_comp
 
 
 class Monitor:
-    _logger = logging.getLogger("ROSTools.PerformanceMonitor")
+    _logger = logging.getLogger("RailOSTools.PerformanceMonitor")
 
     def __init__(self, railos_log_dir: str, time_out: int = 120) -> None:
         if not os.path.exists(railos_log_dir):
@@ -22,16 +22,16 @@ class Monitor:
                 f"directory '{railos_log_dir}' does not exist"
             )
         self._log_dir = railos_log_dir  # RailOS Performance Log directory
-        self._async_funcs: typing.List[
-            typing.Tuple[typing.Callable, typing.Dict]
-        ] = []  # Methods with args to run in sync with monitor
-        self._time_out = time_out  # Time limit for typing.Listening
+        self._async_funcs: list[tuple[typing.Callable, dict]] = (
+            []
+        )  # Methods with args to run in sync with monitor
+        self._time_out = time_out  # Time limit for listening
         self._data = {}  # Parsed log data
         self._is_running = False  # Status of monitor
         self._wait_interval: int = 5  # Wait period
         self._latest = ""  # Raw data of latest full log line
 
-    async def _process_lines(self, file_lines: typing.List[str]) -> None:
+    async def _process_lines(self, file_lines: list[str]) -> None:
         _is_ttb_perf = re.compile(
             r"\d{2}:\d{2}:\d{2}:\s[A-Z0-9]+\s[became|left|arrived|created|entered|departed]",
             re.IGNORECASE,
@@ -147,7 +147,9 @@ class Monitor:
         """Force stop the monitor from running"""
         self._is_running = False
 
-    def exec_in_parallel(self, function: typing.Callable, args: typing.Dict = None) -> None:
+    def exec_in_parallel(
+        self, function: typing.Callable, args: typing.Dict = None
+    ) -> None:
         if not args:
             args = {}
 
@@ -168,23 +170,29 @@ class Monitor:
 class PerformanceLogParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self.data: typing.Dict[str, typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent]] = {}
-        self._file_lines: typing.List[str] = []
+        self.data: typing.Dict[
+            str, list[railos_perf_comp.ClockAdjustment | railos_perf_comp.ServiceEvent]
+        ] = {}
+        self._file_lines: list[str] = []
         self._current_file: typing.Optional[str] = None
 
-    def __getitem__(self, item: str) -> typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent]:
+    def __getitem__(
+        self, item: str
+    ) -> list[railos_perf_comp.ClockAdjustment | railos_perf_comp.ServiceEvent]:
         return self.data[item]
 
     def keys(self):
         return self.data.keys()
 
-    def _parse_timetable_performance_even(self, time_str: str, line: str) -> ros_perf_comp.TimetableLogEvent:
-        _file_data: typing.List[ros_perf_comp.TimetableLogEvent] = []
+    def _parse_timetable_performance_even(
+        self, time_str: str, line: str
+    ) -> railos_perf_comp.TimetableLogEvent:
+        _file_data: list[railos_perf_comp.TimetableLogEvent] = []
         _hours_orig: int = int(time_str.split(":")[0])
         _days: int = _hours_orig // 24
         _hours = _hours_orig - _days * 24
         time_str = time_str.replace(f"{_hours_orig}:", f"{_hours}:")
-        for tt_event_type in ros_perf_comp.TimetableLogEvent.__members__.values():
+        for tt_event_type in railos_perf_comp.TimetableLogEvent.__members__.values():
             if tt_event_type.value in line:
                 _offset = 0
                 _offset_str = "on time"
@@ -194,14 +202,16 @@ class PerformanceLogParser:
                 elif "1 minute late" in line:
                     _offset = 1
                     _offset_str = "1 minute late"
-                elif _min_search := re.findall(r'(\d+) minutes early', line):
+                elif _min_search := re.findall(r"(\d+) minutes early", line):
                     _offset = -1 * int(_min_search[0])
                     _offset_str = f"{_offset} minutes early"
-                elif _min_search := re.findall(r'(\d+) minutes late', line):
+                elif _min_search := re.findall(r"(\d+) minutes late", line):
                     _offset = int(_min_search[0])
-                if (_error := "ERROR" in line):
+                if _error := "ERROR" in line:
                     line = line.replace(" ERROR", "")
-                _head_code_re = re.findall(r"\d{2}:\d{2}:\d{2}[ WARNING]*:\s([A-Z0-9]+)\s", line)
+                _head_code_re = re.findall(
+                    r"\d{2}:\d{2}:\d{2}[ WARNING]*:\s([A-Z0-9]+)\s", line
+                )
                 _head_code: str = _head_code_re[0]
                 _line_no_action: str = line.replace(tt_event_type.value, "")
                 _line_no_action = _line_no_action.replace("to", "")
@@ -215,14 +225,14 @@ class PerformanceLogParser:
                 _location = _line_no_action.replace(_offset_str, "").strip()
                 try:
                     _file_data.append(
-                        ros_perf_comp.ServiceEvent(
+                        railos_perf_comp.ServiceEvent(
                             time=time_str,
                             actual_offset=_offset,
                             headcode=_head_code,
                             action=tt_event_type,
                             location=_location,
                             error=_error,
-                            time_days=_days
+                            time_days=_days,
                         )
                     )
                 except pydantic.ValidationError as e:
@@ -235,10 +245,10 @@ class PerformanceLogParser:
                     raise e
         return _file_data
 
-    def _parse_score(self, lines: typing.List[str]) -> typing.Tuple[int | None, str | None]:
+    def _parse_score(self, lines: list[str]) -> typing.Tuple[int | None, str | None]:
         _line_str: str = "\n".join(lines)
-        _score_line_re = re.findall(r'Overall score: (\d+)%', _line_str)
-        _score_rating_re = re.findall(r'Overall rating: (\w+)', _line_str)
+        _score_line_re = re.findall(r"Overall score: (\d+)%", _line_str)
+        _score_rating_re = re.findall(r"Overall rating: (\w+)", _line_str)
 
         _score: int | None = int(_score_line_re[0]) if _score_line_re else None
         _rating: str | None = _score_rating_re[0] if _score_rating_re else None
@@ -257,15 +267,23 @@ class PerformanceLogParser:
             return 0
 
         _key: str = os.path.splitext(os.path.basename(self._current_file))[0]
-        _first_time: datetime.datetime = datetime.datetime.combine(datetime.date.today(), self.data[_key][0].time)
-        _last_time: datetime.time = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=self.data[_key][-1].time_days), self.data[_key][-1].time)
+        _first_time: datetime.datetime = datetime.datetime.combine(
+            datetime.date.today(), self.data[_key][0].time
+        )
+        _last_time: datetime.time = datetime.datetime.combine(
+            datetime.date.today()
+            + datetime.timedelta(days=self.data[_key][-1].time_days),
+            self.data[_key][-1].time,
+        )
         _interval: datetime.timedelta = _last_time - _first_time
 
         return _interval.seconds
 
     def parse(self, log_file: str) -> None:
         if not os.path.exists(log_file):
-            raise FileNotFoundError(f"Cannot parse performance log '{log_file}', file not found")
+            raise FileNotFoundError(
+                f"Cannot parse performance log '{log_file}', file not found"
+            )
 
         with open(log_file) as in_f:
             self._file_lines = in_f.readlines()
@@ -274,8 +292,10 @@ class PerformanceLogParser:
 
         self.score, self.rating = self._parse_score(self._file_lines)
 
-        _file_data: typing.List[ros_perf_comp.ClockAdjustment | ros_perf_comp.ServiceEvent] = []
-        _line_time = re.compile(r'^\d{2}:\d{2}:\d{2}')
+        _file_data: list[
+            railos_perf_comp.ClockAdjustment | railos_perf_comp.ServiceEvent
+        ] = []
+        _line_time = re.compile(r"^\d{2}:\d{2}:\d{2}")
 
         for line in self._file_lines:
             if not (_time_re := _line_time.findall(line)):
@@ -288,25 +308,23 @@ class PerformanceLogParser:
             _clock_increment: int | None = None
 
             if "clock speed" in line:
-                for speed in ros_perf_comp.ClockSpeed.__members__.values():
+                for speed in railos_perf_comp.ClockSpeed.__members__.values():
                     if speed.value in line:
                         _file_data.append(
-                            ros_perf_comp.ClockAdjustment(
-                                time=_time_str,
-                                speed=speed
+                            railos_perf_comp.ClockAdjustment(
+                                time=_time_str, speed=speed
                             )
                         )
             elif "clock incremeted" in line:
-                _increment_min = re.findall(r'(\d+)m')
-                _increment_hr = re.findall(r'(\d+)h')
+                _increment_min = re.findall(r"(\d+)m")
+                _increment_hr = re.findall(r"(\d+)h")
                 if _increment_min:
                     _clock_increment = int(_increment_min[0])
                 elif _increment_hr:
                     _clock_increment = int(_increment_min[0]) * 60
                 _file_data.append(
-                    ros_perf_comp.ClockAdjustment(
-                        time=_time_str,
-                        offset=_clock_increment
+                    railos_perf_comp.ClockAdjustment(
+                        time=_time_str, offset=_clock_increment
                     )
                 )
             else:

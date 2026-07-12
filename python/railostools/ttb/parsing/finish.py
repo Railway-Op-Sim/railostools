@@ -1,15 +1,12 @@
-import typing
-
 import railostools.common.coords as railos_coords
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
 import railostools.ttb.components.finish as railos_finish
 import railostools.ttb.parsing.components as railos_parse_comp
-import railostools.ttb.string as railos_ttb_str
 from railostools.ttb.parsing.time import adjust_above_24hr
 
 
-def parse_Fns(finish_components: typing.List[str]) -> railos_finish.Fns:
+def parse_Fns(finish_components: list[str]) -> railos_finish.Fns:
     """Parse an Fns type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -29,7 +26,7 @@ def parse_Fns(finish_components: typing.List[str]) -> railos_finish.Fns:
     )
 
 
-def parse_Fjo(finish_components: typing.List[str]) -> railos_finish.Fjo:
+def parse_Fjo(finish_components: list[str]) -> railos_finish.Fjo:
     """Parse an Fjo type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -49,7 +46,7 @@ def parse_Fjo(finish_components: typing.List[str]) -> railos_finish.Fjo:
     )
 
 
-def parse_Fer(finish_components: typing.List[str]) -> railos_finish.Fer:
+def parse_Fer(finish_components: list[str]) -> railos_finish.Fer:
     """Parse an Fer type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -72,7 +69,7 @@ def parse_Fer(finish_components: typing.List[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Frh_sh(finish_components: typing.List[str]) -> railos_finish.Fer:
+def parse_Frh_sh(finish_components: list[str]) -> railos_finish.Fer:
     """Parse an Frh-sh type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -93,7 +90,7 @@ def parse_Frh_sh(finish_components: typing.List[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Fns_sh(finish_components: typing.List[str]) -> railos_finish.Fer:
+def parse_Fns_sh(finish_components: list[str]) -> railos_finish.Fer:
     """Parse an Fns-sh type string"""
     if len(finish_components) != 4:
         raise railos_exc.ParsingError(
@@ -118,7 +115,7 @@ def parse_Fns_sh(finish_components: typing.List[str]) -> railos_finish.Fer:
     )
 
 
-def parse_F_nshs(finish_components: typing.List[str]) -> railos_finish.Fer:
+def parse_F_nshs(finish_components: list[str]) -> railos_finish.Fer:
     """Parse an F-nshs type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -139,7 +136,7 @@ def parse_F_nshs(finish_components: typing.List[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Frh(finish_components: typing.List[str]) -> railos_finish.Fer:
+def parse_Frh(finish_components: list[str]) -> railos_finish.Fer:
     """Parse an Frh type string"""
     if len(finish_components) != 1:
         raise railos_exc.ParsingError(
@@ -161,7 +158,7 @@ def parse_finish(finish_str: str) -> railos_comp.StartType:
     }
 
     try:
-        _components = railos_ttb_str.split(finish_str)
+        _components = railos_comp.split(finish_str)
     except IndexError as e:
         raise railos_exc.ParsingError(
             f"Failed to extract ttb components from '{finish_str}'"

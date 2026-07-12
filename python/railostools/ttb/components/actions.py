@@ -1,213 +1,93 @@
+from typing import override
 import datetime
-import typing
 
 import pydantic
 
 import railostools.ttb.components as railos_comp
-import railostools.ttb.string as railos_ttb_str
 
 
-class Location(railos_comp.ActionType, pydantic.BaseModel):
-    time: datetime.time
-    end_time: typing.Optional[datetime.time] = None
-    time_days: int = 0
-    end_time_days: typing.Optional[int] = 0
-    name: str
+class Location(railos_comp.ActionType):
+    end_time: datetime.time | None = None
+    end_time_days: pydantic.NonNegativeInt = 0
+    location: str
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
+    @property
+    def name(self) -> str:
+        return self.location
 
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
         _elements = [_time_str]
 
         if self.end_time:
-            _time: datetime.time = datetime.datetime.strptime(self.end_time, "%H:%M")
-            _hour: int = _time.hour + self.time_days * 24
-            _min: int = _time.minute
-            _time_str: str = (
-                f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-            )
-            _end_time: datetime.time = datetime.datetime.strptime(
-                self.end_time, "%H:%M"
-            )
-            _elements.append(_time_str)
+            _end_time_str: str = railos_comp.time2str(self.end_time, self.end_time_days)
+            _elements.append(_end_time_str)
 
         _elements.append(self.name)
-        return railos_ttb_str.concat(*_elements)
-
-    @pydantic.field_validator("time", "end_time")
-    def to_string(cls, v: datetime.time):
-        return v.strftime("%H:%M") if v else v
+        return railos_comp.concat(*_elements)
 
 
 class dsc(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
     description: str
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(_time_str, self.name, f"{self.description}")
-
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
-
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "dsc"
-        return vals
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.description}")
 
 
 class pas(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
     location: str
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(_time_str, self.name, f"{self.location}")
-
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
-
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "pas"
-        return vals
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.location}")
 
 
 class jbo(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
     joining_service_ref: railos_comp.Reference
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(
-            _time_str, self.name, f"{self.joining_service_ref}"
-        )
-
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "jbo"
-        return vals
-
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.joining_service_ref}")
 
 
 class fsp(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
     new_service_ref: railos_comp.Reference
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(_time_str, self.name, f"{self.new_service_ref}")
-
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "fsp"
-        return vals
-
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.new_service_ref}")
 
 
 class rsp(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
     new_service_ref: railos_comp.Reference
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(_time_str, self.name, f"{self.new_service_ref}")
-
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "rsp"
-        return vals
-
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.new_service_ref}")
 
 
 class cdt(railos_comp.ActionType, pydantic.BaseModel):
-    name: str | None = pydantic.Field(None)
-    model_config = pydantic.ConfigDict(validate_default=True)
-    time: datetime.time
-    time_days: int = 0
+    pass
 
-    def __str__(self) -> str:
-        _time: datetime.time = datetime.datetime.strptime(self.time, "%H:%M")
-        _hour: int = _time.hour + self.time_days * 24
-        _min: int = _time.minute
-        _time_str: str = (
-            f"{'0' if _hour < 10 else ''}{_hour}:{'0' if _min < 10 else ''}{_min}"
-        )
-        return railos_ttb_str.concat(_time_str, self.name)
 
-    @pydantic.model_validator(mode="after")
-    @classmethod
-    def add_name_as_field(cls, vals):
-        vals.name = "cdt"
-        return vals
+class cms(railos_comp.ActionType, pydantic.BaseModel):
+    new_speed: pydantic.PositiveInt
 
-    @pydantic.field_validator("time")
-    @classmethod
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    @property
+    @override
+    def _component_str(self) -> str:
+        _time_str: str = railos_comp.time2str(self.time, self.time_days)
+        return railos_comp.concat(_time_str, self.name, f"{self.new_speed}")

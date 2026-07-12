@@ -19,7 +19,7 @@ pub enum Level2OperMode {
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum TrackType {
     Simple,
-    Crossover,
+    Crailossover,
     Points,
     Buffers,
     Bridge,
@@ -27,13 +27,13 @@ pub enum TrackType {
     Continuation,
     Platform,
     GapJump,
-    FootCrossing,
+    FootCrailossing,
     Unused,
     Concourse,
     Parapet,
     NamedNonStationLocation,
     Erase,
-    LevelCrossing,
+    LevelCrailossing,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -52,8 +52,8 @@ pub enum Elements {
     JunctionUpRightRightAngle,
     JunctionDownLeftRightAngle,
     JunctionDownRightRightAngle,
-    CrossingHorizontalVertical,
-    CrossingDiagonalUpDiagonalDown,
+    CrailossingHorizontalVertical,
+    CrailossingDiagonalUpDiagonalDown,
     DiagonalUp,
     DiagonalDown,
     DiagonalUpRight,

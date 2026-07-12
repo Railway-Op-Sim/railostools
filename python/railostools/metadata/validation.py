@@ -17,10 +17,10 @@ class Metadata(pydantic.BaseModel):
     rly_file: str = pydantic.Field(
         ..., description=".rly filename of the simulation itself"
     )
-    ttb_files: typing.List[str] = pydantic.Field(
+    ttb_files: list[str] = pydantic.Field(
         ..., description="list of timetable .ttb. files"
     )
-    doc_files: typing.List[str] = pydantic.Field(
+    doc_files: list[str] = pydantic.Field(
         ..., description="list of documentation files (.pdf, .md, .txt)"
     )
     country_code: str = pydantic.Field(
@@ -48,19 +48,19 @@ class Metadata(pydantic.BaseModel):
     description: typing.Optional[str] = pydantic.Field(
         None, description="a brief line summary of the project"
     )
-    ssn_files: typing.Optional[typing.List[str]] = pydantic.Field(
+    ssn_files: typing.Optional[list[str]] = pydantic.Field(
         None, description="list of session .ssn files"
     )
-    img_files: typing.Optional[typing.List[str]] = pydantic.Field(
+    img_files: typing.Optional[list[str]] = pydantic.Field(
         None, description="list of image files"
     )
-    graphic_files: typing.Optional[typing.List[str]] = pydantic.Field(
+    graphic_files: typing.Optional[list[str]] = pydantic.Field(
         None, description="list of graphic files"
     )
     difficulty: int = pydantic.Field(
         None, description="estimate of the simulation difficulty"
     )
-    contributors: typing.Optional[typing.List[str]] = pydantic.Field(
+    contributors: typing.Optional[list[str]] = pydantic.Field(
         None,
         description="other contributing authors as list (must match RailOS site author names)",
     )
@@ -120,6 +120,7 @@ class Metadata(pydantic.BaseModel):
                 "Invalid filename for metadata file, expected TOML file"
             )
         toml.dump(self.__dict__, open(outfile_name, "w"))
+
     model_config = ConfigDict(extra="forbid")
 
 

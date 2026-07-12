@@ -26,7 +26,7 @@ class MetadataExpander:
         self._logger = logging.getLogger("MetadataExpander")
         self._toml_file: typing.Optional[str] = None
         self._metadata: typing.Optional[typing.MutableMapping] = None
-        self._locations: typing.Optional[typing.List[str]] = None
+        self._locations: typing.Optional[list[str]] = None
 
         self._unpack_project()
 
