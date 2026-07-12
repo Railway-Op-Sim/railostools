@@ -21,7 +21,10 @@ Options:
   --help              Show this message and exit.
 
 Commands:
-  ttb2json  Extract RailOS timetable file to json
+  metadata-expand  Expand metadata for a Railway Operation Simulator...
+  rly2json         Extract Railway Operation Simulator railway file to json
+  ttb2json         Extract RailOS timetable file to json
+  validate         Validate Railway Operation Simulator file
 ```
 
 ### Command Line Interface
