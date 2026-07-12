@@ -7,9 +7,7 @@ import railostools.common.coords as railos_coords
 import railostools.ttb.components as railos_comp
 
 
-class Fns(railos_comp.FinishType):
-    time: datetime.time
-    time_days: int = 0
+class Fns(railos_comp.FinishType, railos_comp.TimedEvent):
     new_service_ref: railos_comp.Reference
 
     @typing.override
@@ -18,9 +16,7 @@ class Fns(railos_comp.FinishType):
         return railos_comp.concat(_time_str, self.name, f"{self.new_service_ref}")
 
 
-class Fjo(railos_comp.FinishType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Fjo(railos_comp.FinishType, railos_comp.TimedEvent):
     joining_service_ref: railos_comp.Reference
 
     @typing.override
@@ -29,9 +25,7 @@ class Fjo(railos_comp.FinishType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.joining_service_ref}")
 
 
-class Fer(railos_comp.FinishType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Fer(railos_comp.FinishType, railos_comp.TimedEvent):
     exit_coords: list[railos_coords.Coordinate]
 
     @typing.override
@@ -42,9 +36,7 @@ class Fer(railos_comp.FinishType, pydantic.BaseModel):
         )
 
 
-class Frh_sh(railos_comp.FinishType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Frh_sh(railos_comp.FinishType, railos_comp.TimedEvent):
     linked_shuttle_ref: railos_comp.Reference
 
     @typing.override
@@ -53,9 +45,7 @@ class Frh_sh(railos_comp.FinishType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.linked_shuttle_ref}")
 
 
-class Fns_sh(railos_comp.FinishType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Fns_sh(railos_comp.FinishType, railos_comp.TimedEvent):
     linked_shuttle_ref: railos_comp.Reference
     finishing_service_ref: railos_comp.Reference
 
@@ -70,9 +60,7 @@ class Fns_sh(railos_comp.FinishType, pydantic.BaseModel):
         )
 
 
-class F_nshs(railos_comp.FinishType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class F_nshs(railos_comp.FinishType, railos_comp.TimedEvent):
     linked_shuttle_ref: railos_comp.Reference
 
     @typing.override
@@ -81,7 +69,7 @@ class F_nshs(railos_comp.FinishType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.linked_shuttle_ref}")
 
 
-class Frh(railos_comp.FinishType, pydantic.BaseModel):
+class Frh(railos_comp.FinishType):
     @typing.override
     def __str__(self) -> str:
         return self.name

@@ -56,32 +56,19 @@ def time2str(time: datetime.time, time_days: int) -> str:
     return _time_str
 
 
-class ComponentCommonType(Element, pydantic.BaseModel):
-    model_config = pydantic.ConfigDict(validate_default=True, extra="forbid")
-
-
-class StartType(ComponentCommonType):
-    time: datetime.time
-    time_days: pydantic.NonNegativeInt = 0
-
-
-class FinishType(ComponentCommonType):
-    pass
-
-
-class ActionType(ComponentCommonType):
+class TimedEvent(Element, pydantic.BaseModel):
     time: datetime.time
     time_days: pydantic.NonNegativeInt = 0
     warning: bool = False
+
+    @typing.override
+    def __str__(self) -> str:
+        return f'{"W" if self.warning else ""}{self._component_str}'
 
     @property
     def _component_str(self) -> str:
         _time_str: str = time2str(self.time, self.time_days)
         return concat(_time_str, self.name)
-
-    @typing.override
-    def __str__(self) -> str:
-        return f'{"W" if self.warning else ""}{self._component_str}'
 
     @pydantic.model_validator(mode="before")
     def check_for_warning(cls, vals: dict[str, float | str]) -> dict[str, float | str]:
@@ -90,6 +77,22 @@ class ActionType(ComponentCommonType):
             vals["warning"] = True
             vals["time"] = _time[1:]
         return vals
+
+
+class ComponentCommonType(Element, pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(validate_default=True, extra="forbid")
+
+
+class StartType(ComponentCommonType, TimedEvent):
+    pass
+
+
+class FinishType(ComponentCommonType):
+    pass
+
+
+class ActionType(ComponentCommonType, TimedEvent):
+    pass
 
 
 class Reference(pydantic.BaseModel):

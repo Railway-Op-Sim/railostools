@@ -5,12 +5,9 @@ import pydantic
 
 import railostools.common.coords as railos_coords
 import railostools.ttb.components as railos_comp
-import railostools.ttb.string as railos_ttb_str
 
 
-class Snt(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Snt(railos_comp.StartType, railos_comp.TimedEvent):
     rear_element_id: railos_coords.Coordinate
     front_element_id: railos_coords.Coordinate
     under_signaller_control: bool = False
@@ -28,9 +25,7 @@ class Snt(railos_comp.StartType, pydantic.BaseModel):
         return railos_comp.concat(*_elements)
 
 
-class Sns(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Sns(railos_comp.StartType, railos_comp.TimedEvent):
     parent_service: railos_comp.Reference
 
     @typing.override
@@ -39,9 +34,7 @@ class Sns(railos_comp.StartType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.parent_service}")
 
 
-class Sfs(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Sfs(railos_comp.StartType, railos_comp.TimedEvent):
     splitting_service: railos_comp.Reference
 
     @typing.override
@@ -50,9 +43,7 @@ class Sfs(railos_comp.StartType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.splitting_service}")
 
 
-class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Sns_fsh(railos_comp.StartType, railos_comp.TimedEvent):
     shuttle_ref: railos_comp.Reference
 
     @typing.override
@@ -61,9 +52,7 @@ class Sns_fsh(railos_comp.StartType, pydantic.BaseModel):
         return railos_comp.concat(_time_str, self.name, f"{self.shuttle_ref}")
 
 
-class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Snt_sh(railos_comp.StartType, railos_comp.TimedEvent):
     rear_element_id: railos_coords.Coordinate
     front_element_id: railos_coords.Coordinate
     shuttle_ref: railos_comp.Reference
@@ -79,9 +68,7 @@ class Snt_sh(railos_comp.StartType, pydantic.BaseModel):
         )
 
 
-class Sns_sh(railos_comp.StartType, pydantic.BaseModel):
-    time: datetime.time
-    time_days: int = 0
+class Sns_sh(railos_comp.StartType, railos_comp.TimedEvent):
     feeder_ref: railos_comp.Reference
     linked_shuttle_ref: railos_comp.Reference
 

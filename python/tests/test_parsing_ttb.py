@@ -168,7 +168,12 @@ def test_location(hour: int) -> None:
 
 @pytest.mark.ttb_parsing
 @pytest.mark.parametrize(
-    "file_name", ("Birmingham_0700_Start.ttb", "SouthWestMainLine.ttb")
+    "file_name",
+    (
+        "Birmingham_0700_Start.ttb",
+        "SouthWestMainLine.ttb",
+        "Brisbane_North_Weekday_0700_1000.ttb",
+    ),
 )
 def test_services_str(file_name: str) -> None:
     _parser = railos_parse.TTBParser()
