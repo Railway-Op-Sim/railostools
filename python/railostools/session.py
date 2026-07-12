@@ -22,7 +22,7 @@ class Session:
         ):
             raise railos_exc.ProgramNotFoundError(self._railos_loc)
 
-    def _check_for_metadata(self, route: str) -> typing.Dict:
+    def _check_for_metadata(self, route: str) -> dict:
         """Check if metadata is available"""
         if not os.path.exists(os.path.join(self._railos_loc, "Metadata")):
             return {}
@@ -43,7 +43,7 @@ class Session:
             f"{os.path.splitext(os.path.basename(route))[0]}.toml",
         )
 
-        _data: typing.Optional[typing.Dict] = {}
+        _data: typing.Optional[dict] = {}
 
         if os.path.exists(_candidate_meta_file):
             _data = toml.load(_candidate_meta_file)

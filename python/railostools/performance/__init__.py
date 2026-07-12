@@ -140,16 +140,14 @@ class Monitor:
         return self._latest
 
     @property
-    def data(self) -> typing.Dict:
+    def data(self) -> dict:
         return self._data
 
     def stop(self) -> None:
         """Force stop the monitor from running"""
         self._is_running = False
 
-    def exec_in_parallel(
-        self, function: typing.Callable, args: typing.Dict = None
-    ) -> None:
+    def exec_in_parallel(self, function: typing.Callable, args: dict = None) -> None:
         if not args:
             args = {}
 
@@ -170,7 +168,7 @@ class Monitor:
 class PerformanceLogParser:
     def __init__(self) -> None:
         self._logger = logging.getLogger("RailOSTools.TTBParser")
-        self.data: typing.Dict[
+        self.data: dict[
             str, list[railos_perf_comp.ClockAdjustment | railos_perf_comp.ServiceEvent]
         ] = {}
         self._file_lines: list[str] = []

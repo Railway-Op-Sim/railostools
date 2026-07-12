@@ -180,6 +180,8 @@ def parse_action(action_str: str) -> railos_comp.ActionType:
         "fsp": parse_fsp,
         "rsp": parse_rsp,
         "cdt": parse_cdt,
+        "cms": parse_cms,
+        "dsc": parse_dsc,
     }
 
     try:

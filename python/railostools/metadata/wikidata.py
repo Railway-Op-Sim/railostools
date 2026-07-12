@@ -30,7 +30,7 @@ class MetadataExpander:
 
         self._unpack_project()
 
-        self._crs_codes: typing.Dict[str, str] = self._extract_crs_codes()
+        self._crs_codes: dict[str, str] = self._extract_crs_codes()
 
         self._get_wikidata(self._metadata["country_code"])
 
@@ -67,7 +67,7 @@ class MetadataExpander:
             None,
         )
 
-    def _get_wikidata(self, country_code: str) -> typing.Dict:
+    def _get_wikidata(self, country_code: str) -> dict:
         _wd_query = wikidspark.query.QueryBuilder()
         _wd_metadata = {}
         if country_code != "GB":

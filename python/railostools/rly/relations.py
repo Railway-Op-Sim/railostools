@@ -1,9 +1,7 @@
 import typing
 import railostools.common.enumeration as railos_enums
 
-CONNECTIONS: typing.Dict[
-    railos_enums.Elements, typing.Optional[typing.Tuple[int, ...]]
-] = {
+CONNECTIONS: dict[railos_enums.Elements, typing.Optional[typing.Tuple[int, ...]]] = {
     railos_enums.Elements.Horizontal: (4, 6),
     railos_enums.Elements.Vertical: (2, 8),
     railos_enums.Elements.Up_Right: (6, 8),
@@ -186,7 +184,7 @@ def can_connect(
     #      7------ 8 ----- 9
     #
 
-    _neighbour_mapping: typing.Dict[int, int] = {
+    _neighbour_mapping: dict[int, int] = {
         1: 9,
         2: 8,
         3: 7,

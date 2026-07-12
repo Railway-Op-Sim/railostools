@@ -101,7 +101,7 @@ class TTBParser:
         ).time()
 
     @property
-    def comments(self) -> typing.Dict[int, str]:
+    def comments(self) -> dict[int, str]:
         """Retrieves all timetable comments along with position in file"""
         return {
             i: c for i, c in enumerate(self._file_lines) if self.is_comment(c)
@@ -141,7 +141,7 @@ class TTBParser:
         _header = parse_header(service_components[0])
         _start_type = parse_start(service_components[1])
 
-        _actions: typing.Dict[str, ttb_comp.ActionType] = {}
+        _actions: dict[str, ttb_comp.ActionType] = {}
 
         _index = 2
 
@@ -199,7 +199,7 @@ class TTBParser:
         self._logger.info(f"Parsing input file '{file_name}'")
         self._current_file = file_name
 
-        _services: typing.Dict[str, ttb_comp.Service] = {}
+        _services: dict[str, ttb_comp.Service] = {}
         for service in self.services_str:
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv

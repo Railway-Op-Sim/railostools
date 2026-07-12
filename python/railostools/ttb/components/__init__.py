@@ -202,8 +202,8 @@ class SignallerService(Service):
 
 class Timetable(pydantic.BaseModel):
     start_time: datetime.time
-    services: typing.Dict[str, TimetabledService | SignallerService]
-    comments: typing.Optional[typing.Dict[int, str]] = None
+    services: dict[str, TimetabledService | SignallerService]
+    comments: typing.Optional[dict[int, str]] = None
 
     @pydantic.field_validator("start_time")
     def to_string(cls, v):

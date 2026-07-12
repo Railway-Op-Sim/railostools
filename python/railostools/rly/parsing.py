@@ -121,10 +121,10 @@ class RlyParser:
 
     def __init__(self) -> None:
         self._logger.debug("Creating new RlyParser")
-        self._rly_data: typing.Dict[str, RlyData] = {}
+        self._rly_data: dict[str, RlyData] = {}
         self._start_time: datetime.time = None
         self._current_file = None
-        self._node_map: typing.Dict[str, igraph.Graph] = {}
+        self._node_map: dict[str, igraph.Graph] = {}
 
     def parse(self, rly_file: str) -> None:
         self._logger.info(f"Parsing RLY file '{rly_file}'")
@@ -268,7 +268,7 @@ class RlyParser:
         ]
 
     @property
-    def named_locations(self) -> typing.Dict[str, TimetableLocation]:
+    def named_locations(self) -> dict[str, TimetableLocation]:
         """Returns list of timetable locations and coordinates
 
         NOTE: These are locations which are of size 2, i.e. would have the
@@ -289,13 +289,13 @@ class RlyParser:
         if "-1" in _location_names:
             _location_names.remove("-1")
 
-        _locations: typing.Dict[str, TimetableLocation] = {}
+        _locations: dict[str, TimetableLocation] = {}
 
         # Iterate through all location names and find the coordinate pairs from which a
         # timetable could commence
         for location in _location_names:
             _locations[location] = TimetableLocation(location, [])
-            _loc_elements: typing.Dict = {"element_types": [], "element_coords": []}
+            _loc_elements: dict = {"element_types": [], "element_coords": []}
 
             # Iterate though all elements and collect the data needed for finding
             # timetable locations
@@ -341,7 +341,7 @@ class RlyParser:
         return _locations
 
     @property
-    def data(self) -> typing.Dict[str, RlyData]:
+    def data(self) -> dict[str, RlyData]:
         if not self._current_file:
             raise RailwayParsingError("No file has been parsed yet")
         return self._rly_data
@@ -436,14 +436,14 @@ class RlyParser:
             "active_elements": lambda x: self._parse_active_element(x),
             "text": lambda x: self._parse_text(x),
         }
-        _signals: typing.Dict[str, typing.Optional[str]] = {
+        _signals: dict[str, typing.Optional[str]] = {
             "G": "ground",
             "4": "4AT",
             "3": "3AT",
             "2": "2AT",
             "*": None,
         }
-        _data_dict: typing.Dict[
+        _data_dict: dict[
             str, typing.Union[Text, ActiveElement, InactiveElement, Metadata]
         ] = {}
         _key = "metadata"
