@@ -1,8 +1,11 @@
+import datetime
 import re
 import railostools.exceptions as railos_exc
 
 
-def adjust_above_24hr(time_candidate: str, error_message: str) -> tuple[str, int]:
+def adjust_above_24hr(
+    time_candidate: str, error_message: str
+) -> tuple[datetime.time, int]:
     _time_regex: re.Pattern[str] = re.compile(r"\d+:\d+")
     _is_timestr: list[str] = _time_regex.findall(time_candidate)
 
@@ -20,4 +23,4 @@ def adjust_above_24hr(time_candidate: str, error_message: str) -> tuple[str, int
         _adj_hours_str: str = f"{'0' if _adj_hours < 10 else ''}{_adj_hours}:"
         time_candidate = time_candidate.replace(f"{_time_hours}:", _adj_hours_str)
 
-    return time_candidate, time_days
+    return datetime.datetime.strptime(time_candidate, "%H:%M").time(), time_days

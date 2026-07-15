@@ -18,9 +18,7 @@ def concat(*args: "Element | str", join_type: type | None = None) -> str:
         return ";".join(str(i) for i in args)
 
 
-def split(
-    component_str: str, split_type: type | None = None
-) -> tuple[list[str], ...] | list[str]:
+def split(component_str: str, split_type: type | None = None) -> list[str]:
     if split_type is Element:
         _split_char = "\0"
     elif split_type is Service:
@@ -182,6 +180,7 @@ class TimetabledService(Service):
     actions: dict[int, ActionType] | None = {}
     repeats: Repeat | None = None
 
+    @typing.override
     def __str__(self) -> str:
         _elements = [f"{self.header}", f"{self.start_type}"]
         if self.actions:
@@ -199,6 +198,7 @@ class SignallerService(Service):
     header: Header
     start_type: StartType
 
+    @typing.override
     def __str__(self) -> str:
         return concat(f"{self.header}", f"{self.start_type}")
 
@@ -206,8 +206,4 @@ class SignallerService(Service):
 class Timetable(pydantic.BaseModel):
     start_time: datetime.time
     services: dict[str, TimetabledService | SignallerService]
-    comments: typing.Optional[dict[int, str]] = None
-
-    @pydantic.field_validator("start_time")
-    def to_string(cls, v):
-        return v.strftime("%H:%M")
+    comments: dict[int, str] | None = None

@@ -1,3 +1,4 @@
+import typing
 import railostools.common.coords as railos_coords
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
@@ -69,7 +70,7 @@ def parse_Fer(finish_components: list[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Frh_sh(finish_components: list[str]) -> railos_finish.Fer:
+def parse_Frh_sh(finish_components: list[str]) -> railos_finish.Frh_sh:
     """Parse an Frh-sh type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -90,7 +91,7 @@ def parse_Frh_sh(finish_components: list[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Fns_sh(finish_components: list[str]) -> railos_finish.Fer:
+def parse_Fns_sh(finish_components: list[str]) -> railos_finish.Fns_sh:
     """Parse an Fns-sh type string"""
     if len(finish_components) != 4:
         raise railos_exc.ParsingError(
@@ -115,7 +116,7 @@ def parse_Fns_sh(finish_components: list[str]) -> railos_finish.Fer:
     )
 
 
-def parse_F_nshs(finish_components: list[str]) -> railos_finish.Fer:
+def parse_F_nshs(finish_components: list[str]) -> railos_finish.F_nshs:
     """Parse an F-nshs type string"""
     if len(finish_components) != 3:
         raise railos_exc.ParsingError(
@@ -136,7 +137,7 @@ def parse_F_nshs(finish_components: list[str]) -> railos_finish.Fer:
     )
 
 
-def parse_Frh(finish_components: list[str]) -> railos_finish.Fer:
+def parse_Frh(finish_components: list[str]) -> railos_finish.Frh:
     """Parse an Frh type string"""
     if len(finish_components) != 1:
         raise railos_exc.ParsingError(
@@ -146,7 +147,7 @@ def parse_Frh(finish_components: list[str]) -> railos_finish.Fer:
     return railos_finish.Frh()
 
 
-def parse_finish(finish_str: str) -> railos_comp.StartType:
+def parse_finish(finish_str: str) -> railos_comp.FinishType:
     PARSE_DICT = {
         "Frh-sh": parse_Frh_sh,
         "Fns-sh": parse_Fns_sh,

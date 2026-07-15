@@ -1,7 +1,7 @@
+from functools import cached_property
 import configparser
-import glob
-import os.path
 import typing
+import pathlib
 
 import toml
 
@@ -10,42 +10,38 @@ import railostools.exceptions as railos_exc
 
 
 class Session:
-    SESSION_FILE = "session.ini"
-    RAILOS_BINARIES: list[str] = ["railway.exe", "RailOS64.exe", "RailOS32.exe"]
-    _parser = configparser.ConfigParser()
+    SESSION_FILE: str = "session.ini"
+    RAILOS_BINARIES: tuple[str, ...] = ("railway.exe", "RailOS64.exe", "RailOS32.exe")
+    _parser: configparser.ConfigParser = configparser.ConfigParser()
 
-    def __init__(self, railway_op_sim_dir: str) -> None:
-        self._railos_loc = railway_op_sim_dir
-        if not any(
-            os.path.exists(os.path.join(self._railos_loc, b))
-            for b in self.RAILOS_BINARIES
-        ):
+    def __init__(self, railway_op_sim_dir: pathlib.Path) -> None:
+        self._railos_loc: pathlib.Path = railway_op_sim_dir
+        if not any(self._railos_loc.joinpath(b).exists() for b in self.RAILOS_BINARIES):
             raise railos_exc.ProgramNotFoundError(self._railos_loc)
 
-    def _check_for_metadata(self, route: str) -> dict:
-        """Check if metadata is available"""
-        if not os.path.exists(os.path.join(self._railos_loc, "Metadata")):
+    def _check_for_metadata(self, route: str) -> dict[str, typing.Any]:
+        """Check if metadata is available."""
+        if not self._railos_loc.joinpath("Metadata").exists():
             return {}
 
         _meta_list = [
-            os.path.splitext(os.path.basename(i))[0]
-            for i in glob.glob(os.path.join(self._railos_loc, "Metadata", "*.toml"))
+            meta_file.stem
+            for meta_file in self._railos_loc.joinpath("Metadata").glob("*.toml")
         ]
 
-        if os.path.splitext(os.path.basename(route))[0] not in _meta_list:
+        if (_route_name := pathlib.Path(route).stem) not in _meta_list:
             return {}
 
         # By default the metadata file for a route should be the same prefix
         # as the route file
-        _candidate_meta_file = os.path.join(
-            self._railos_loc,
+        _candidate_meta_file = self._railos_loc.joinpath(
             "Metadata",
-            f"{os.path.splitext(os.path.basename(route))[0]}.toml",
+            f"{_route_name}.toml",
         )
 
-        _data: typing.Optional[dict] = {}
+        _data: dict[str, typing.Any] | None = {}
 
-        if os.path.exists(_candidate_meta_file):
+        if _candidate_meta_file.exists():
             _data = toml.load(_candidate_meta_file)
         else:
             for meta_file in _meta_list:
@@ -55,12 +51,19 @@ class Session:
 
         return _data
 
-    def read(self) -> None:
+    def read(self) -> list[str]:
         """Read current session metadata"""
-        self._parser.read(os.path.join(self._railos_loc, "session.ini"))
+        return self._parser.read(self._railos_loc.joinpath("session.ini"))
+
+    @cached_property
+    def metadata(self) -> dict[str, typing.Any]:
+        """Retrieve session metadata."""
+        if not self.railway:
+            return {}
+        return self._check_for_metadata(self.railway)
 
     @property
-    def railway(self) -> typing.Optional[str]:
+    def railway(self) -> str | None:
         try:
             return self._parser.get("session", "railway")
         except configparser.NoOptionError:
@@ -82,7 +85,7 @@ class Session:
             ) from e
 
     @property
-    def main_mode(self) -> railos_enum.Level1Mode:
+    def main_mode(self) -> railos_enum.Level1Mode | None:
         """Return the main program mode"""
         try:
             return railos_enum.Level1Mode(self._parser.getint("session", "main_mode"))
@@ -94,7 +97,7 @@ class Session:
             ) from e
 
     @property
-    def operation_mode(self) -> railos_enum.Level2OperMode:
+    def operation_mode(self) -> railos_enum.Level2OperMode | None:
         """Return the program operation mode"""
         try:
             return railos_enum.Level2OperMode(
@@ -108,25 +111,28 @@ class Session:
             ) from e
 
     @property
-    def performance_file(self) -> str:
+    def performance_file(self) -> pathlib.Path | None:
         """Return the performance log file"""
         try:
             _file = self._parser.get("session", "performance_file")
-            if not _file:
-                return None
         except configparser.NoOptionError:
             return None
         except configparser.NoSectionError as e:
             raise railos_exc.SessionINIError(
                 "Expected section 'session' in session file"
             ) from e
-        if os.path.exists(_file):
-            return _file
-        _search = glob.glob(os.path.join(_file, "*.txt"))
-        return _search[0] if _search else None
+        if not _file:
+            return None
+        _perf_file = pathlib.Path(_file)
+        if _perf_file.exists():
+            return _perf_file
+
+        _search = _perf_file.glob("*.txt")
+
+        return next(_search, None)
 
     @property
-    def timetable(self) -> str:
+    def timetable(self) -> str | None:
         """Return the current timetable file"""
         try:
             _file = self._parser.get("session", "timetable")

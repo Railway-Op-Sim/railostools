@@ -1,6 +1,6 @@
+import pathlib
 import datetime
 import json
-import os
 import typing
 
 import pycountry
@@ -26,7 +26,7 @@ class Metadata(pydantic.BaseModel):
     country_code: str = pydantic.Field(
         ..., description="if factual simulation alpha-2 country code, else FN"
     )
-    year: int = pydantic.Field(
+    year: int | None = pydantic.Field(
         None, description="year simulation takes place if applicable"
     )
     factual: bool = pydantic.Field(
@@ -41,42 +41,44 @@ class Metadata(pydantic.BaseModel):
     release_date: str = pydantic.Field(
         ..., description="release date in the form YYYY-MM-DD"
     )
-    display_name: typing.Optional[str] = pydantic.Field(
+    display_name: str | None = pydantic.Field(
         None,
         description="alternative name (name that would be used for display purposes)",
     )
-    description: typing.Optional[str] = pydantic.Field(
+    description: str | None = pydantic.Field(
         None, description="a brief line summary of the project"
     )
-    ssn_files: typing.Optional[list[str]] = pydantic.Field(
+    ssn_files: list[str] | None = pydantic.Field(
         None, description="list of session .ssn files"
     )
-    img_files: typing.Optional[list[str]] = pydantic.Field(
+    img_files: list[str] | None = pydantic.Field(
         None, description="list of image files"
     )
-    graphic_files: typing.Optional[list[str]] = pydantic.Field(
+    graphic_files: list[str] | None = pydantic.Field(
         None, description="list of graphic files"
     )
-    difficulty: int = pydantic.Field(
+    difficulty: int | None = pydantic.Field(
         None, description="estimate of the simulation difficulty"
     )
-    contributors: typing.Optional[list[str]] = pydantic.Field(
+    contributors: list[str] | None = pydantic.Field(
         None,
         description="other contributing authors as list (must match RailOS site author names)",
     )
-    minimum_required: str = pydantic.Field(
+    minimum_required: str | None = pydantic.Field(
         None, description="minimum required RailOS version"
     )
 
+    model_config = ConfigDict(extra="forbid")
+
     @pydantic.field_validator("year")
-    def validate_year(cls, year) -> typing.Optional[int]:
+    def validate_year(cls, year) -> int | None:
         if not year:
             return year
         if year < 1700:
             raise railos_exc.MetadataError("Expected year value to be > 1700")
 
     @pydantic.field_validator("difficulty")
-    def validate_difficulty(cls, difficulty) -> typing.Optional[int]:
+    def validate_difficulty(cls, difficulty) -> int | None:
         if not difficulty:
             return difficulty
         if difficulty < 1 or difficulty > 5:
@@ -110,19 +112,18 @@ class Metadata(pydantic.BaseModel):
             ) from e
         return version
 
+    @typing.override
     def __str__(self) -> str:
         return json.dumps(self.__dict__, indent=2)
 
-    def write(self, outfile_name: str) -> None:
+    def write(self, outfile_name: str | pathlib.Path) -> str:
         """Write to output file"""
-        if os.path.splitext(outfile_name) != ".toml":
+        if pathlib.Path(outfile_name).suffix != ".toml":
             raise railos_exc.IOError(
                 "Invalid filename for metadata file, expected TOML file"
             )
-        toml.dump(self.__dict__, open(outfile_name, "w"))
-
-    model_config = ConfigDict(extra="forbid")
+        return toml.dump(self.__dict__, open(outfile_name, "w"))
 
 
-def validate(input_file: str) -> None:
-    Metadata(**toml.load(input_file))
+def validate(input_file: str | pathlib.Path) -> Metadata:
+    return Metadata(**toml.load(input_file))

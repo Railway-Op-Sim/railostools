@@ -97,7 +97,7 @@ def parse_fsp(action_components: list[str]) -> railos_act.fsp:
     )
 
 
-def parse_dsc(action_components: list[str]) -> railos_act.fsp:
+def parse_dsc(action_components: list[str]) -> railos_act.dsc:
     """Parse a dsc statement"""
     if len(action_components) != 3:
         raise railos_exc.ParsingError(
@@ -117,7 +117,7 @@ def parse_dsc(action_components: list[str]) -> railos_act.fsp:
     )
 
 
-def parse_cms(action_components: list[str]) -> railos_act.fsp:
+def parse_cms(action_components: list[str]) -> railos_act.cms:
     """Parse a cms statement"""
     if len(action_components) != 3:
         raise railos_exc.ParsingError(
@@ -133,7 +133,7 @@ def parse_cms(action_components: list[str]) -> railos_act.fsp:
     )
 
     return railos_act.cms(
-        time=_time_str, time_days=_time_days, new_speed=_new_max_speed
+        time=_time_str, time_days=_time_days, new_speed=int(_new_max_speed)
     )
 
 

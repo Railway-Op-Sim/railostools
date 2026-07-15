@@ -71,21 +71,25 @@ class TTBParser:
     @property
     def average_service_density(self) -> float:
         """Calculates the average service density of the timetable"""
-        _times = []
+        _times: list[int] = []
         for service in self.data.services.values():
-            _datetimes = [
-                datetime.datetime.strptime(action.time, "%H:%M")
-                for action in service.actions.values()
+            if (
+                not isinstance(service, ttb_comp.TimetabledService)
+                or not service.actions
+            ):
+                continue
+            _datetimes: list[datetime.time] = [
+                action.time for action in service.actions.values()
             ]
             _times.extend(
                 (time.hour * 60 + time.minute) * 60 + time.second for time in _datetimes
             )
-        _times = numpy.array(_times)
-        _binned_times: numpy.ndarray = numpy.bincount(_times).mean()
+        _times_array: numpy.ndarray = numpy.array(_times)
+        _binned_times: numpy.float64 = numpy.bincount(_times_array).mean()
         return _binned_times
 
     @property
-    def start_time(self) -> datetime.datetime:
+    def start_time(self) -> datetime.time:
         """Retrieves the timetable start time"""
         _index: int = 0
 
@@ -101,7 +105,7 @@ class TTBParser:
         ).time()
 
     @property
-    def comments(self) -> dict[int, str]:
+    def comments(self) -> dict[int, str] | None:
         """Retrieves all timetable comments along with position in file"""
         return {
             i: c for i, c in enumerate(self._file_lines) if self.is_comment(c)
@@ -136,12 +140,14 @@ class TTBParser:
         """Retrieve all timetable keys"""
         return self._data.keys()
 
-    def _parse_service(self, service_components: list[str]) -> ttb_comp.Service:
+    def _parse_service(
+        self, service_components: list[str]
+    ) -> ttb_comp.TimetabledService | ttb_comp.SignallerService:
         """Parse a single service from the components"""
         _header = parse_header(service_components[0])
         _start_type = parse_start(service_components[1])
 
-        _actions: dict[str, ttb_comp.ActionType] = {}
+        _actions: dict[int, ttb_comp.ActionType] = {}
 
         _index = 2
 
@@ -199,7 +205,9 @@ class TTBParser:
         self._logger.info(f"Parsing input file '{file_name}'")
         self._current_file = file_name
 
-        _services: dict[str, ttb_comp.Service] = {}
+        _services: dict[str, ttb_comp.TimetabledService | ttb_comp.SignallerService] = (
+            {}
+        )
         for service in self.services_str:
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv

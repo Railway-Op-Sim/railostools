@@ -1,4 +1,5 @@
 import typing
+import pathlib
 
 
 class ParsingError(Exception):
@@ -25,7 +26,7 @@ class MetadataError(Exception):
 class ProgramNotFoundError(Exception):
     """Exceptions relating to project metadata"""
 
-    def __init__(self, location: str) -> None:
+    def __init__(self, location: pathlib.Path) -> None:
         super().__init__(
             f"Failed to locate Railway Operation Simulator in '{location}'"
         )

@@ -1,3 +1,4 @@
+import pathlib
 import logging
 import os
 
@@ -39,10 +40,10 @@ def ttb2json(ttb_file: str, output: str = "") -> None:
     ttb_parser.json(output)
 
 
-@railostools.command()
+@railostools.command("validate")
 @click.argument("input_file")
 @click.option("--dump/--silent", help="Write out JSON to stdout", default=False)
-def validate(input_file: str, dump: bool):
+def validate_input(input_file: str, dump: bool):
     """Validate Railway Operation Simulator file"""
     if not os.path.exists(input_file):
         raise FileNotFoundError(
@@ -102,10 +103,14 @@ def rly2json(rly_file: str, output: str):
 
 
 @railostools.command("metadata-expand")
-@click.argument("project_directory")
-def metadata_expander(project_directory: str) -> None:
+@click.argument(
+    "project_directory",
+    type=click.Path(path_type=pathlib.Path, file_okay=False, executable=False),
+)
+def metadata_expander(project_directory: pathlib.Path) -> None:
     """Expand metadata for a Railway Operation Simulator project using Wikidata"""
     from railostools.metadata.wikidata import MetadataExpander
+
     logging.getLogger().setLevel(logging.INFO)
     _expander = MetadataExpander(project_directory)
     _expander.append_metadata()
