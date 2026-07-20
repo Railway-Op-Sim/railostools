@@ -1,3 +1,4 @@
+from typing_extensions import Literal
 import pathlib
 import datetime
 import json
@@ -67,6 +68,7 @@ class Metadata(pydantic.BaseModel):
     minimum_required: str | None = pydantic.Field(
         None, description="minimum required RailOS version"
     )
+    signal_position: Literal["left", "right"] = "left"
 
     model_config = ConfigDict(extra="forbid")
 
