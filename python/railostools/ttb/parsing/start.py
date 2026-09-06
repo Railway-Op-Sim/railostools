@@ -16,8 +16,8 @@ def parse_Snt(start_components: list[str]) -> railos_start.Snt:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Snt'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Snt'" f"but received '{start_components[0].replace("W", "")}'",
     )
 
     _start_pos_r, _start_pos_f = start_components[2].split()
@@ -51,8 +51,8 @@ def parse_Sns(start_components: list[str]) -> railos_start.Sfs:
             f"'{start_components}' for start type 'Sns'"
         )
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Sns'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Sns'" f"but received '{start_components[0].replace("W", "")}'",
     )
     _parent_srv = railos_parse_comp.parse_reference(start_components[2])
     return railos_start.Sns(
@@ -67,8 +67,8 @@ def parse_Sfs(start_components: list[str]) -> railos_start.Sfs:
             f"'{start_components}' for start type 'Sfs'"
         )
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Sfs'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Sfs'" f"but received '{start_components[0].replace("W", "")}'",
     )
     _split_srv = railos_parse_comp.parse_reference(start_components[2])
     return railos_start.Sfs(
@@ -83,8 +83,8 @@ def parse_Sns_fsh(start_components: list[str]) -> railos_start.Sns_fsh:
             f"'{start_components}' for start type 'Sns-fsh'"
         )
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Sns-fsh'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Sns-fsh'" f"but received '{start_components[0].replace("W", "")}'",
     )
     _split_srv = railos_parse_comp.parse_reference(start_components[2])
     return railos_start.Sns_fsh(
@@ -99,8 +99,8 @@ def parse_Snt_sh(start_components: list[str]) -> railos_start.Snt_sh:
             f"'{start_components}' for start type 'Snt-sh'"
         )
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Snt-sh'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Snt-sh'" f"but received '{start_components[0].replace("W", "")}'",
     )
     _start_pos_r, _start_pos_f = start_components[2].split()
 
@@ -125,8 +125,8 @@ def parse_Sns_sh(start_components: list[str]) -> railos_start.Sns_sh:
             f"'{start_components}' for start type 'Sns-sh'"
         )
     _time_str, _time_days = adjust_above_24hr(
-        start_components[0],
-        "Expected time string for 'Sns-sh'" f"but received '{start_components[0]}'",
+        start_components[0].replace("W", ""),
+        "Expected time string for 'Sns-sh'" f"but received '{start_components[0].replace("W", "")}'",
     )
 
     _feeder_srv = railos_parse_comp.parse_reference(start_components[3])

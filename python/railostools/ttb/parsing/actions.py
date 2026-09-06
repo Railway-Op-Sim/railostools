@@ -13,9 +13,9 @@ def parse_location(action_components: list[str]) -> railos_act.Location:
         )
 
     _start_time, _start_days = adjust_above_24hr(
-        action_components[0],
+        action_components[0].replace("W", ""),
         "Expected time string for arrival time in location "
-        f"but received '{action_components[0]}'",
+        f"but received '{action_components[0].replace("W", "")}'",
     )
     _end_time: str | None = None
     _end_days: int | None = None
@@ -48,8 +48,8 @@ def parse_pas(action_components: list[str]) -> railos_act.Location:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'pas'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'pas'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.pas(
@@ -66,8 +66,8 @@ def parse_jbo(action_components: list[str]) -> railos_act.Location:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'jbo'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'jbo'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     _joined_ref = railos_parse_comp.parse_reference(action_components[2])
@@ -88,8 +88,8 @@ def parse_fsp(action_components: list[str]) -> railos_act.fsp:
     _new_serv = railos_parse_comp.parse_reference(action_components[2])
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'fsp'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'fsp'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.fsp(
@@ -108,8 +108,8 @@ def parse_dsc(action_components: list[str]) -> railos_act.dsc:
     _description = action_components[2]
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'dsc'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'dsc'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.dsc(
@@ -128,8 +128,8 @@ def parse_cms(action_components: list[str]) -> railos_act.cms:
     _new_max_speed = action_components[2]
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'dsc'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'dsc'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.cms(
@@ -148,8 +148,8 @@ def parse_rsp(action_components: list[str]) -> railos_act.rsp:
     _new_serv = railos_parse_comp.parse_reference(action_components[2])
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'rsp'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'rsp'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.rsp(
@@ -166,8 +166,8 @@ def parse_cdt(action_components: list[str]) -> railos_act.fsp:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        action_components[0],
-        "Expected time string for 'cdt'" f"but received '{action_components[0]}'",
+        action_components[0].replace("W", ""),
+        "Expected time string for 'cdt'" f"but received '{action_components[0].replace("W", "")}'",
     )
 
     return railos_act.cdt(time=_time_str, time_days=_time_days)

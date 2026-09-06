@@ -2,6 +2,7 @@ from functools import cached_property
 import configparser
 import typing
 import pathlib
+import pydantic
 
 import toml
 
@@ -14,7 +15,8 @@ class Session:
     RAILOS_BINARIES: tuple[str, ...] = ("railway.exe", "RailOS64.exe", "RailOS32.exe")
     _parser: configparser.ConfigParser = configparser.ConfigParser()
 
-    def __init__(self, railway_op_sim_dir: pathlib.Path) -> None:
+    @pydantic.validate_call
+    def __init__(self, railway_op_sim_dir: pydantic.DirectoryPath) -> None:
         self._railos_loc: pathlib.Path = railway_op_sim_dir
         if not any(self._railos_loc.joinpath(b).exists() for b in self.RAILOS_BINARIES):
             raise railos_exc.ProgramNotFoundError(self._railos_loc)

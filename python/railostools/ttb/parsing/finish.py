@@ -16,9 +16,9 @@ def parse_Fns(finish_components: list[str]) -> railos_finish.Fns:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'Snt'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _new_srv = railos_parse_comp.parse_reference(finish_components[2])
@@ -36,9 +36,9 @@ def parse_Fjo(finish_components: list[str]) -> railos_finish.Fjo:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'Fjo'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _joining_srv = railos_parse_comp.parse_reference(finish_components[2])
@@ -56,9 +56,9 @@ def parse_Fer(finish_components: list[str]) -> railos_finish.Fer:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'Fjo'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _exit_elements = [
@@ -79,9 +79,9 @@ def parse_Frh_sh(finish_components: list[str]) -> railos_finish.Frh_sh:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'Frh-sh'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _linked_ref = railos_parse_comp.parse_reference(finish_components[2])
@@ -100,9 +100,9 @@ def parse_Fns_sh(finish_components: list[str]) -> railos_finish.Fns_sh:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'Fns-sh'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _linked_shuttle_ref = railos_parse_comp.parse_reference(finish_components[2])
@@ -125,9 +125,9 @@ def parse_F_nshs(finish_components: list[str]) -> railos_finish.F_nshs:
         )
 
     _time_str, _time_days = adjust_above_24hr(
-        finish_components[0],
+        finish_components[0].replace("W", ""),
         "Expected time string for finish type 'F-nshs'"
-        f"but received '{finish_components[0]}'",
+        f"but received '{finish_components[0].replace("W", "")}'",
     )
 
     _linked_shuttle_ref = railos_parse_comp.parse_reference(finish_components[2])

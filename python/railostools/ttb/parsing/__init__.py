@@ -6,8 +6,6 @@ This module provides a parser for Railway Operation Simulator (RailOS) timetable
 It includes functionality to parse TTB files, extract timetable data, and convert it to JSON format.
 """
 
-from tkinter import W
-
 import datetime
 import json
 import logging
