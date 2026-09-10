@@ -1,10 +1,9 @@
-import datetime
 import typing
-
-import pydantic
 
 import railostools.common.coords as railos_coords
 import railostools.ttb.components as railos_comp
+
+type Start = typing.Literal["Snt", "Sns", "Sns_sh", "Sns_fsh", "Sfs", "Snt_sh"]
 
 
 class Snt(railos_comp.StartType, railos_comp.TimedEvent):

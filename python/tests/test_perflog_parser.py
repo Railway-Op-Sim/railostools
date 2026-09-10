@@ -1,5 +1,6 @@
-import pytest
 import os.path
+
+import pytest
 
 import railostools.performance as railos_perf
 

@@ -1,16 +1,16 @@
-from typing_extensions import Literal
-import pathlib
 import datetime
 import json
+import pathlib
 import typing
+from typing import Literal
 
 import pycountry
 import pydantic
 import semver
 import toml
+from pydantic import ConfigDict
 
 import railostools.exceptions as railos_exc
-from pydantic import ConfigDict
 
 
 class Metadata(pydantic.BaseModel):

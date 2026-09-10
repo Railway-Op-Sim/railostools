@@ -1,7 +1,8 @@
-import pytest
 import json
 import os
 import tempfile
+
+import pytest
 
 from railostools.rly.parsing import RlyParser
 

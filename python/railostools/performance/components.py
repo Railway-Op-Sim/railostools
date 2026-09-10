@@ -1,7 +1,8 @@
-import pydantic
 import datetime
 import enum
-import typing
+
+import pydantic
+
 
 class TimetableLogEvent(str, enum.Enum):
     CHANGED_DIRECTION = "changed direction"
@@ -23,14 +24,14 @@ class ClockSpeed(str, enum.Enum):
 
 class ClockAdjustment(pydantic.BaseModel):
     time: datetime.time
-    offset: typing.Optional[datetime.timedelta]=None
-    speed: typing.Optional[ClockSpeed]=None
+    offset: datetime.timedelta | None=None
+    speed: ClockSpeed | None=None
 
 class ServiceEvent(pydantic.BaseModel):
     time: datetime.time
     actual_offset: int
     headcode: str
     action: TimetableLogEvent
-    location: typing.Optional[str] = None
+    location: str | None = None
     error: bool = False
     time_days: int=0

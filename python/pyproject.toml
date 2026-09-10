@@ -40,6 +40,7 @@ lint.mccabe.max-complexity = 11
 markers = [
     "ttb_strings: timetable string tests",
     "ttb_parsing: tests smaller parsing operations in timetables",
+    "ttb_create: timetable creation tests",
     "metadata: tests for metadata parsing",
     "session: tests for the session data parsing",
     "rly_parsing: tests parsing of rly file",

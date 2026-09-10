@@ -1,10 +1,16 @@
-import datetime
 import typing
-
-import pydantic
 
 import railostools.common.coords as railos_coords
 import railostools.ttb.components as railos_comp
+
+type Finish = typing.Literal[
+    "Fns",
+    "Frh",
+    "Fns-sh",
+    "Fjo",
+    "F-nshs",
+    "Fer",
+]
 
 
 class Fns(railos_comp.FinishType, railos_comp.TimedEvent):

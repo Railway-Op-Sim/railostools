@@ -1,4 +1,3 @@
-import typing
 import re
 
 import railostools.exceptions as railos_exc

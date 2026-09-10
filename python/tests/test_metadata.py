@@ -1,4 +1,5 @@
 import os.path
+
 import pytest
 
 import railostools.metadata.validation as railos_meta_valid

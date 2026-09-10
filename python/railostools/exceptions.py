@@ -1,5 +1,5 @@
-import typing
 import pathlib
+import typing
 
 
 class ParsingError(Exception):

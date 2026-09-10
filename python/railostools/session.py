@@ -1,9 +1,9 @@
-from functools import cached_property
 import configparser
-import typing
 import pathlib
-import pydantic
+import typing
+from functools import cached_property
 
+import pydantic
 import toml
 
 import railostools.common.enumeration as railos_enum
@@ -113,7 +113,7 @@ class Session:
             ) from e
 
     @property
-    def performance_file(self) -> pathlib.Path | None:
+    def performance_file(self) -> pathlib.Path | pathlib.WindowsPath | None:
         """Return the performance log file"""
         try:
             _file = self._parser.get("session", "performance_file")

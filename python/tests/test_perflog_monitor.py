@@ -1,10 +1,10 @@
-import os.path
 import asyncio
-import tempfile
+import logging
+import os.path
 import shutil
+import tempfile
 
 import pytest
-import logging
 
 from railostools.performance import Monitor
 

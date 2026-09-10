@@ -1,4 +1,3 @@
-import typing
 import railostools.common.coords as railos_coords
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp

@@ -1,11 +1,12 @@
 import asyncio
+import datetime
 import glob
 import inspect
 import logging
 import os
 import re
 import typing
-import datetime
+
 import pydantic
 
 import railostools.exceptions as rexc
@@ -172,7 +173,7 @@ class PerformanceLogParser:
             str, list[railos_perf_comp.ClockAdjustment | railos_perf_comp.ServiceEvent]
         ] = {}
         self._file_lines: list[str] = []
-        self._current_file: typing.Optional[str] = None
+        self._current_file: str | None = None
 
     def __getitem__(
         self, item: str
@@ -243,7 +244,7 @@ class PerformanceLogParser:
                     raise e
         return _file_data
 
-    def _parse_score(self, lines: list[str]) -> typing.Tuple[int | None, str | None]:
+    def _parse_score(self, lines: list[str]) -> tuple[int | None, str | None]:
         _line_str: str = "\n".join(lines)
         _score_line_re = re.findall(r"Overall score: (\d+)%", _line_str)
         _score_rating_re = re.findall(r"Overall rating: (\w+)", _line_str)

@@ -1,12 +1,12 @@
 import datetime
 import typing
+from typing import Annotated
 
 import pydantic
+from pydantic import ConfigDict, Field, StringConstraints
 
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
-from pydantic import Field, StringConstraints, ConfigDict
-from typing_extensions import Annotated
 
 
 def concat(*args: "Element | str", join_type: type | None = None) -> str:
@@ -61,7 +61,7 @@ class TimedEvent(Element, pydantic.BaseModel):
 
     @typing.override
     def __str__(self) -> str:
-        return f'{"W" if self.warning else ""}{self._component_str}'
+        return f"{'W' if self.warning else ''}{self._component_str}"
 
     @property
     def _component_str(self) -> str:
@@ -101,12 +101,30 @@ class Reference(pydantic.BaseModel):
         | Annotated[str, StringConstraints(min_length=2, max_length=2)]
     )
 
+    @classmethod
+    def from_str(cls, train_ref: str) -> "Reference":
+        if len(train_ref) > 8 or len(train_ref) < 4:
+            raise railos_exc.ParsingError(
+                f"Length of service reference '{train_ref}' must be between 4 and 8"
+            )
+        _headcode = train_ref[-4:]
+        _hc_service = _headcode[:2]
+
+        try:
+            _hc_id = int(_headcode[2:])
+        except ValueError:
+            _hc_id = _headcode[2:]
+
+        _prefix = train_ref[: len(train_ref) - 4] if len(train_ref) > 4 else None
+
+        return cls(prefix=_prefix, service=_hc_service, id=_hc_id)
+
     def __str__(self) -> str:
         if isinstance(self.id, int):
             _id_str = str(self.id) if len(str(self.id)) == 2 else f"0{self.id}"
         else:
             _id_str = self.id
-        return f'{self.prefix or ""}{self.service}{_id_str}'
+        return f"{self.prefix or ''}{self.service}{_id_str}"
 
     def __iadd__(self, num: int) -> None:
         if isinstance(self.id, str):

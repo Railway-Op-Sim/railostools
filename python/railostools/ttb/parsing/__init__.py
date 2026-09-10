@@ -7,12 +7,13 @@ It includes functionality to parse TTB files, extract timetable data, and conver
 """
 
 import datetime
+import io
 import json
 import logging
 import os.path
 import re
 import typing
-import io
+
 import numpy
 
 logging.basicConfig()
@@ -153,7 +154,7 @@ class TTBParser:
             [
                 _header.max_signaller_speed,
                 hasattr(_start_type, "under_signaller_control")
-                and getattr(_start_type, "under_signaller_control"),
+                and _start_type.under_signaller_control,
             ]
         )
 

@@ -1,7 +1,7 @@
-import typing
+
 import railostools.common.enumeration as railos_enums
 
-CONNECTIONS: dict[railos_enums.Elements, typing.Optional[typing.Tuple[int, ...]]] = {
+CONNECTIONS: dict[railos_enums.Elements, tuple[int, ...] | None] = {
     railos_enums.Elements.Horizontal: (4, 6),
     railos_enums.Elements.Vertical: (2, 8),
     railos_enums.Elements.Up_Right: (6, 8),
@@ -156,8 +156,8 @@ CONNECTIONS: dict[railos_enums.Elements, typing.Optional[typing.Tuple[int, ...]]
 def can_connect(
     element_one_type: railos_enums.Elements,
     element_two_type: railos_enums.Elements,
-    coord_1: typing.Optional[typing.Tuple[int, int]] = None,
-    coord_2: typing.Optional[typing.Tuple[int, int]] = None,
+    coord_1: tuple[int, int] | None = None,
+    coord_2: tuple[int, int] | None = None,
 ) -> bool:
     """Return whether two element types form a connection.
 

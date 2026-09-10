@@ -1,7 +1,7 @@
-import pathlib
-from collections.abc import MutableMapping
-import typing
 import logging
+import pathlib
+import typing
+from collections.abc import MutableMapping
 
 try:
     import wikidspark.query
@@ -10,12 +10,14 @@ except ImportError:
         "Wikidata functionality is unavailable, the [wikidata] optional extra must be installed."
     )
 
-import railostools.rly.parsing
+import glob
 import json
 import os.path
-import toml
-import glob
 import time
+
+import toml
+
+import railostools.rly.parsing
 
 logging.basicConfig()
 

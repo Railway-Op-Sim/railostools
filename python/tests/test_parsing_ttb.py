@@ -1,11 +1,12 @@
 import os.path
 
 import pytest
+
+import railostools.ttb.components as railos_ttb_str
 import railostools.ttb.parsing as railos_parse
 import railostools.ttb.parsing.actions as railosparse_act
 import railostools.ttb.parsing.finish as railosparse_finish
 import railostools.ttb.parsing.start as railosparse_start
-import railostools.ttb.components as railos_ttb_str
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

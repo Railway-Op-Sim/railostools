@@ -1,5 +1,5 @@
 import re
-import typing
+from typing import ClassVar
 
 import pydantic
 
@@ -10,7 +10,9 @@ class Coordinate(pydantic.BaseModel):
     X: int
     Y: int
 
-    def __getitem__(self, index) -> typing.Tuple[int, int]:
+    model_config: ClassVar[pydantic.ConfigDict] = {"extra": "forbid"}
+
+    def __getitem__(self, index) -> int:
         if index < 0 or index > 1:
             raise ValueError("Index must be 0, 1")
         return self.X if index == 0 else self.Y
@@ -43,3 +45,8 @@ def coord_from_str(coordinate_str: str) -> Coordinate:
     _coord = coordinate_str.split("-")
     _args = dict(zip(("X", "Y"), (int(i.replace("N", "-")) for i in _coord)))
     return Coordinate(**_args)
+
+
+@pydantic.validate_call
+def coordinate(x: int, y: int) -> Coordinate:
+    return Coordinate(X=x, Y=y)

@@ -1,10 +1,11 @@
-import pytest
-import pytest_mock
 import os.path
 
-import railostools.session as railos_sesh
+import pytest
+import pytest_mock
+
 import railostools.common.enumeration as railos_enum
 import railostools.exceptions as railos_exc
+import railostools.session as railos_sesh
 
 SESSION_FILE = os.path.join(os.path.dirname(__file__), "data", "session.ini")
 
@@ -26,6 +27,6 @@ def test_session_pass(mocker: pytest_mock.MockerFixture) -> None:
     assert _session.main_mode == railos_enum.Level1Mode(3)
     assert _session.operation_mode == railos_enum.Level2OperMode(3)
     assert (
-        _session.performance_file.split("\\")[-1]
+        f"{_session.performance_file}".rsplit("\\", 1)[-1]
         == "Log 23-03-2022 18.46.06; Birmingham; Birmingham 0700 Start.txt"
     )

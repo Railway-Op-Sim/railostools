@@ -1,14 +1,14 @@
-import pathlib
+import json
 import logging
 import os
+import pathlib
 
 import click
-import json
 
+import railostools.exceptions as railos_exc
 from railostools.metadata.validation import validate
 from railostools.rly.parsing import RlyParser
 from railostools.ttb.parsing import TTBParser
-import railostools.exceptions as railos_exc
 
 logging.basicConfig()
 
