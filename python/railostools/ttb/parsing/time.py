@@ -1,5 +1,8 @@
 import datetime
 import re
+from typing import Annotated
+
+from pydantic import BeforeValidator, StringConstraints
 
 import railostools.exceptions as railos_exc
 
@@ -25,3 +28,12 @@ def adjust_above_24hr(
         time_candidate = time_candidate.replace(f"{_time_hours}:", _adj_hours_str)
 
     return datetime.datetime.strptime(time_candidate, "%H:%M").time(), time_days
+
+
+def _time_str_check(time: str) -> str:
+    return datetime.datetime.strptime(time, "%H:%M").time()
+
+
+type TimeStr = Annotated[
+    str, StringConstraints(pattern=r"^\d{2}:\d{2}$"), AfterValidator(_time_str_check)
+]

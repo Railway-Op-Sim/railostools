@@ -20,7 +20,7 @@ def test_new_service() -> None:
             mass=546,
             start_time=datetime.datetime.strptime("11:38", "%H:%S").time(),
         )
-        .call_at("Gunnislake", "11:34")
-        .call_at("Calstock", "11:25")
+        .depart("Gunnislake", "11:34")
+        .call_at("Calstock", "11:25", "11:26")
         .become("1A34", "11:26")
     )

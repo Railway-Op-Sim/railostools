@@ -1,6 +1,6 @@
+from collections.abc import Mapping
 import datetime
-from typing import Any, ClassVar, Self
-
+from typing import Any, ClassVar, Iterator, Self, cast
 import pydantic
 
 from railostools.common.coords import Coordinate
@@ -9,15 +9,14 @@ from railostools.ttb.components.actions import Location, cms, dsc, jbo, pas, rsp
 
 from .components.finish import Finish, Fjo
 from .components.start import Sns, Snt, Start
-from .parsing.time import adjust_above_24hr
+from .parsing.time import TimeStr, adjust_above_24hr
 
 
-class Service(pydantic.BaseModel):
+class Service(pydantic.BaseModel, Mapping):
     start_type: Start = "Snt"
     reference: Reference
     parent_reference: Reference | None = None
     start_time: datetime.time
-    offset_days: pydantic.NonNegativeInt = 0
     start_speed: pydantic.NonNegativeInt | None = None
     max_speed: pydantic.PositiveInt
     mass: pydantic.PositiveInt
@@ -44,7 +43,6 @@ class Service(pydantic.BaseModel):
                 raise ValueError("A start position must be provided for type 'Snt'")
             _start: StartType = Snt(
                 time=self.start_time,
-                time_days=self.offset_days,
                 rear_element_id=self.start_position[0],
                 front_element_id=self.start_position[1],
             )
@@ -53,7 +51,6 @@ class Service(pydantic.BaseModel):
                 raise ValueError("A parent reference must be provided for type 'Sns'")
             _start = Sns(
                 time=self.start_time,
-                time_days=self.offset_days,
                 parent_service=self.parent_reference,
             )
         else:
@@ -61,6 +58,18 @@ class Service(pydantic.BaseModel):
 
         self._actions[_start.time] = _start
         return self
+
+    def __getitem__(self, key: str | datetime.time, /) -> Element:
+        _key: datetime.time
+        if isinstance(key, str):
+            _key, _ = adjust_above_24hr(
+                time_candidate=key,
+                error_message="Failed to convert key for item retrieval",
+            )
+        return self._actions.__getitem__(_key)
+
+    def __len__(self) -> int:
+        return len(self._actions)
 
     def add_item(self, item: TimedEvent) -> None:
         if self.finish_type is not None:
@@ -83,34 +92,39 @@ class Service(pydantic.BaseModel):
             "mass": self.mass,
         }
 
-    def call_at(self, location: str, time: str) -> Self:
-        """Add call at event."""
-        _time, _offset = adjust_above_24hr(
-            time_candidate=time, error_message="Invalid time format for location event."
+    def _location(
+        self, location: str, time: TimeStr, end_time: TimeStr | None = None
+    ) -> Self:
+        _location = Location(
+            location=location,
+            time=cast(datetime.time, time),
+            end_time=cast(datetime.time | None, end_time),
         )
-        _location = Location(location=location, time=_time, time_days=_offset)
         self.add_item(_location)
         return self
 
-    def pass_location(self, location: str, time: str) -> Self:
+    def call_at(self, location: str, arrive: TimeStr, depart: TimeStr) -> Self:
+        return self._location(location=location, time=arrive, end_time=depart)
+
+    def depart(self, location: str, time: TimeStr) -> Self:
+        return self._location(location=location, time=time)
+
+    def arrive(self, location: str, time: TimeStr) -> Self:
+        return self._location(location=location, time=time)
+
+    def pass_location(self, location: str, time: TimeStr) -> Self:
         """Pass a location at the given time."""
-        _time, _offset = adjust_above_24hr(
-            time_candidate=time, error_message="Invalid time format for pass event."
-        )
-        _pass = pas(location=location, time=_time, time_days=_offset)
+        _pass = pas(location=location, time=cast(datetime.time, time))
         self.add_item(_pass)
         return self
 
-    def rear_split(self, reference: str, time: str) -> "Service":
-        _start, _offset = adjust_above_24hr(
-            time_candidate=time, error_message="Failed to split time"
-        )
-        _rsplit = rsp(time=_start, time_days=_offset, new_service_ref=reference)
+    def rear_split(self, reference: str, time: TimeStr) -> "Service":
+        _rsplit = rsp(time=cast(datetime.time, time), new_service_ref=Reference.from_str(reference))
         self.add_item(_rsplit)
         return self.__class__(
             start_type="Sns",
-            reference=reference,
-            start_time=time,
+            reference=Reference.from_str(reference),
+            start_time=cast(datetime.time, time),
             **self.specifications,
         )
 
@@ -165,7 +179,6 @@ class Service(pydantic.BaseModel):
         return self.__class__(
             start_type="Sns",
             start_time=_time,
-            offset_days=_offset,
             reference=Reference.from_str(new_reference),
             parent_reference=self.reference,
             **self.specifications,

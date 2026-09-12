@@ -12,7 +12,6 @@ import json
 import logging
 import os.path
 import re
-import typing
 
 import numpy
 
@@ -204,9 +203,9 @@ class TTBParser:
         self._logger.info(f"Parsing input file '{file_name}'")
         self._current_file = file_name
 
-        _services: dict[str, ttb_comp.TimetabledService | ttb_comp.SignallerService] = (
-            {}
-        )
+        _services: dict[
+            str, ttb_comp.TimetabledService | ttb_comp.SignallerService
+        ] = {}
         for service in self.services_str:
             _srv = self._parse_service(service)
             _services[str(_srv.header.reference)] = _srv

@@ -35,6 +35,7 @@ dev = [
 [tool.ruff]
 lint.extend-select = ["C901", "T201"]
 lint.mccabe.max-complexity = 11
+target-version = "py314"
 
 [tool.pytest.ini_options]
 markers = [
@@ -53,10 +54,9 @@ ignore_missing_imports = true
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py311, py312, py313, py314
+envlist = py312, py313, py314
 [gh-actions]
 python =
-    3.11: py311
     3.12: py312
     3.13: py313
     3.14: py314
@@ -66,3 +66,6 @@ python =
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.basedpyright]
+reportInvalidCast = "warning"
