@@ -2,7 +2,7 @@ import datetime
 import re
 from typing import Annotated
 
-from pydantic import BeforeValidator, StringConstraints
+from pydantic import AfterValidator, StringConstraints
 
 import railostools.exceptions as railos_exc
 
@@ -27,11 +27,11 @@ def adjust_above_24hr(
         _adj_hours_str: str = f"{'0' if _adj_hours < 10 else ''}{_adj_hours}:"
         time_candidate = time_candidate.replace(f"{_time_hours}:", _adj_hours_str)
 
-    return datetime.datetime.strptime(time_candidate, "%H:%M").time(), time_days
+    return datetime.datetime.strptime(time_candidate, "%H:%M").replace(tzinfo=datetime.UTC).time(), time_days
 
 
-def _time_str_check(time: str) -> str:
-    return datetime.datetime.strptime(time, "%H:%M").time()
+def _time_str_check(time: str) -> datetime.time:
+    return datetime.datetime.strptime(time, "%H:%M").replace(tzinfo=datetime.UTC).time()
 
 
 type TimeStr = Annotated[

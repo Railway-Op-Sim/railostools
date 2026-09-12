@@ -159,7 +159,6 @@ def test_cms(hour: int) -> None:
 @pytest.mark.parametrize("hour", (10, 27), ids=("<24hr", ">24hr"))
 def test_location(hour: int) -> None:
     TEST_STR = f"{hour}:11;{hour}:12;Longbridge"
-    print(TEST_STR)
     _result = railosparse_act.parse_location(railos_ttb_str.split(TEST_STR))
     assert str(_result) == TEST_STR
     TEST_STR = f"{hour}:11;Longbridge"

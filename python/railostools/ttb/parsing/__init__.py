@@ -5,7 +5,6 @@ RailOSTools TTB Parser
 This module provides a parser for Railway Operation Simulator (RailOS) timetable files.
 It includes functionality to parse TTB files, extract timetable data, and convert it to JSON format.
 """
-
 import datetime
 import io
 import json
@@ -15,8 +14,6 @@ import re
 
 import numpy
 
-logging.basicConfig()
-
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as ttb_comp
 from railostools.ttb.parsing.actions import parse_action
@@ -24,6 +21,7 @@ from railostools.ttb.parsing.components import parse_header, parse_repeat
 from railostools.ttb.parsing.finish import parse_finish
 from railostools.ttb.parsing.start import parse_start
 
+logging.basicConfig()
 
 class TTBParser:
     """Parser for Railway Operation Simulator timetable files"""
@@ -35,7 +33,7 @@ class TTBParser:
         self._file_lines: list[str] = []
         self._current_file: str | None = None
 
-    def __getitem__(self, item) -> ttb_comp.Timetable:
+    def __getitem__(self, item: str) -> ttb_comp.Timetable:
         return self._data[item]
 
     def is_comment(self, statement: str) -> bool:
@@ -100,7 +98,7 @@ class TTBParser:
             _index += 1
         return datetime.datetime.strptime(
             re.findall(r"^\d{2}:\d{2}", self._file_lines[_index])[0], "%H:%M"
-        ).time()
+        ).replace(tzinfo=datetime.UTC).time()
 
     @property
     def comments(self) -> dict[int, str] | None:
@@ -112,7 +110,7 @@ class TTBParser:
     @property
     def services_str(self) -> list[list[str]]:
         """Retrieve individual service strings"""
-        _service_list = []
+        _service_list: list[list[str]] = []
         _comments = self.comments or {}
         _non_comment_lines = [
             i
@@ -149,11 +147,11 @@ class TTBParser:
 
         _index = 2
 
-        _signaller_service = any(
+
+        _signaller_service: bool = any(
             [
-                _header.max_signaller_speed,
-                hasattr(_start_type, "under_signaller_control")
-                and _start_type.under_signaller_control,
+                _header.max_signaller_speed is not None,
+                getattr(_start_type, "under_signaller_control", False)
             ]
         )
 

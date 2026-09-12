@@ -1,18 +1,19 @@
-from collections.abc import Mapping
 import datetime
-from typing import Any, ClassVar, Iterator, Self, cast
+from collections.abc import Mapping
+from typing import ClassVar, Self, cast
+
 import pydantic
 
 from railostools.common.coords import Coordinate
 from railostools.ttb.components import Element, Reference, StartType, TimedEvent
-from railostools.ttb.components.actions import Location, cms, dsc, jbo, pas, rsp
+from railostools.ttb.components.actions import Location, cms, dsc, fsp, jbo, pas, rsp
 
 from .components.finish import Finish, Fjo
 from .components.start import Sns, Snt, Start
 from .parsing.time import TimeStr, adjust_above_24hr
 
 
-class Service(pydantic.BaseModel, Mapping):
+class Service(pydantic.BaseModel, Mapping[datetime.time, Element]):
     start_type: Start = "Snt"
     reference: Reference
     parent_reference: Reference | None = None
@@ -66,6 +67,8 @@ class Service(pydantic.BaseModel, Mapping):
                 time_candidate=key,
                 error_message="Failed to convert key for item retrieval",
             )
+        else:
+            _key = key
         return self._actions.__getitem__(_key)
 
     def __len__(self) -> int:
@@ -79,7 +82,7 @@ class Service(pydantic.BaseModel, Mapping):
         self._actions[item.time] = item
 
     @property
-    def finish_type(self) -> Finish:
+    def finish_type(self) -> Finish | None:
         return self._finish_type
 
     @property
@@ -118,30 +121,34 @@ class Service(pydantic.BaseModel, Mapping):
         self.add_item(_pass)
         return self
 
-    def rear_split(self, reference: str, time: TimeStr) -> "Service":
+    def rear_split(self, reference: str, time: TimeStr) -> Service:
         _rsplit = rsp(time=cast(datetime.time, time), new_service_ref=Reference.from_str(reference))
         self.add_item(_rsplit)
         return self.__class__(
             start_type="Sns",
             reference=Reference.from_str(reference),
             start_time=cast(datetime.time, time),
+            parent_reference=None,
+            start_position=None,
             **self.specifications,
         )
 
-    def front_split(self, reference: str, time: str) -> "Service":
+    def front_split(self, reference: str, time: str) -> Service:
         _start, _offset = adjust_above_24hr(
             time_candidate=time, error_message="Failed to split time"
         )
-        _fsplit = fsp(time=_start, time_days=_offset, new_service_ref=reference)
+        _fsplit: fsp = fsp(time=_start, time_days=_offset, new_service_ref=Reference.from_str(reference))
         self.add_item(_fsplit)
         return self.__class__(
             start_type="Sns",
-            reference=reference,
-            start_time=time,
+            reference=Reference.from_str(reference),
+            start_time=cast(datetime.time, time),
+            parent_reference=None,
+            start_position=None,
             **self.specifications,
         )
 
-    def join_other(self, other: "Service", time: str) -> "Service":
+    def join_other(self, other: Service, time: str) -> Service:
         """End this service by joining to another."""
         _time, _offset = adjust_above_24hr(
             time_candidate=time, error_message="Invalid time for service join."
@@ -171,7 +178,7 @@ class Service(pydantic.BaseModel, Mapping):
         self.add_item(_csp)
         return self
 
-    def become(self, new_reference: str, time: str) -> "Service":
+    def become(self, new_reference: str, time: str) -> Service:
         """Finish current service and form new."""
         _time, _offset = adjust_above_24hr(
             time_candidate=time, error_message="Invalid time for service join."
@@ -181,6 +188,7 @@ class Service(pydantic.BaseModel, Mapping):
             start_time=_time,
             reference=Reference.from_str(new_reference),
             parent_reference=self.reference,
+            start_position=None,
             **self.specifications,
         )
 
@@ -204,7 +212,6 @@ class TTB:
         power: pydantic.PositiveInt,
         mass: pydantic.PositiveInt,
         start_position: tuple[Coordinate, Coordinate],
-        offset_days: pydantic.NonNegativeInt = 0,
     ) -> Service:
         if self._services.get(reference):
             raise NotImplementedError(
@@ -223,7 +230,6 @@ class TTB:
             power=power,
             max_speed=max_speed,
             start_position=start_position,
-            offset_days=offset_days,
         )
         self._services[reference] = _service
         return self._services[reference]

@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import railostools.common.coords as railos_coords
 import railostools.exceptions as railos_exc
 import railostools.ttb.components as railos_comp
@@ -44,7 +46,7 @@ def parse_Snt(start_components: list[str]) -> railos_start.Snt:
     )
 
 
-def parse_Sns(start_components: list[str]) -> railos_start.Sfs:
+def parse_Sns(start_components: list[str]) -> railos_start.Sns:
     if len(start_components) != 3:
         raise railos_exc.ParsingError(
             "Expected 3 items in components "
@@ -141,7 +143,7 @@ def parse_Sns_sh(start_components: list[str]) -> railos_start.Sns_sh:
 
 
 def parse_start(start_str: str) -> railos_comp.StartType:
-    PARSE_DICT = {
+    PARSE_DICT: dict[str, Callable[[list[str]], railos_comp.StartType]] = {
         "Sns-fsh": parse_Sns_fsh,
         "Snt-sh": parse_Snt_sh,
         "Sns-sh": parse_Sns_sh,

@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from railostools.common.coords import Coordinate, coordinate
+from railostools.common.coords import coordinate
 from railostools.ttb.components import Reference
 from railostools.ttb.create import Service
 
